@@ -3,7 +3,7 @@ import axios from "axios";
 import { useCart } from "../context/CartContext";
 import { useParams, useNavigate, Link } from "react-router-dom";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+import { API_URL } from "../config/api";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,

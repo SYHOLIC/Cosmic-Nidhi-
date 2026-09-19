@@ -43,8 +43,7 @@ import ReviewTab from "../components/admin/ReviewTab";
 import SeoTab from "../components/admin/SeoTab";
 import PageTab from "../components/admin/PageTab";
 
-const API_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+import { API_URL } from "../config/api";
 
 /* ================================================================
    SIDEBAR NAV ITEMS

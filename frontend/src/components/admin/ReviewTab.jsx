@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Trash2, Loader2, Star } from "lucide-react";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+import { API_URL } from "../../config/api";
 
 export default function ReviewTab() {
   const [reviews, setReviews] = useState([]);

@@ -3,7 +3,7 @@ import axios from "axios";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import SEOHead from "../components/SEOHead";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+import { API_URL } from "../config/api";
 
 export default function Contact() {
   const [formData, setFormData] = useState({

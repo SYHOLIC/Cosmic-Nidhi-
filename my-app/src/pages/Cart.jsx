@@ -1,0 +1,164 @@
+import { motion } from "framer-motion";
+import { Trash2, Plus, Minus, ArrowRight, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useCart } from "../context/CartContext";
+
+export default function CartPage() {
+  const { cartItems, updateQuantity, removeFromCart, getCartTotal } = useCart();
+  const navigate = useNavigate();
+
+  const handleCheckout = () => {
+    navigate("/checkout");
+  };
+
+  return (
+    <main className="min-h-screen bg-[#FFFDF9] pt-28 pb-20">
+      <div className="mx-auto max-w-[1200px] px-5 sm:px-7 lg:px-10">
+        
+        <div className="mb-8">
+          <h1 className="font-display text-[32px] font-medium text-[#3C080D] sm:text-[40px]">
+            Your Shopping Cart
+          </h1>
+          <a
+            href="/products"
+            className="mt-2 inline-flex items-center gap-1.5 font-sans text-[13px] font-medium text-[#E9A534] transition-colors hover:text-[#C89846]"
+          >
+            <ArrowLeft size={16} />
+            Continue Shopping
+          </a>
+        </div>
+
+        {cartItems.length === 0 ? (
+          <div className="flex flex-col items-center justify-center rounded-[12px] border border-dashed border-[#E9A534]/30 bg-[#FFF7E9] py-20 text-center shadow-sm">
+            <h2 className="font-display text-[22px] font-medium text-[#3C080D]">Your cart is empty</h2>
+            <p className="mt-2 max-w-md font-sans text-[14px] text-[#5A0E14]/70">
+              Looks like you haven't added any products to your cart yet. Explore our collection of crystals, rudrakshas, and spiritual tools.
+            </p>
+            <a
+              href="/products"
+              className="mt-6 inline-flex items-center gap-2 rounded-full border border-[#F2C66D] bg-gradient-to-r from-[#F3D49B] to-[#DDB56D] px-6 py-3 font-sans text-[12px] font-bold uppercase tracking-[0.14em] text-[#3C080D] shadow-[0_6px_18px_rgba(0,0,0,0.15)] transition-transform hover:-translate-y-0.5"
+            >
+              Browse Store
+            </a>
+          </div>
+        ) : (
+          <div className="grid gap-10 lg:grid-cols-[1fr_380px]">
+            
+            {/* CART ITEMS */}
+            <div className="flex flex-col gap-6">
+              {cartItems.map((item) => {
+                // Ensure price is parsed properly for display
+                const priceStr = String(item.price).replace(/[₹,]/g, "");
+                const price = parseFloat(priceStr) || 0;
+                const itemTotal = price * item.quantity;
+
+                return (
+                  <motion.div
+                    layout
+                    key={item.id}
+                    className="flex flex-col gap-4 rounded-[12px] border border-[#5A0E14]/10 bg-white p-4 shadow-[0_4px_16px_rgba(60,8,13,0.03)] sm:flex-row sm:items-center sm:gap-6"
+                  >
+                    {/* Image */}
+                    <div className="h-24 w-24 shrink-0 overflow-hidden rounded-[8px] border border-[#E9A534]/20 bg-[#F4E4C8]/30">
+                      <img
+                        src={item.image || "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=150"}
+                        alt={item.name}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+
+                    {/* Details */}
+                    <div className="flex flex-1 flex-col">
+                      <h3 className="font-display text-[17px] font-semibold text-[#3C080D]">
+                        {item.name}
+                      </h3>
+                      <p className="mt-1 font-sans text-[12px] font-medium text-[#5A0E14]/60">
+                        {item.category}
+                      </p>
+                      
+                      <div className="mt-4 flex items-center justify-between sm:mt-3">
+                        {/* Quantity Control */}
+                        <div className="flex items-center rounded-full border border-[#5A0E14]/15 bg-[#FFFDF9]">
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            className="flex h-8 w-8 items-center justify-center text-[#3C080D] transition-colors hover:bg-[#E9A534]/10 hover:text-[#E9A534] rounded-l-full"
+                          >
+                            <Minus size={14} />
+                          </button>
+                          <span className="w-8 text-center font-sans text-[13px] font-semibold text-[#3C080D]">
+                            {item.quantity}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            className="flex h-8 w-8 items-center justify-center text-[#3C080D] transition-colors hover:bg-[#E9A534]/10 hover:text-[#E9A534] rounded-r-full"
+                          >
+                            <Plus size={14} />
+                          </button>
+                        </div>
+                        
+                        {/* Price & Remove */}
+                        <div className="flex items-center gap-6">
+                          <span className="font-display text-[18px] font-bold text-[#C1272D]">
+                            ₹{itemTotal.toLocaleString()}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => removeFromCart(item.id)}
+                            className="text-[#5A0E14]/40 transition-colors hover:text-[#C1272D]"
+                            aria-label="Remove item"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            {/* ORDER SUMMARY */}
+            <div className="self-start rounded-[12px] border border-[#E9A534]/25 bg-gradient-to-br from-[#180205] to-[#260005] p-6 text-[#FFF8EC] shadow-[0_12px_40px_rgba(0,0,0,0.2)]">
+              <h3 className="font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#E9C76D]">
+                Order Summary
+              </h3>
+              
+              <div className="mt-6 flex flex-col gap-4 border-b border-[#E9A534]/15 pb-6">
+                <div className="flex items-center justify-between font-sans text-[14px]">
+                  <span className="text-[#F5E5C7]/70">Subtotal</span>
+                  <span className="font-medium text-[#FFF8EC]">₹{getCartTotal().toLocaleString()}</span>
+                </div>
+                <div className="flex items-center justify-between font-sans text-[14px]">
+                  <span className="text-[#F5E5C7]/70">Shipping</span>
+                  <span className="font-medium text-green-400">Free</span>
+                </div>
+                <div className="flex items-center justify-between font-sans text-[14px]">
+                  <span className="text-[#F5E5C7]/70">Tax</span>
+                  <span className="font-medium text-[#FFF8EC]">Calculated at checkout</span>
+                </div>
+              </div>
+
+              <div className="mt-6 flex items-center justify-between">
+                <span className="font-display text-[18px] font-medium text-[#FFF8EC]">Total</span>
+                <span className="font-display text-[26px] font-bold text-[#E9A534]">
+                  ₹{getCartTotal().toLocaleString()}
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleCheckout}
+                className="mt-8 flex w-full items-center justify-center gap-2 rounded-full border border-[#F2C66D] bg-gradient-to-r from-[#F3D49B] to-[#DDB56D] py-4 font-sans text-[13px] font-bold uppercase tracking-[0.14em] text-[#3C080D] shadow-[0_8px_20px_rgba(233,165,52,0.25)] transition-transform hover:-translate-y-0.5"
+              >
+                Proceed to Checkout
+                <ArrowRight size={16} />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </main>
+  );
+}

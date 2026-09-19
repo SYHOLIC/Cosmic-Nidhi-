@@ -1,0 +1,346 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Cosmic Nidhi — Maroon & Gold Theme
+ * Colors: Maroon #5A0E14, Red #C1272D, Marigold #E9A534
+ * Headings: Cormorant Garamond. Body: Karla.
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Karla", system-ui, sans-serif;
+
+  /* Colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-brand: var(--brand);
+  --color-brand-light: var(--brand-light);
+  --color-brand-dark: var(--brand-dark);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-gold-dark: var(--gold-dark);
+  --color-cream: var(--cream);
+  --color-cream-deep: var(--cream-deep);
+  --color-ink: var(--ink);
+
+  /* Animations */
+  --animate-spin-slow: spin 120s linear infinite;
+  --animate-spin-slower: spin 160s linear infinite reverse;
+  --animate-float: float 9s ease-in-out infinite;
+  --animate-twinkle: twinkle 4s ease-in-out infinite;
+  --animate-shimmer: shimmer 6s linear infinite;
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-gradient-x: gradient-x 4s ease-in-out infinite;
+}
+
+:root {
+  --radius: 0.25rem;
+
+  /* ─── Maroon & Gold Theme ─── */
+  
+  /* Primary Colors */
+  --brand: #C1272D;
+  --brand-light: #E94E54;
+  --brand-dark: #5A0E14;
+  
+  /* Gold Accents */
+  --gold: #E9A534;
+  --gold-light: #F4C766;
+  --gold-dark: #D4952A;
+  
+  /* Background & Text */
+  --cream: #FFF7E9;
+  --cream-deep: #FDECC8;
+  --ink: #2C1210;
+
+  /* Theme Variables */
+  --background: #FFF7E9;
+  --foreground: #2C1210;
+  --card: #FFFFFF;
+  --card-foreground: #2C1210;
+  --popover: #FFFFFF;
+  --popover-foreground: #2C1210;
+  --primary: #C1272D;
+  --primary-foreground: #FFF7E9;
+  --secondary: #5A0E14;
+  --secondary-foreground: #FFF7E9;
+  --muted: #FDECC8;
+  --muted-foreground: #5A0E14;
+  --accent: #E9A534;
+  --accent-foreground: #FFF7E9;
+  --destructive: #C1272D;
+  --destructive-foreground: #FFF7E9;
+  --border: rgba(90, 14, 20, 0.14);
+  --input: rgba(90, 14, 20, 0.2);
+  --ring: rgba(193, 39, 45, 0.4);
+
+  /* ─── Gradients ─── */
+  --gradient-brand: linear-gradient(
+    100deg,
+    #5A0E14,
+    #C1272D,
+    #E94E54
+  );
+  
+  --gradient-gold: linear-gradient(
+    100deg,
+    #D4952A,
+    #F4C766,
+    #E9A534
+  );
+  
+  --gradient-warm: linear-gradient(
+    135deg,
+    #FFF7E9,
+    #FDECC8
+  );
+  
+  --gradient-veil: radial-gradient(
+    ellipse at 50% 0%,
+    rgba(193, 39, 45, 0.08),
+    transparent 65%
+  );
+  
+  /* ─── Shadows ─── */
+  --shadow-brand: 0 24px 70px -30px rgba(193, 39, 45, 0.45);
+  --shadow-gold: 0 24px 70px -30px rgba(233, 165, 52, 0.4);
+  --shadow-deep: 0 40px 90px -50px rgba(44, 18, 16, 0.2);
+}
+
+/* ─── Keyframes ─── */
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-18px);
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.15;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-reverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+/* ─── Gradient Animation for Text ─── */
+@keyframes gradient-x {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* ─── Utilities ─── */
+
+@utility text-brand-gradient {
+  background-image: var(--gradient-brand);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 8s linear infinite;
+}
+
+@utility text-gold-gradient {
+  background-image: var(--gradient-gold);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 8s linear infinite;
+}
+
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: #C1272D;
+}
+
+@utility brand-rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #C1272D, transparent);
+}
+
+@utility gold-rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #E9A534, transparent);
+}
+
+@utility glass-card {
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.8),
+    rgba(253, 236, 200, 0.4)
+  );
+  border: 1px solid rgba(90, 14, 20, 0.12);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-deep);
+}
+
+@utility reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  &[data-visible="true"] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility veil {
+  background-image: var(--gradient-veil);
+}
+
+@utility spin-slow {
+  animation: spin 120s linear infinite;
+}
+
+@utility spin-slower {
+  animation: spin-reverse 160s linear infinite;
+}
+
+@utility animate-gradient-x {
+  animation: gradient-x 4s ease-in-out infinite;
+  background-size: 200% 100%;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background: #C1272D;
+    color: #FFF7E9;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation: none !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Static and Legal Page Structured Content */
+.static-page-content p {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+  line-height: 1.85;
+  color: #3D1E16;
+  margin-bottom: 1.25rem;
+}
+
+.static-page-content li {
+  text-align: justify;
+  text-justify: inter-word;
+  line-height: 1.75;
+  color: #3D1E16;
+}
+
+.static-page-content h1,
+.static-page-content h2,
+.static-page-content h3 {
+  letter-spacing: normal;
+}

@@ -14,17 +14,17 @@ services:
       - key: PORT
         value: 5000
       - key: MONGODB_URI
-        sync: false
+        value: mongodb+srv://syswapnilyadavcom_db_user:UUFQQwlnb5AfwkHb@cosmic.gel0dj8.mongodb.net/cosmic-nidhi?retryWrites=true&w=majority&appName=Cosmic
       - key: JWT_SECRET
-        generateValue: true
+        value: supersecretjwtkey123
       - key: FRONTEND_URL
-        sync: false
+        value: https://cosmic-nidhi.onrender.com
       - key: RAZORPAY_KEY_ID
-        sync: false
+        value: rzp_test_placeholder_key_id
       - key: RAZORPAY_KEY_SECRET
-        sync: false
+        value: rzp_test_placeholder_secret
       - key: SENDGRID_API_KEY
-        sync: false
+        value: b64:U0cua01sNjBZZnJTb205ZUNCcC1SbkxlUS5Vc0ZJcXZ6ajBaT3d2bzJmMnppWHlQTWdaZnFLa1c0QnBvQjBoejJzZ3ZZ
       - key: SENDGRID_FROM_EMAIL
         value: swapnilcipher@gmail.com
 
@@ -43,4 +43,4 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_URL
-        sync: false
+        value: https://cosmic-nidhi-backend.onrender.com/api

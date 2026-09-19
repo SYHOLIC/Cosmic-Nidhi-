@@ -1,8 +1,21 @@
 const sgMail = require('@sendgrid/mail');
 require('dotenv').config();
 
-if (process.env.SENDGRID_API_KEY) {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const getApiKey = () => {
+  let key = process.env.SENDGRID_API_KEY || '';
+  if (key.startsWith('b64:')) {
+    try {
+      key = Buffer.from(key.slice(4), 'base64').toString('utf8');
+    } catch (e) {
+      console.error('Failed to decode b64 SENDGRID_API_KEY:', e);
+    }
+  }
+  return key.trim();
+};
+
+const initialApiKey = getApiKey();
+if (initialApiKey) {
+  sgMail.setApiKey(initialApiKey);
 } else {
   console.warn('⚠️ WARNING: SENDGRID_API_KEY is missing from environment variables!');
 }
@@ -16,10 +29,13 @@ const sendVerificationOTP = async (toEmail, name, otp) => {
 
   console.log(`🔑 [OTP DISPATCH] Generated OTP for ${toEmail}: [ ${otp} ]`);
 
-  if (!process.env.SENDGRID_API_KEY) {
+  const activeApiKey = getApiKey();
+  if (!activeApiKey) {
     console.error('❌ SENDGRID_API_KEY is not set in environment variables.');
-    throw new Error('Email service is not configured. Please add SENDGRID_API_KEY to your Render environment.');
+    throw new Error('Email service is not configured. Please check SENDGRID_API_KEY in Render environment.');
   }
+
+  sgMail.setApiKey(activeApiKey);
 
   const htmlContent = `
 <!DOCTYPE html>
@@ -180,8 +196,9 @@ const sendVerificationOTP = async (toEmail, name, otp) => {
     console.log(`✉️ Verification OTP email sent successfully to ${toEmail}`);
     return true;
   } catch (error) {
+    const errorDetail = error.response?.body?.errors?.[0]?.message || error.message;
     console.error('SendGrid Email Error:', error.response ? error.response.body : error.message);
-    throw new Error('Failed to send verification email. Please check your email address.');
+    throw new Error(errorDetail || 'Failed to send verification email. Please check your email address.');
   }
 };
 

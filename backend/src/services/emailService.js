@@ -3,6 +3,8 @@ require('dotenv').config();
 
 if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+} else {
+  console.warn('⚠️ WARNING: SENDGRID_API_KEY is missing from environment variables!');
 }
 
 /**
@@ -11,6 +13,13 @@ if (process.env.SENDGRID_API_KEY) {
 const sendVerificationOTP = async (toEmail, name, otp) => {
   const fromEmail = process.env.SENDGRID_FROM_EMAIL || 'swapnilcipher@gmail.com';
   const recipientName = name || 'Seeker';
+
+  console.log(`🔑 [OTP DISPATCH] Generated OTP for ${toEmail}: [ ${otp} ]`);
+
+  if (!process.env.SENDGRID_API_KEY) {
+    console.error('❌ SENDGRID_API_KEY is not set in environment variables.');
+    throw new Error('Email service is not configured. Please add SENDGRID_API_KEY to your Render environment.');
+  }
 
   const htmlContent = `
 <!DOCTYPE html>

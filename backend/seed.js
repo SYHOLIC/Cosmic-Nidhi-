@@ -13,7 +13,12 @@ mongoose.connect(process.env.MONGODB_URI).then(async () => {
     { $set: { role: 'admin', password: hashedPassword, name: 'Admin' } },
     { upsert: true }
   );
+  await User.updateOne(
+    { email: 'admin@cosmicnidhi.in' },
+    { $set: { role: 'admin', password: hashedPassword, name: 'Admin' } },
+    { upsert: true }
+  );
   
-  console.log('✅ Seeded admin user on Atlas');
+  console.log('✅ Seeded admin users (.com & .in) on Atlas');
   process.exit(0);
 }).catch(console.error);

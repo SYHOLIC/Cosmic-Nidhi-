@@ -16,6 +16,7 @@ import CheckoutPage from "./pages/Checkout";
 import StaticPage from "./pages/StaticPage";
 import ProductDetails from "./pages/ProductDetails";
 import Contact from "./pages/Contact";
+import FloatingSocialConnect from "./components/FloatingSocialConnect";
 import { CartProvider } from "./context/CartContext";
 
 // Inner component so we can use useLocation
@@ -56,6 +57,7 @@ function AppRoutes() {
         <Route path="/page/:slug" element={<StaticPage />} />
       </Routes>
       {!hideFooter && <Footer />}
+      <FloatingSocialConnect />
     </>
   );
 }

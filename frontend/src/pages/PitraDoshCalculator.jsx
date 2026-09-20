@@ -17,8 +17,31 @@ import {
   MessageCircle,
   ExternalLink,
   ChevronDown,
+  Printer,
+  Share2,
+  Check,
+  Globe,
 } from "lucide-react";
 import { calculatePitraDosha, CITIES_DATABASE } from "../utils/pitraDoshEngine";
+import VedicKundaliChart from "../components/VedicKundaliChart";
+
+// Country dialing codes with flags for the WhatsApp selector
+const COUNTRY_LIST = [
+  { code: "+91", country: "India", flag: "🇮🇳", short: "IN" },
+  { code: "+1", country: "United States", flag: "🇺🇸", short: "US" },
+  { code: "+44", country: "United Kingdom", flag: "🇬🇧", short: "GB" },
+  { code: "+971", country: "United Arab Emirates", flag: "🇦🇪", short: "AE" },
+  { code: "+1", country: "Canada", flag: "🇨🇦", short: "CA" },
+  { code: "+61", country: "Australia", flag: "🇦🇺", short: "AU" },
+  { code: "+65", country: "Singapore", flag: "🇸🇬", short: "SG" },
+  { code: "+49", country: "Germany", flag: "🇩🇪", short: "DE" },
+  { code: "+977", country: "Nepal", flag: "🇳🇵", short: "NP" },
+  { code: "+966", country: "Saudi Arabia", flag: "🇸🇦", short: "SA" },
+  { code: "+974", country: "Qatar", flag: "🇶🇦", short: "QA" },
+  { code: "+64", country: "New Zealand", flag: "🇳🇿", short: "NZ" },
+  { code: "+60", country: "Malaysia", flag: "🇲🇾", short: "MY" },
+  { code: "+27", country: "South Africa", flag: "🇿🇦", short: "ZA" },
+];
 
 export default function PitraDoshCalculator() {
   // Form State
@@ -27,10 +50,12 @@ export default function PitraDoshCalculator() {
   const [timeHours, setTimeHours] = useState("");
   const [timeMinutes, setTimeMinutes] = useState("");
   const [timePeriod, setTimePeriod] = useState("AM");
+  const [isNoonTime, setIsNoonTime] = useState(false);
   const [birthPlace, setBirthPlace] = useState("");
   const [placeSuggestions, setPlaceSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [countryCode, setCountryCode] = useState("+91");
+  const [selectedCountry, setSelectedCountry] = useState(COUNTRY_LIST[0]);
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const [whatsappNumber, setWhatsappNumber] = useState("");
 
   // Calculation & UI State
@@ -39,6 +64,23 @@ export default function PitraDoshCalculator() {
   const [result, setResult] = useState(null);
 
   const resultsRef = useRef(null);
+  const countryDropdownRef = useRef(null);
+  const placeDropdownRef = useRef(null);
+  const minutesInputRef = useRef(null);
+
+  // Close dropdowns on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (countryDropdownRef.current && !countryDropdownRef.current.contains(e.target)) {
+        setShowCountryDropdown(false);
+      }
+      if (placeDropdownRef.current && !placeDropdownRef.current.contains(e.target)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // Handle Birth Place suggestions
   const handlePlaceChange = (e) => {
@@ -47,7 +89,7 @@ export default function PitraDoshCalculator() {
     if (query.trim().length > 1) {
       const filtered = CITIES_DATABASE.filter((city) =>
         city.name.toLowerCase().includes(query.toLowerCase())
-      ).slice(0, 6);
+      ).slice(0, 7);
       setPlaceSuggestions(filtered);
       setShowSuggestions(true);
     } else {
@@ -59,6 +101,69 @@ export default function PitraDoshCalculator() {
   const handleSelectCity = (city) => {
     setBirthPlace(city.name);
     setShowSuggestions(false);
+  };
+
+  // Time handling with smooth formatting & navigation
+  const handleToggleNoonTime = () => {
+    if (!isNoonTime) {
+      setTimeHours("12");
+      setTimeMinutes("00");
+      setTimePeriod("PM");
+      setIsNoonTime(true);
+    } else {
+      setTimeHours("");
+      setTimeMinutes("");
+      setIsNoonTime(false);
+    }
+  };
+
+  const handleHoursChange = (e) => {
+    const raw = e.target.value.replace(/\D/g, "");
+    if (raw === "") {
+      setTimeHours("");
+      setIsNoonTime(false);
+      return;
+    }
+    const num = parseInt(raw, 10);
+    if (num > 12) {
+      setTimeHours("12");
+    } else {
+      setTimeHours(raw);
+    }
+    setIsNoonTime(false);
+    if (raw.length === 2 && minutesInputRef.current) {
+      minutesInputRef.current.focus();
+    }
+  };
+
+  const handleHoursBlur = () => {
+    if (timeHours) {
+      const num = Math.min(12, Math.max(1, parseInt(timeHours, 10) || 1));
+      setTimeHours(String(num).padStart(2, "0"));
+    }
+  };
+
+  const handleMinutesChange = (e) => {
+    const raw = e.target.value.replace(/\D/g, "");
+    if (raw === "") {
+      setTimeMinutes("");
+      setIsNoonTime(false);
+      return;
+    }
+    const num = parseInt(raw, 10);
+    if (num > 59) {
+      setTimeMinutes("59");
+    } else {
+      setTimeMinutes(raw);
+    }
+    setIsNoonTime(false);
+  };
+
+  const handleMinutesBlur = () => {
+    if (timeMinutes !== "") {
+      const num = Math.min(59, Math.max(0, parseInt(timeMinutes, 10) || 0));
+      setTimeMinutes(String(num).padStart(2, "0"));
+    }
   };
 
   // Submit Handler
@@ -75,7 +180,7 @@ export default function PitraDoshCalculator() {
       return;
     }
     if (!timeHours) {
-      setError("Please specify your time of birth.");
+      setError("Please specify your time of birth (or check the Solar Chart 12:00 PM option).");
       return;
     }
 
@@ -91,11 +196,25 @@ export default function PitraDoshCalculator() {
           timeOfBirth: formattedTime,
           timePeriod,
           birthPlace: birthPlace || "Noida, Uttar Pradesh, India",
-          whatsappNumber: `${countryCode} ${whatsappNumber}`.trim(),
+          whatsappNumber: `${selectedCountry.code} ${whatsappNumber}`.trim(),
         });
 
         setResult(calculated);
         setLoading(false);
+
+        // Background lead capture to Cosmic Nidhi contact/lead system
+        try {
+          fetch("/api/contact", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name: fullName.trim(),
+              email: `${(whatsappNumber || "client").replace(/\D/g, "") || "client"}@pitradosha.leads`,
+              subject: `Pitra Dosh Lead: ${fullName.trim()} (${selectedCountry.code} ${whatsappNumber || "N/A"})`,
+              message: `Pitra Dosha Calculator Submission\n• Client: ${fullName.trim()}\n• DOB: ${dateOfBirth} (${formattedTime} ${timePeriod})\n• Place: ${birthPlace || "Noida, India"}\n• Phone: ${selectedCountry.code} ${whatsappNumber || "Not Provided"}\n• Status: ${calculated.scores.statusText} (${calculated.scores.severity})\n• Net Score: ${calculated.scores.netScore}/10`,
+            }),
+          }).catch(() => {});
+        } catch (ignored) {}
 
         // Scroll smoothly to results
         setTimeout(() => {
@@ -105,7 +224,7 @@ export default function PitraDoshCalculator() {
         setError(err.message || "Calculation failed. Please check your inputs.");
         setLoading(false);
       }
-    }, 1200);
+    }, 1100);
   };
 
   const handleReset = () => {
@@ -114,30 +233,42 @@ export default function PitraDoshCalculator() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleShareWhatsApp = () => {
+    if (!result) return;
+    const shareText = encodeURIComponent(
+      `🔮 Pitra Dosha Kundali Report for ${result.meta.fullName}:\n• Result: ${result.scores.statusText}\n• Severity: ${result.scores.severity}\n• Net Score: ${result.scores.netScore} / 10\n• Lagna: ${result.ascendant.sign} | 9th House: ${result.ninthHouse.sign}\n\nCheck yours at Cosmic Nidhi: https://www.cosmicnidhi.in/pitra-dosh-calculator`
+    );
+    window.open(`https://api.whatsapp.com/send?text=${shareText}`, "_blank");
+  };
+
   // WhatsApp consult link with pre-filled Kundali summary
   const getWhatsAppConsultUrl = () => {
     if (!result) return "https://wa.me/919560437360";
     const msg = encodeURIComponent(
-      `Namaste Cosmic Nidhi 🙏\n\nI just checked my Pitra Dosha on your website:\n• Name: ${result.meta.fullName}\n• DOB: ${result.meta.dateOfBirth} (${result.meta.timeOfBirth} ${result.meta.timePeriod})\n• Place: ${result.meta.birthPlace}\n• Dosha Result: ${result.scores.statusText} (${result.scores.severity})\n• Lagna: ${result.ascendant.sign} | 9th House: ${result.ninthHouse.sign}\n\nCould you please guide me on customized Pitra Dosha Nivaran remedies and remedies consultation?`
+      `Namaste Cosmic Nidhi 🙏\n\nI just checked my Pitra Dosha on your website:\n• Name: ${result.meta.fullName}\n• DOB: ${result.meta.dateOfBirth} (${result.meta.timeOfBirth} ${result.meta.timePeriod})\n• Place: ${result.meta.birthPlace}\n• Dosha Result: ${result.scores.statusText} (${result.scores.severity})\n• Lagna: ${result.ascendant.sign} | 9th House: ${result.ninthHouse.sign}\n\nCould you please guide me on customized Pitra Dosha Nivaran remedies and personalized consultation?`
     );
     return `https://wa.me/919560437360?text=${msg}`;
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F6F0] pt-24 pb-20 sm:pt-32">
+    <div className="min-h-screen bg-[#F4F6F0] pt-24 pb-20 sm:pt-32 print:bg-white print:pt-4 print:pb-4">
       {/* Background celestial ambient light */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+      <div className="pointer-events-none fixed inset-0 overflow-hidden print:hidden">
         <div className="absolute top-10 left-1/4 h-[500px] w-[500px] rounded-full bg-[#E9A534]/10 blur-[120px]" />
         <div className="absolute bottom-20 right-10 h-[450px] w-[450px] rounded-full bg-[#B8380D]/8 blur-[130px]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* ==============================================================
-            HERO / MAIN FORM SECTION (EXACT LAYOUT AS SCREENSHOT)
+            HERO / MAIN FORM SECTION (MATCHES SCREENSHOT PIXEL-PERFECTLY)
         ============================================================== */}
-        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-12">
+        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-12 print:hidden">
           {/* LEFT SIDE: HEADING & COPY */}
-          <div className="pt-2 lg:col-span-5 lg:pt-10">
+          <div className="pt-2 lg:col-span-5 lg:pt-8">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#B8380D]/20 bg-[#B8380D]/10 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-[#B8380D]">
               <Flame size={13} />
               Vedic Kundali Analysis Engine
@@ -157,19 +288,19 @@ export default function PitraDoshCalculator() {
             <div className="mt-8 space-y-3.5 border-t border-[#2C1210]/10 pt-6 font-sans text-sm text-[#44302C]">
               <div className="flex items-center gap-3">
                 <CheckCircle2 size={18} className="shrink-0 text-[#7EA326]" />
-                <span>Lahiri Sidereal Ayanamsha & Exact Planetary Longitudes</span>
+                <span>Lahiri Sidereal Ayanamsha &amp; Exact Planetary Longitudes</span>
               </div>
               <div className="flex items-center gap-3">
                 <CheckCircle2 size={18} className="shrink-0 text-[#7EA326]" />
-                <span>9th House (Pitru Bhava) & Karaka Surya Affliction Checks</span>
+                <span>9th House (Pitru Bhava) &amp; Karaka Surya Affliction Checks</span>
               </div>
               <div className="flex items-center gap-3">
                 <CheckCircle2 size={18} className="shrink-0 text-[#7EA326]" />
-                <span>Jupiter Aspect (Guru Drishti) & Bhanga Cancellation Factors</span>
+                <span>Jupiter Aspect (Guru Drishti) &amp; Bhanga Cancellation Factors</span>
               </div>
               <div className="flex items-center gap-3">
                 <CheckCircle2 size={18} className="shrink-0 text-[#7EA326]" />
-                <span>Authentic Classical Vedic Remedies & Tarpan Guidance</span>
+                <span>Authentic Classical Vedic Remedies &amp; Tarpan Guidance</span>
               </div>
             </div>
           </div>
@@ -213,6 +344,8 @@ export default function PitraDoshCalculator() {
                         type="date"
                         required
                         value={dateOfBirth}
+                        max={new Date().toISOString().split("T")[0]}
+                        min="1920-01-01"
                         onChange={(e) => setDateOfBirth(e.target.value)}
                         className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3.5 font-sans text-sm text-[#2C1210] outline-none transition-all focus:border-[#B8380D] focus:ring-2 focus:ring-[#B8380D]/15"
                       />
@@ -221,27 +354,44 @@ export default function PitraDoshCalculator() {
 
                   {/* TIME OF BIRTH */}
                   <div>
-                    <label className="block font-sans text-[11.5px] font-bold uppercase tracking-wider text-[#4A3B37] mb-2">
-                      Time of Birth
-                    </label>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block font-sans text-[11.5px] font-bold uppercase tracking-wider text-[#4A3B37]">
+                        Time of Birth
+                      </label>
+                      <button
+                        type="button"
+                        onClick={handleToggleNoonTime}
+                        className={`text-[10px] font-semibold transition-colors ${
+                          isNoonTime
+                            ? "text-[#B8380D] font-bold"
+                            : "text-gray-500 hover:text-[#B8380D]"
+                        }`}
+                      >
+                        {isNoonTime ? "✓ Using 12:00 PM (Noon)" : "Don't know exact time?"}
+                      </button>
+                    </div>
+
                     <div className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white p-1.5 focus-within:border-[#B8380D] focus-within:ring-2 focus-within:ring-[#B8380D]/15">
                       <input
-                        type="number"
-                        min="1"
-                        max="12"
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={2}
                         placeholder="HH"
                         value={timeHours}
-                        onChange={(e) => setTimeHours(e.target.value)}
+                        onChange={handleHoursChange}
+                        onBlur={handleHoursBlur}
                         className="w-12 text-center font-sans text-sm font-semibold text-[#2C1210] outline-none"
                       />
                       <span className="text-gray-400 font-bold">:</span>
                       <input
-                        type="number"
-                        min="0"
-                        max="59"
+                        ref={minutesInputRef}
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={2}
                         placeholder="MM"
                         value={timeMinutes}
-                        onChange={(e) => setTimeMinutes(e.target.value)}
+                        onChange={handleMinutesChange}
+                        onBlur={handleMinutesBlur}
                         className="w-12 text-center font-sans text-sm font-semibold text-[#2C1210] outline-none"
                       />
 
@@ -249,7 +399,10 @@ export default function PitraDoshCalculator() {
                       <div className="ml-auto flex items-center rounded-lg bg-gray-100 p-0.5">
                         <button
                           type="button"
-                          onClick={() => setTimePeriod("AM")}
+                          onClick={() => {
+                            setTimePeriod("AM");
+                            setIsNoonTime(false);
+                          }}
                           className={`rounded-md px-2.5 py-1 font-sans text-xs font-bold transition-all ${
                             timePeriod === "AM"
                               ? "bg-[#D88A36]/30 text-[#8A4B00] shadow-sm"
@@ -260,7 +413,10 @@ export default function PitraDoshCalculator() {
                         </button>
                         <button
                           type="button"
-                          onClick={() => setTimePeriod("PM")}
+                          onClick={() => {
+                            setTimePeriod("PM");
+                            setIsNoonTime(false);
+                          }}
                           className={`rounded-md px-2.5 py-1 font-sans text-xs font-bold transition-all ${
                             timePeriod === "PM"
                               ? "bg-[#D88A36]/30 text-[#8A4B00] shadow-sm"
@@ -275,7 +431,7 @@ export default function PitraDoshCalculator() {
                 </div>
 
                 {/* 3. PLACE OF BIRTH */}
-                <div className="relative">
+                <div className="relative" ref={placeDropdownRef}>
                   <label className="block font-sans text-[11.5px] font-bold uppercase tracking-wider text-[#4A3B37] mb-2">
                     Place of Birth
                   </label>
@@ -293,13 +449,13 @@ export default function PitraDoshCalculator() {
 
                   {/* City Autocomplete dropdown */}
                   {showSuggestions && placeSuggestions.length > 0 && (
-                    <div className="absolute z-20 mt-1 max-h-48 w-full overflow-y-auto rounded-xl border border-gray-200 bg-white p-1.5 shadow-xl">
+                    <div className="absolute z-20 mt-1 max-h-52 w-full overflow-y-auto rounded-xl border border-gray-200 bg-white p-1.5 shadow-xl">
                       {placeSuggestions.map((city) => (
                         <button
                           key={city.name}
                           type="button"
                           onClick={() => handleSelectCity(city)}
-                          className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left font-sans text-xs text-[#2C1210] hover:bg-[#F4F6F0]"
+                          className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left font-sans text-xs text-[#2C1210] hover:bg-[#F4F6F0] transition-colors"
                         >
                           <MapPin size={13} className="text-[#B8380D] shrink-0" />
                           <span>{city.name}</span>
@@ -309,23 +465,70 @@ export default function PitraDoshCalculator() {
                   )}
                 </div>
 
-                {/* 4. WHATSAPP NUMBER */}
+                {/* 4. WHATSAPP NUMBER (WITH INTERACTIVE COUNTRY CODE SELECTOR) */}
                 <div>
                   <label className="block font-sans text-[11.5px] font-bold uppercase tracking-wider text-[#4A3B37] mb-2">
                     WhatsApp Number
                   </label>
-                  <div className="flex items-center rounded-xl border border-gray-200 bg-white px-3 py-1.5 focus-within:border-[#B8380D] focus-within:ring-2 focus-within:ring-[#B8380D]/15">
-                    {/* Country code pill */}
-                    <div className="flex items-center gap-1.5 border-r border-gray-200 pr-3 mr-3 text-xs font-semibold text-gray-700">
-                      <span className="text-base">🇮🇳</span>
-                      <span>{countryCode}</span>
-                      <ChevronDown size={12} className="text-gray-400" />
+                  <div className="flex items-center rounded-xl border border-gray-200 bg-white px-3 py-1.5 focus-within:border-[#B8380D] focus-within:ring-2 focus-within:ring-[#B8380D]/15 relative">
+                    {/* Interactive Country Code Dropdown */}
+                    <div className="relative" ref={countryDropdownRef}>
+                      <button
+                        type="button"
+                        onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+                        className="flex items-center gap-1.5 border-r border-gray-200 pr-3 mr-3 text-xs font-semibold text-gray-700 hover:text-black focus:outline-none transition-colors cursor-pointer"
+                        title="Change Country Code"
+                      >
+                        <span className="text-base">{selectedCountry.flag}</span>
+                        <span>
+                          {selectedCountry.short} {selectedCountry.code}
+                        </span>
+                        <ChevronDown
+                          size={12}
+                          className={`text-gray-400 transition-transform ${
+                            showCountryDropdown ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
+
+                      {/* Dropdown Menu */}
+                      {showCountryDropdown && (
+                        <div className="absolute top-full left-0 mt-2 z-30 w-56 max-h-56 overflow-y-auto rounded-xl border border-gray-200 bg-white p-1 shadow-2xl">
+                          <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                            Select Country
+                          </div>
+                          {COUNTRY_LIST.map((item) => (
+                            <button
+                              key={`${item.country}-${item.code}`}
+                              type="button"
+                              onClick={() => {
+                                setSelectedCountry(item);
+                                setShowCountryDropdown(false);
+                              }}
+                              className={`flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 text-xs text-left transition-colors ${
+                                selectedCountry.country === item.country
+                                  ? "bg-[#B8380D]/10 font-bold text-[#B8380D]"
+                                  : "text-gray-700 hover:bg-gray-50"
+                              }`}
+                            >
+                              <span className="flex items-center gap-2">
+                                <span>{item.flag}</span>
+                                <span>{item.country}</span>
+                              </span>
+                              <span className="text-gray-500 font-mono text-[11px]">
+                                {item.code}
+                              </span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
+
                     <input
                       type="tel"
                       value={whatsappNumber}
                       onChange={(e) => setWhatsappNumber(e.target.value)}
-                      placeholder="95604 37360"
+                      placeholder="Enter your WhatsApp number (e.g. 98765 43210)"
                       className="w-full font-sans text-sm text-[#2C1210] placeholder-gray-400 outline-none"
                     />
                   </div>
@@ -401,20 +604,44 @@ export default function PitraDoshCalculator() {
                       </p>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={handleReset}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/5 px-4 py-2 text-xs font-semibold text-white transition-all hover:bg-white/15"
-                    >
-                      <RotateCcw size={13} />
-                      Check Another Kundali
-                    </button>
+                    {/* TOP ACTIONS: PRINT, SHARE, RESET */}
+                    <div className="flex flex-wrap items-center gap-2 print:hidden">
+                      <button
+                        type="button"
+                        onClick={handleShareWhatsApp}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/5 px-3.5 py-2 text-xs font-semibold text-white transition-all hover:bg-white/15"
+                        title="Share on WhatsApp"
+                      >
+                        <Share2 size={13} />
+                        Share
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handlePrint}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/5 px-3.5 py-2 text-xs font-semibold text-white transition-all hover:bg-white/15"
+                        title="Print or Save PDF"
+                      >
+                        <Printer size={13} />
+                        Print Report
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleReset}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/5 px-3.5 py-2 text-xs font-semibold text-white transition-all hover:bg-white/15"
+                      >
+                        <RotateCcw size={13} />
+                        Check Another
+                      </button>
+                    </div>
                   </div>
 
                   {/* DOSHA STATUS BADGE & SCORE */}
                   <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-12 md:items-center">
                     <div className="md:col-span-7">
-                      <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-white shadow-md"
+                      <div
+                        className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-white shadow-md"
                         style={{ backgroundColor: result.scores.badgeColor }}
                       >
                         <Flame size={15} />
@@ -431,16 +658,28 @@ export default function PitraDoshCalculator() {
 
                       <div className="mt-5 flex flex-wrap gap-4 text-xs">
                         <div className="rounded-xl bg-white/5 px-3.5 py-2 border border-white/10">
-                          <span className="text-[#E9A534] font-semibold block">Lagna (Ascendant)</span>
-                          <span className="text-white font-medium">{result.ascendant.sign} ({result.ascendant.sanskritSign})</span>
+                          <span className="text-[#E9A534] font-semibold block">
+                            Lagna (Ascendant)
+                          </span>
+                          <span className="text-white font-medium">
+                            {result.ascendant.sign} ({result.ascendant.sanskritSign})
+                          </span>
                         </div>
                         <div className="rounded-xl bg-white/5 px-3.5 py-2 border border-white/10">
-                          <span className="text-[#E9A534] font-semibold block">9th House (Pitru Bhava)</span>
-                          <span className="text-white font-medium">{result.ninthHouse.sign} (Lord: {result.ninthHouse.ruler})</span>
+                          <span className="text-[#E9A534] font-semibold block">
+                            9th House (Pitru Bhava)
+                          </span>
+                          <span className="text-white font-medium">
+                            {result.ninthHouse.sign} (Lord: {result.ninthHouse.ruler})
+                          </span>
                         </div>
                         <div className="rounded-xl bg-white/5 px-3.5 py-2 border border-white/10">
-                          <span className="text-[#E9A534] font-semibold block">Sun (Surya - Atma)</span>
-                          <span className="text-white font-medium">{result.planets.Sun.sign} in {result.planets.Sun.house}th House</span>
+                          <span className="text-[#E9A534] font-semibold block">
+                            Sun (Surya - Atma)
+                          </span>
+                          <span className="text-white font-medium">
+                            {result.planets.Sun.sign} in {result.planets.Sun.house}th House
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -457,11 +696,15 @@ export default function PitraDoshCalculator() {
                       <div className="space-y-1.5 text-xs text-white/75 border-t border-white/10 pt-3 text-left">
                         <div className="flex justify-between">
                           <span>Raw Dosha Points:</span>
-                          <span className="font-semibold text-red-300">+{result.scores.rawDoshaPoints}</span>
+                          <span className="font-semibold text-red-300">
+                            +{result.scores.rawDoshaPoints}
+                          </span>
                         </div>
                         <div className="flex justify-between">
                           <span>Mitigation (Bhanga Points):</span>
-                          <span className="font-semibold text-green-300">-{result.scores.mitigationPoints}</span>
+                          <span className="font-semibold text-green-300">
+                            -{result.scores.mitigationPoints}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -512,7 +755,7 @@ export default function PitraDoshCalculator() {
                   <div className="rounded-2xl border border-black/5 bg-white p-6 sm:p-7 shadow-sm">
                     <h3 className="flex items-center gap-2 font-serif text-lg font-bold text-[#2C1210]">
                       <ShieldCheck size={18} className="text-[#2E7D32]" />
-                      Mitigating & Protective Blessings (Bhanga)
+                      Mitigating &amp; Protective Blessings (Bhanga)
                     </h3>
                     <p className="mt-1 text-xs text-[#564540]">
                       Benefic planetary safeguards neutralizing or shielding the native.
@@ -546,6 +789,9 @@ export default function PitraDoshCalculator() {
                     </div>
                   </div>
                 </div>
+
+                {/* VEDIC KUNDALI DIAMOND CHART (NORTH INDIAN STYLE) */}
+                <VedicKundaliChart ascendant={result.ascendant} planets={result.planets} />
 
                 {/* PLANETARY LONGITUDES & KUNDALI TABLE */}
                 <div className="rounded-2xl border border-black/5 bg-white p-6 sm:p-8 shadow-sm">
@@ -680,11 +926,11 @@ export default function PitraDoshCalculator() {
                 </div>
 
                 {/* CTA CONSULTATION BOX WITH PRE-FILLED KUNDALI */}
-                <div className="rounded-[24px] border border-[#E9A534]/30 bg-gradient-to-r from-[#3C080D] via-[#5A0E14] to-[#76151D] p-7 sm:p-10 text-[#FFF8EC] shadow-xl text-center sm:text-left">
+                <div className="rounded-[24px] border border-[#E9A534]/30 bg-gradient-to-r from-[#3C080D] via-[#5A0E14] to-[#76151D] p-7 sm:p-10 text-[#FFF8EC] shadow-xl text-center sm:text-left print:hidden">
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
                     <div>
                       <span className="text-xs font-bold uppercase tracking-widest text-[#E9C76D]">
-                        Need Personal Pitra Dosh Shanti & Kundali Reading?
+                        Need Personal Pitra Dosh Shanti &amp; Kundali Reading?
                       </span>
                       <h3 className="mt-1 font-serif text-2xl sm:text-3xl font-bold text-white">
                         Consult Lead Astrologer Nidhi Asthana

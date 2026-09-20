@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   Calculator, 
@@ -150,6 +150,15 @@ const sampleResults = {
 
 function CalculatorCard({ calculator, index, onOpen }) {
   const Icon = calculator.icon;
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    if (calculator.id === 'pitra-dosh') {
+      navigate('/pitra-dosh-calculator');
+    } else {
+      onOpen(calculator);
+    }
+  };
 
   return (
     <motion.div
@@ -157,7 +166,7 @@ function CalculatorCard({ calculator, index, onOpen }) {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.08 }}
       viewport={{ once: true }}
-      onClick={() => onOpen(calculator)}
+      onClick={handleClick}
       className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-[#5A0E14]/8 cursor-pointer"
     >
       <div className="p-6 md:p-8">

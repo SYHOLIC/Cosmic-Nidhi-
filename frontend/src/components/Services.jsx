@@ -16,6 +16,28 @@ const SERVICES = [
     duration: '30–40 minutes',
     fee: '₹2,100',
     cta: 'Explore Your Numbers',
+    whatWeExplore: [
+      { title: 'Birth & Life Path Numbers', desc: 'Understand the traditional significance of your core numbers.' },
+      { title: 'Name Analysis', desc: 'Explore the numerological relationship between your name and birth details.' },
+      { title: 'Name Correction', desc: 'Traditional numerological guidance for selecting or modifying names.' },
+      { title: 'Business & Brand Name Analysis', desc: 'Evaluate names from a numerological perspective.' },
+      { title: 'Mobile Number Analysis', desc: 'Understand the traditional interpretation of your mobile number.' },
+      { title: 'Corporate Numerology', desc: 'Strategic numerical alignment for organizations.' },
+      { title: 'Bank Account Number Analysis', desc: 'Traditional vibration analysis for financial accounts.' },
+      { title: 'Signature Analysis', desc: 'Explore the numerological perspective of your signature.' },
+      { title: 'Personal Year & Cycles', desc: 'Understand recurring numerical cycles and their traditional interpretations.' },
+      { title: 'Compatibility Analysis', desc: 'Explore relationship dynamics through numerological patterns.' },
+    ],
+    sections: [
+      {
+        heading: 'Beyond Traditional Number Reading',
+        text: 'Our approach goes beyond simply calculating numbers. We study the relationship between different numerical influences, look for recurring patterns and place them in the context of your individual circumstances.\n\nThe objective is not simply to predict events, but to help you understand patterns, explore possibilities and gain a different perspective on your journey.',
+      },
+      {
+        heading: 'Your Numbers. Your Patterns. Your Journey.',
+        text: 'Every individual has a unique numerical profile. Discover what your numbers traditionally represent and explore your journey with a personalized Numerology consultation.',
+      },
+    ],
   },
   {
     id: '02',
@@ -250,6 +272,57 @@ function ServiceRow({ item, index, onBook }) {
               <p key={pIdx}>{para}</p>
             ))}
           </motion.div>
+
+          {/* What We Explore Section (if present) */}
+          {item.whatWeExplore && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.8, ease: silk, delay: 0.38 }}
+              className="mb-5 rounded-[10px] border border-[#E9A534]/30 bg-[#FDECC8]/40 p-4 sm:p-5 max-w-3xl"
+            >
+              <div className="flex items-center gap-2.5 mb-3">
+                <span className="h-px w-6 bg-[#E9A534]" />
+                <h4 className="font-display text-[14px] sm:text-[15px] font-semibold uppercase tracking-[0.14em] text-[#3C080D]">
+                  What We Explore
+                </h4>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-justify">
+                {item.whatWeExplore.map((exp, expIdx) => (
+                  <div key={expIdx} className="flex items-start gap-2 font-sans text-[12px] leading-[1.6] text-[#3C080D]/85">
+                    <span className="text-[#C1272D] text-xs mt-0.5 shrink-0">✦</span>
+                    <div>
+                      <strong className="text-[#5A0E14]">{exp.title}</strong>
+                      {exp.desc && <span className="text-[#6B3A2A]/80"> — {exp.desc}</span>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Additional Sections (if present) */}
+          {item.sections && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.8, ease: silk, delay: 0.4 }}
+              className="space-y-4 mb-5 max-w-3xl"
+            >
+              {item.sections.map((sec, sIdx) => (
+                <div key={sIdx} className="text-justify font-sans">
+                  <h4 className="font-display text-[15px] sm:text-[16px] font-semibold text-[#3C080D] mb-1.5">
+                    {sec.heading}
+                  </h4>
+                  <div className="space-y-2 text-[0.91rem] leading-[1.72] text-[#2C1210]/78">
+                    {sec.text.split('\n\n').map((p, pI) => (
+                      <p key={pI}>{p}</p>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+          )}
 
           {/* Deliverables, Duration & Fee */}
           {item.deliverables && (

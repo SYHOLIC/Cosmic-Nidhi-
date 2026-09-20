@@ -411,13 +411,11 @@ function Signs() {
       className="
         signs-section
         relative
-        overflow-hidden
         border-y
         border-[#5A0E14]/[0.08]
         bg-[#FFF8EC]
         text-[#3C080D]
-        lg:min-h-[calc(100svh-88px)]
-        lg:h-[calc(100svh-88px)]
+        py-12 sm:py-16 lg:py-20
       "
     >
       {/* BACKGROUND */}
@@ -540,9 +538,7 @@ function Signs() {
       />
 
       <style>{`
-        @media (max-width: 1023px) {
-          .signs-section { min-height: auto; height: auto; }
-        }
+        .signs-section { min-height: auto; height: auto; }
         @media (max-width: 767px) {
           .zodiac-card { min-height: 125px; }
         }

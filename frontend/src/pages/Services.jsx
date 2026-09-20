@@ -29,7 +29,7 @@ const SERVICES = [
     id: "01",
     title: "Numerology Consultation",
     subtitle: "Decode Your Numbers. Understand Your Patterns. Discover Your Possibilities.",
-    desc: "Numbers are more than just digits. In traditional numerology, numbers associated with your name and date of birth are interpreted to understand recurring patterns, tendencies and life themes.\n\nAt Cosmic Nidhi, we bring a modern and personalized approach to Vedic Numerology, combining traditional principles with detailed analysis and practical interpretation.",
+    desc: "Numbers are more than just digits. In traditional numerology, numbers associated with your name and date of birth are interpreted to understand recurring patterns, tendencies and life themes.\n\nAt Cosmic Nidhi, we bring a modern and personalized approach to Vedic Numerology, combining traditional principles with detailed analysis and practical interpretation.\n\nBeyond Traditional Number Reading:\nOur approach goes beyond simply calculating numbers. We study the relationship between different numerical influences, look for recurring patterns and place them in the context of your individual circumstances. The objective is not simply to predict events, but to help you understand patterns, explore possibilities and gain a different perspective on your journey.\n\nYour Numbers. Your Patterns. Your Journey:\nEvery individual has a unique numerical profile. Discover what your numbers traditionally represent and explore your journey with a personalized Numerology consultation.",
     image:
       "https://cosmicnidhi.in/wp-content/uploads/2024/04/img_5-700x800.jpg",
     accent: "#E9A534",
@@ -40,10 +40,13 @@ const SERVICES = [
     cta: "Explore Your Numbers",
     icon: Calendar,
     whatToExpect: [
-      "Analysis of your life path and destiny numbers",
-      "Communication style insights",
-      "Goal and growth areas",
-      "Reflective reading of your numbers",
+      "Birth & Life Path Numbers — Core number significance",
+      "Name Analysis & Name Correction Guidance",
+      "Business, Brand & Corporate Numerology",
+      "Mobile & Bank Account Number Analysis",
+      "Signature Analysis from numerological perspective",
+      "Personal Year & Recurring Life Cycles",
+      "Relationship Compatibility & Numerical Dynamics",
     ],
     whoItsFor:
       "Anyone curious about the symbolic relationship between their name, birth date, and personal themes.",

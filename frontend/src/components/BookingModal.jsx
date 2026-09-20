@@ -73,7 +73,7 @@ const SERVICES_LIST = [
     icon: Sparkles,
     amount: 2100,
     priceDisplay: "₹2,100",
-    deliverables: "Side-by-side chart reading, compatibility report (Requires Bride & Groom Name & DOB)",
+    deliverables: "Side-by-side kundli reading, compatibility report (Requires Bride & Groom Name & DOB)",
   },
 ];
 

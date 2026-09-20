@@ -7,8 +7,10 @@
 export const CITIES_DATABASE = [
   { name: 'Noida, Uttar Pradesh, India', lat: 28.5355, lng: 77.3910, tz: 5.5 },
   { name: 'New Delhi, Delhi, India', lat: 28.6139, lng: 77.2090, tz: 5.5 },
+  { name: 'Delhi, India', lat: 28.6139, lng: 77.2090, tz: 5.5 },
   { name: 'Mumbai, Maharashtra, India', lat: 19.0760, lng: 72.8777, tz: 5.5 },
   { name: 'Bengaluru, Karnataka, India', lat: 12.9716, lng: 77.5946, tz: 5.5 },
+  { name: 'Bangalore, Karnataka, India', lat: 12.9716, lng: 77.5946, tz: 5.5 },
   { name: 'Kolkata, West Bengal, India', lat: 22.5726, lng: 88.3639, tz: 5.5 },
   { name: 'Chennai, Tamil Nadu, India', lat: 13.0827, lng: 80.2707, tz: 5.5 },
   { name: 'Hyderabad, Telangana, India', lat: 17.3850, lng: 78.4867, tz: 5.5 },
@@ -28,6 +30,7 @@ export const CITIES_DATABASE = [
   { name: 'Ghaziabad, Uttar Pradesh, India', lat: 28.6692, lng: 77.4538, tz: 5.5 },
   { name: 'Faridabad, Haryana, India', lat: 28.4089, lng: 77.3178, tz: 5.5 },
   { name: 'Gurugram, Haryana, India', lat: 28.4595, lng: 77.0266, tz: 5.5 },
+  { name: 'Gurgaon, Haryana, India', lat: 28.4595, lng: 77.0266, tz: 5.5 },
   { name: 'Amritsar, Punjab, India', lat: 31.6340, lng: 74.8723, tz: 5.5 },
   { name: 'Ludhiana, Punjab, India', lat: 30.9010, lng: 75.8573, tz: 5.5 },
   { name: 'Ranchi, Jharkhand, India', lat: 23.3441, lng: 85.3096, tz: 5.5 },
@@ -39,6 +42,7 @@ export const CITIES_DATABASE = [
   { name: 'Gaya, Bihar, India', lat: 24.7955, lng: 85.0002, tz: 5.5 },
   { name: 'Ujjain, Madhya Pradesh, India', lat: 23.1765, lng: 75.7885, tz: 5.5 },
   { name: 'Prayagraj, Uttar Pradesh, India', lat: 25.4358, lng: 81.8463, tz: 5.5 },
+  { name: 'Allahabad, Uttar Pradesh, India', lat: 25.4358, lng: 81.8463, tz: 5.5 },
   { name: 'Dubai, United Arab Emirates', lat: 25.2048, lng: 55.2708, tz: 4.0 },
   { name: 'London, United Kingdom', lat: 51.5074, lng: -0.1278, tz: 0.0 },
   { name: 'New York, United States', lat: 40.7128, lng: -74.0060, tz: -5.0 },
@@ -298,9 +302,12 @@ export function calculatePitraDosha({
   }
 
   // 1. Resolve coordinates & timezone
-  let resolvedCity = CITIES_DATABASE.find(c => 
-    birthPlace && birthPlace.toLowerCase().includes(c.name.split(',')[0].toLowerCase())
-  );
+  const inputCity = (birthPlace || '').trim().toLowerCase();
+  let resolvedCity = CITIES_DATABASE.find(c => {
+    const cLower = c.name.toLowerCase();
+    const primary = c.name.split(',')[0].toLowerCase();
+    return inputCity.includes(primary) || cLower.includes(inputCity) || inputCity.includes(cLower);
+  });
 
   if (!resolvedCity) {
     // Default fallback to New Delhi / IST if not found

@@ -91,9 +91,9 @@ export default function About() {
           </Reveal>
           <Reveal delay={100}>
             <h2 className="mt-4 font-display text-4xl md:text-5xl lg:text-6xl text-[#3C080D]">
-              Self-understanding is the{" "}
+              Know Your Energy.{" "}
               <span className="inline-block bg-gradient-to-r from-[#5A0E14] via-[#C1272D] to-[#E9A534] bg-clip-text text-transparent bg-[length:200%_100%] animate-gradient-x">
-                first step
+                Understand Your Journey.
               </span>
             </h2>
           </Reveal>

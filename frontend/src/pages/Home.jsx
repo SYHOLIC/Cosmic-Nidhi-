@@ -5,7 +5,6 @@ import Signs from "../components/Signs";
 import Services from "../components/Services";
 import Voices from "../components/Voices";
 import CTA from "../components/CTA";
-import Footer from "../components/Footer";
 import Pricing from "../components/Pricing";
 import ProductCategories from "../components/ProductCategories";
 import SEOHead from "../components/SEOHead";

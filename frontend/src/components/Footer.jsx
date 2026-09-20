@@ -1,18 +1,43 @@
+import React from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
 function Footer() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const quickLinks = [
-    ["Signs", "/#signs"],
-    ["About Us", "/page/about-us"],
-    ["FAQ", "/page/faq"],
-    ["Terms & Conditions", "/page/terms-and-conditions"],
-    ["Contact Us", "/contact"],
+    { label: "Home", href: "/" },
+    { label: "About Us", href: "/about" },
+    { label: "Services & Guidance", href: "/services" },
+    { label: "Zodiac Signs", href: "/#signs", isHash: true },
+    { label: "Zodiac Store", href: "/products" },
+    { label: "Pitra Dosh Calculator", href: "/pitra-dosh-calculator" },
+    { label: "Contact Us", href: "/contact" },
+    { label: "FAQ", href: "/page/faq" },
   ];
 
   const services = [
-    "Birth Chart Analysis",
-    "Kundli Matching",
-    "Mangal Dosha Remedies",
-    "Career & Wealth Forecast",
+    { label: "Numerology Consultation", href: "/services" },
+    { label: "Birth Chart / Janam Kundli", href: "/services" },
+    { label: "Applied Vastu Consultation", href: "/services" },
+    { label: "Kundli Matching / Guidance", href: "/services" },
+    { label: "Location Visit & Map Gridding", href: "/services" },
+    { label: "Plans & Pricing", href: "/#pricing", isHash: true },
   ];
+
+  const handleNavClick = (e, item) => {
+    if (!item.isHash) return;
+    e.preventDefault();
+    const sectionId = item.href.replace(/^\/?#/, "");
+    if (location.pathname === "/" || location.pathname === "/home") {
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      navigate("/");
+      setTimeout(() => {
+        document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
+      }, 400);
+    }
+  };
 
   return (
     <footer className="relative overflow-hidden border-t border-[#E9A534]/20 bg-[#30070B]">
@@ -268,36 +293,67 @@ function Footer() {
             </h4>
 
             <ul className="space-y-3.5">
-              {quickLinks.map(([label, href]) => (
-                <li key={label}>
-                  <a
-                    href={href}
-                    className="
-                      group
-                      inline-flex
-                      items-center
-                      gap-1.5
-                      font-sans
-                      text-sm
-                      text-[#FDECC8]/60
-                      transition-colors
-                      duration-300
-                      hover:text-[#E9A534]
-                    "
-                  >
-                    <span
+              {quickLinks.map((item) => (
+                <li key={item.label}>
+                  {item.isHash ? (
+                    <a
+                      href={item.href}
+                      onClick={(e) => handleNavClick(e, item)}
                       className="
-                        h-px
-                        w-0
-                        bg-[#E9A534]
-                        transition-all
+                        group
+                        inline-flex
+                        items-center
+                        gap-1.5
+                        font-sans
+                        text-sm
+                        text-[#FDECC8]/60
+                        transition-colors
                         duration-300
-                        group-hover:w-3
+                        hover:text-[#E9A534]
+                        cursor-pointer
                       "
-                    />
-
-                    {label}
-                  </a>
+                    >
+                      <span
+                        className="
+                          h-px
+                          w-0
+                          bg-[#E9A534]
+                          transition-all
+                          duration-300
+                          group-hover:w-3
+                        "
+                      />
+                      {item.label}
+                    </a>
+                  ) : (
+                    <Link
+                      to={item.href}
+                      className="
+                        group
+                        inline-flex
+                        items-center
+                        gap-1.5
+                        font-sans
+                        text-sm
+                        text-[#FDECC8]/60
+                        transition-colors
+                        duration-300
+                        hover:text-[#E9A534]
+                      "
+                    >
+                      <span
+                        className="
+                          h-px
+                          w-0
+                          bg-[#E9A534]
+                          transition-all
+                          duration-300
+                          group-hover:w-3
+                        "
+                      />
+                      {item.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -319,36 +375,67 @@ function Footer() {
             </h4>
 
             <ul className="space-y-3.5">
-              {services.map((service) => (
-                <li key={service}>
-                  <a
-                    href="#services"
-                    className="
-                      group
-                      inline-flex
-                      items-center
-                      gap-1.5
-                      font-sans
-                      text-sm
-                      text-[#FDECC8]/60
-                      transition-colors
-                      duration-300
-                      hover:text-[#E9A534]
-                    "
-                  >
-                    <span
+              {services.map((item) => (
+                <li key={item.label}>
+                  {item.isHash ? (
+                    <a
+                      href={item.href}
+                      onClick={(e) => handleNavClick(e, item)}
                       className="
-                        h-px
-                        w-0
-                        bg-[#E9A534]
-                        transition-all
+                        group
+                        inline-flex
+                        items-center
+                        gap-1.5
+                        font-sans
+                        text-sm
+                        text-[#FDECC8]/60
+                        transition-colors
                         duration-300
-                        group-hover:w-3
+                        hover:text-[#E9A534]
+                        cursor-pointer
                       "
-                    />
-
-                    {service}
-                  </a>
+                    >
+                      <span
+                        className="
+                          h-px
+                          w-0
+                          bg-[#E9A534]
+                          transition-all
+                          duration-300
+                          group-hover:w-3
+                        "
+                      />
+                      {item.label}
+                    </a>
+                  ) : (
+                    <Link
+                      to={item.href}
+                      className="
+                        group
+                        inline-flex
+                        items-center
+                        gap-1.5
+                        font-sans
+                        text-sm
+                        text-[#FDECC8]/60
+                        transition-colors
+                        duration-300
+                        hover:text-[#E9A534]
+                      "
+                    >
+                      <span
+                        className="
+                          h-px
+                          w-0
+                          bg-[#E9A534]
+                          transition-all
+                          duration-300
+                          group-hover:w-3
+                        "
+                      />
+                      {item.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -542,8 +629,8 @@ function Footer() {
 
             <span className="text-[#E9A534]/40 select-none">|</span>
 
-            <a
-              href="/page/privacy-policy"
+            <Link
+              to="/page/privacy-policy"
               className="
                 transition-colors
                 duration-300
@@ -551,12 +638,25 @@ function Footer() {
               "
             >
               Privacy Policy
-            </a>
+            </Link>
 
             <span className="text-[#E9A534]/40 select-none">|</span>
 
-            <a
-              href="/page/return-policy"
+            <Link
+              to="/page/terms-and-conditions"
+              className="
+                transition-colors
+                duration-300
+                hover:text-[#E9A534]
+              "
+            >
+              Terms &amp; Conditions
+            </Link>
+
+            <span className="text-[#E9A534]/40 select-none">|</span>
+
+            <Link
+              to="/page/return-policy"
               className="
                 transition-colors
                 duration-300
@@ -564,7 +664,7 @@ function Footer() {
               "
             >
               Return Policy
-            </a>
+            </Link>
           </div>
         </div>
 

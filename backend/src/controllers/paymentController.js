@@ -4,7 +4,10 @@ const Order = require('../models/Order');
 
 // Initialize Razorpay client helper
 const getRazorpayClient = () => {
-  let secret = process.env.RAZORPAY_KEY_SECRET || 'FVHZojFoQPSImZrvJRIGx3bZ';
+  let secret = process.env.RAZORPAY_KEY_SECRET;
+  if (!secret || secret.includes('placeholder')) {
+    secret = 'FVHZojFoQPSImZrvJRIGx3bZ';
+  }
   if (secret.startsWith('b64:')) {
     try {
       secret = Buffer.from(secret.slice(4), 'base64').toString('utf8');
@@ -12,7 +15,13 @@ const getRazorpayClient = () => {
       console.error('Failed to decode b64 RAZORPAY_KEY_SECRET:', e);
     }
   }
-  const keyId = (process.env.RAZORPAY_KEY_ID || 'rzp_test_TeAqFB25uZz5vD').trim();
+
+  let keyId = process.env.RAZORPAY_KEY_ID;
+  if (!keyId || keyId.includes('placeholder')) {
+    keyId = 'rzp_test_TeAqFB25uZz5vD';
+  }
+  keyId = keyId.trim();
+
   return {
     client: new Razorpay({ key_id: keyId, key_secret: secret.trim() }),
     keyId,

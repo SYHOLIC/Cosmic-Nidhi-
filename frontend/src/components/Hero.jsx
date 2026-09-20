@@ -231,7 +231,10 @@ function Hero() {
               left-0
               top-1/2
               z-50
-              w-[520px]
+              w-full
+              max-w-[560px]
+              lg:max-w-[620px]
+              xl:max-w-[700px]
               -translate-y-1/2
             "
           >
@@ -279,27 +282,31 @@ function Hero() {
                   cosmic-heading
                   font-serif
                   font-medium
-                  leading-[0.91]
-                  tracking-[-0.045em]
+                  leading-[1.12]
+                  tracking-[-0.03em]
                   text-[#FFF8EC]
                 "
               >
                 <span className="block">
-                  Understand
+                  Understand Your Past.
+                </span>
+
+                <span className="block text-[#FDF0D5]">
+                  Navigate Your Present.
                 </span>
 
                 <span className="block">
-                  your{" "}
+                  Explore Your{" "}
                   <span className="relative inline-block">
-                    chart.
+                    Future.
 
                     <span
                       className="
                         absolute
-                        bottom-[-14px]
+                        bottom-[-8px]
                         left-0
                         h-[3px]
-                        w-[88%]
+                        w-[92%]
                         bg-[#E9A534]
                       "
                     />
@@ -313,7 +320,7 @@ function Hero() {
             <Reveal delay={200}>
               <p
                 className="
-                  mt-[34px]
+                  mt-[24px]
                   max-w-[405px]
                   font-sans
                   text-[17px]
@@ -794,7 +801,8 @@ function Hero() {
           }
 
           .cosmic-heading {
-            font-size: 96px;
+            font-size: 58px;
+            line-height: 1.12;
           }
 
           .hero-trust {
@@ -827,7 +835,8 @@ function Hero() {
           }
 
           .cosmic-heading {
-            font-size: 82px;
+            font-size: 48px;
+            line-height: 1.14;
           }
 
           .hero-trust {
@@ -866,7 +875,8 @@ function Hero() {
           }
 
           .cosmic-heading {
-            font-size: 72px;
+            font-size: 40px;
+            line-height: 1.16;
           }
 
           .hero-trust {
@@ -910,7 +920,8 @@ function Hero() {
           }
 
           .cosmic-heading {
-            font-size: 56px;
+            font-size: 32px;
+            line-height: 1.18;
           }
 
           .hero-trust {
@@ -947,7 +958,8 @@ function Hero() {
           }
 
           .cosmic-heading {
-            font-size: 46px;
+            font-size: 26px;
+            line-height: 1.2;
           }
 
           .hero-zodiac {

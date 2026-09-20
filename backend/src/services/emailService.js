@@ -24,7 +24,6 @@ if (initialApiKey) {
  * Send a branded 6-digit OTP verification email
  */
 const sendVerificationOTP = async (toEmail, name, otp) => {
-  const fromEmail = process.env.SENDGRID_FROM_EMAIL || 'swapnilcipher@gmail.com';
   const recipientName = name || 'Seeker';
 
   console.log(`🔑 [OTP DISPATCH] Generated OTP for ${toEmail}: [ ${otp} ]`);
@@ -180,24 +179,45 @@ const sendVerificationOTP = async (toEmail, name, otp) => {
 </html>
   `;
 
-  const msg = {
+  let fromEmail = (process.env.SENDGRID_FROM_EMAIL || 'swapnilcipher@gmail.com')
+    .trim()
+    .replace(/^["']+|["']+$/g, '');
+
+  if (!fromEmail || !fromEmail.includes('@')) {
+    fromEmail = 'swapnilcipher@gmail.com';
+  }
+
+  const buildMsg = (sender) => ({
     to: toEmail,
     from: {
       name: 'Cosmic Nidhi',
-      email: fromEmail,
+      email: sender,
     },
     subject: `Your Cosmic Nidhi Verification Code: ${otp}`,
     text: `Namaste ${recipientName},\n\nYour Cosmic Nidhi verification code is: ${otp}\n\nThis code expires in 10 minutes.\n\nBlessings,\nCosmic Nidhi Team`,
     html: htmlContent,
-  };
+  });
 
   try {
-    await sgMail.send(msg);
-    console.log(`✉️ Verification OTP email sent successfully to ${toEmail}`);
+    await sgMail.send(buildMsg(fromEmail));
+    console.log(`✉️ Verification OTP email sent successfully to ${toEmail} using ${fromEmail}`);
     return true;
   } catch (error) {
+    console.error(`SendGrid Email Error (from: ${fromEmail}):`, error.response ? error.response.body : error.message);
+    
+    // If the configured fromEmail failed and is different from the verified address, retry with swapnilcipher@gmail.com
+    if (fromEmail.toLowerCase() !== 'swapnilcipher@gmail.com') {
+      console.log('Retrying SendGrid with verified sender swapnilcipher@gmail.com...');
+      try {
+        await sgMail.send(buildMsg('swapnilcipher@gmail.com'));
+        console.log(`✉️ Verification OTP email sent successfully to ${toEmail} via fallback sender swapnilcipher@gmail.com`);
+        return true;
+      } catch (fallbackError) {
+        console.error('SendGrid Fallback Error:', fallbackError.response ? fallbackError.response.body : fallbackError.message);
+      }
+    }
+
     const errorDetail = error.response?.body?.errors?.[0]?.message || error.message;
-    console.error('SendGrid Email Error:', error.response ? error.response.body : error.message);
     throw new Error(errorDetail || 'Failed to send verification email. Please check your email address.');
   }
 };

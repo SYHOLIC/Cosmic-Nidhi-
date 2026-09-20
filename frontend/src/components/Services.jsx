@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { useScrollY } from '../hooks/useReveal';
 import BookingModal from './BookingModal';
-import vastuPurushImg from '../assets/vastu-purush.png';
 
 const SERVICES = [
   {
@@ -36,7 +35,7 @@ const SERVICES = [
     title: 'Applied Vastu Consultation',
     subtitle: 'Align Your Space. Transform Your Experience.',
     desc: 'Every space has its own character, layout and flow. Our Advanced Vastu Consultation brings together traditional Vastu principles with a structured and practical approach to understanding your home, office or commercial environment.\n\nWe study directions, zones, entrances, room placement, spatial relationships and elemental balance to identify areas that may benefit from thoughtful changes or traditional Vastu remedies.\n\nUnderstand your space. Create greater harmony. Make your environment work for you.',
-    image: vastuPurushImg,
+    image: 'https://www.grahai.com/images/doshas/mangal-dosha.png',
     accent: '#5A0E14',
     type: 'Vastu',
     deliverables: 'Annotated plan, recommendations, call · Location Visit: ₹5,100 · Map Gridding: ₹12/sq.ft',

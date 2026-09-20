@@ -49,6 +49,8 @@ const createRazorpayOrder = async (req, res) => {
       success: true,
       order,
       keyId,
+      upiId: process.env.MERCHANT_UPI_ID || '8005824565@paytm',
+      merchantName: 'Cosmic Nidhi',
     });
   } catch (error) {
     console.error('Create Razorpay Order Error:', error);
@@ -114,7 +116,64 @@ const verifyPayment = async (req, res) => {
   }
 };
 
+// @desc    Verify manual/direct UPI QR payment with UTR number
+// @route   POST /api/payment/verify-upi
+// @access  Private
+const verifyUpiPayment = async (req, res) => {
+  try {
+    const { local_order_id, utr_number } = req.body;
+    if (!local_order_id || !utr_number) {
+      return res.status(400).json({
+        success: false,
+        message: 'Order ID and UPI Reference / UTR number are required',
+      });
+    }
+
+    const order = await Order.findById(local_order_id);
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found',
+      });
+    }
+
+    order.paymentStatus = 'paid';
+    order.paymentId = `UPI-${utr_number.trim()}`;
+    order.orderStatus = 'processing';
+    order.notes = (order.notes ? order.notes + ' | ' : '') + `UPI UTR: ${utr_number.trim()}`;
+    await order.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'UPI Payment submitted and verified successfully!',
+      order,
+    });
+  } catch (error) {
+    console.error('Verify UPI Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to record UPI payment',
+      error: error.message,
+    });
+  }
+};
+
+// @desc    Get public payment config (Key ID, Merchant UPI ID)
+// @route   GET /api/payment/config
+// @access  Public
+const getPaymentConfig = async (req, res) => {
+  const { keyId } = getRazorpayClient();
+  res.status(200).json({
+    success: true,
+    keyId,
+    upiId: process.env.MERCHANT_UPI_ID || '8005824565@paytm',
+    merchantName: 'Cosmic Nidhi',
+  });
+};
+
 module.exports = {
   createRazorpayOrder,
   verifyPayment,
+  verifyUpiPayment,
+  getPaymentConfig,
 };

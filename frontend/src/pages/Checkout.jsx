@@ -9,9 +9,13 @@ import {
   CreditCard,
   Lock,
   ArrowLeft,
-  Plus
+  Plus,
+  QrCode,
+  Smartphone,
+  Sparkles
 } from "lucide-react";
 import { useCart } from "../context/CartContext";
+import UPIPaymentModal from "../components/UPIPaymentModal";
 
 import { API_URL } from "../config/api";
 
@@ -29,6 +33,11 @@ export default function CheckoutPage() {
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponError, setCouponError] = useState("");
   const [applyingCoupon, setApplyingCoupon] = useState(false);
+
+  // Payment mode state
+  const [selectedPaymentMode, setSelectedPaymentMode] = useState("upi_qr");
+  const [showUpiModal, setShowUpiModal] = useState(false);
+  const [activeOrderData, setActiveOrderData] = useState(null);
 
   const [savingAddress, setSavingAddress] = useState(false);
 
@@ -153,7 +162,78 @@ export default function CheckoutPage() {
 
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const handlePayment = async () => {
+  const openRazorpayModal = (orderData) => {
+    if (!orderData) return;
+    const { totalAmount, razorpayOrderId, razorpayKey, localOrderId, address } = orderData;
+
+    const options = {
+      key: razorpayKey || "rzp_test_TeAqFB25uZz5vD",
+      amount: Math.round(totalAmount * 100),
+      currency: "INR",
+      name: "Cosmic Nidhi",
+      description: "Order Payment",
+      order_id: razorpayOrderId,
+      config: {
+        display: {
+          blocks: {
+            upi: {
+              name: "Pay via UPI / QR Code",
+              instruments: [{ method: "upi" }]
+            },
+            other: {
+              name: "Cards, NetBanking & Wallets",
+              instruments: [
+                { method: "card" },
+                { method: "netbanking" },
+                { method: "wallet" }
+              ]
+            }
+          },
+          sequence: ["block.upi", "block.other"],
+          preferences: {
+            show_default_blocks: true
+          }
+        }
+      },
+      handler: async function (response) {
+        try {
+          const token = localStorage.getItem("token");
+          await axios.post(
+            `${API_URL}/payment/verify`,
+            {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              local_order_id: localOrderId,
+            },
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+
+          clearCart();
+          navigate("/dashboard");
+        } catch (err) {
+          console.error("Payment verification failed", err);
+          alert("Payment verification failed: " + (err.response?.data?.message || err.message));
+        }
+      },
+      prefill: {
+        name: address?.name || "",
+        contact: address?.phone || "",
+      },
+      theme: {
+        color: "#E9A534"
+      }
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.on("payment.failed", function (response) {
+      alert("Payment failed: " + (response.error?.description || "Transaction cancelled"));
+    });
+    rzp.open();
+  };
+
+  const handlePayment = async (overrideMode) => {
+    const mode = overrideMode || selectedPaymentMode;
     if (!selectedAddressId) {
       alert("Please select a delivery address.");
       return;
@@ -195,64 +275,41 @@ export default function CheckoutPage() {
           },
           subtotal,
           totalAmount,
-          paymentMethod: "razorpay"
+          paymentMethod: mode === "upi_qr" ? "cod" : "razorpay"
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      const localOrderId = orderRes.data.order._id;
+      const createdOrder = orderRes.data.order;
+      const localOrderId = createdOrder._id;
+      const orderNumber = createdOrder.orderNumber || `CN-${Date.now().toString().slice(-6)}`;
 
-      // 2. Create Razorpay Order
+      // 2. Create Razorpay Order & fetch payment configuration
       const rzpRes = await axios.post(
         `${API_URL}/payment/create-order`,
-        { amount: totalAmount },
+        { amount: totalAmount, orderNumber },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const razorpayOrderId = rzpRes.data.order.id;
-
-      // 3. Open Razorpay Modal
       const razorpayKey = rzpRes.data.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_TeAqFB25uZz5vD";
-      const options = {
-        key: razorpayKey,
-        amount: Math.round(totalAmount * 100),
-        currency: "INR",
-        name: "Cosmic Nidhi",
-        description: "Order Payment",
-        order_id: razorpayOrderId,
-        handler: async function (response) {
-          try {
-            // 4. Verify Payment
-            await axios.post(
-              `${API_URL}/payment/verify`,
-              {
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
-                local_order_id: localOrderId,
-              },
-              { headers: { Authorization: `Bearer ${token}` } }
-            );
+      const upiId = rzpRes.data.upiId || "8005824565@paytm";
 
-            clearCart();
-            navigate("/dashboard");
-          } catch (err) {
-            console.error("Payment verification failed", err);
-            alert("Payment verification failed: " + (err.response?.data?.message || err.message));
-          }
-        },
-        prefill: {
-          name: address.name,
-          contact: address.phone,
-        },
-        theme: {
-          color: "#E9A534"
-        }
+      const orderPayload = {
+        localOrderId,
+        orderNumber,
+        totalAmount,
+        razorpayOrderId,
+        razorpayKey,
+        upiId,
+        address,
       };
 
-      const rzp = new window.Razorpay(options);
-      rzp.on("payment.failed", function (response) {
-        alert("Payment failed: " + (response.error?.description || "Transaction cancelled"));
-      });
-      rzp.open();
+      setActiveOrderData(orderPayload);
+
+      if (mode === "upi_qr") {
+        setShowUpiModal(true);
+      } else {
+        openRazorpayModal(orderPayload);
+      }
     } catch (err) {
       console.error(err);
       const errMsg = err.response?.data?.error || err.response?.data?.message || "Something went wrong while initiating payment.";
@@ -489,25 +546,108 @@ export default function CheckoutPage() {
                 </span>
               </div>
 
+              {/* Payment Mode Selection */}
+              <div className="mt-5 border-t border-[#E9A534]/20 pt-4">
+                <p className="mb-2.5 text-[11px] font-bold uppercase tracking-wider text-[#E9C76D]">
+                  Choose Payment Method
+                </p>
+                <div className="grid gap-2.5">
+                  <label
+                    onClick={() => setSelectedPaymentMode("upi_qr")}
+                    className={`flex cursor-pointer items-center justify-between rounded-xl border p-3 transition-all ${
+                      selectedPaymentMode === "upi_qr"
+                        ? "border-[#E9A534] bg-[#E9A534]/15 shadow-[0_0_15px_rgba(233,165,52,0.15)]"
+                        : "border-white/10 bg-white/5 hover:border-[#E9A534]/40"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className="rounded-lg bg-[#E9A534]/20 p-2 text-[#E9A534]">
+                        <QrCode size={18} />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-1.5 font-sans text-[13px] font-bold text-white">
+                          <span>Scan & Pay via UPI QR</span>
+                          <span className="rounded bg-[#22C55E]/20 px-1.5 py-0.5 text-[9px] font-semibold text-green-400">Instant</span>
+                        </div>
+                        <p className="text-[11px] text-[#F5E5C7]/60">GPay, PhonePe, Paytm, BHIM</p>
+                      </div>
+                    </div>
+                    <input
+                      type="radio"
+                      name="payment_mode"
+                      checked={selectedPaymentMode === "upi_qr"}
+                      onChange={() => setSelectedPaymentMode("upi_qr")}
+                      className="h-4 w-4 text-[#E9A534] focus:ring-[#E9A534]"
+                    />
+                  </label>
+
+                  <label
+                    onClick={() => setSelectedPaymentMode("gateway")}
+                    className={`flex cursor-pointer items-center justify-between rounded-xl border p-3 transition-all ${
+                      selectedPaymentMode === "gateway"
+                        ? "border-[#E9A534] bg-[#E9A534]/15 shadow-[0_0_15px_rgba(233,165,52,0.15)]"
+                        : "border-white/10 bg-white/5 hover:border-[#E9A534]/40"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className="rounded-lg bg-[#E9A534]/20 p-2 text-[#E9A534]">
+                        <CreditCard size={18} />
+                      </div>
+                      <div>
+                        <div className="font-sans text-[13px] font-bold text-white">Razorpay Gateway</div>
+                        <p className="text-[11px] text-[#F5E5C7]/60">Cards, NetBanking, Wallets & QR</p>
+                      </div>
+                    </div>
+                    <input
+                      type="radio"
+                      name="payment_mode"
+                      checked={selectedPaymentMode === "gateway"}
+                      onChange={() => setSelectedPaymentMode("gateway")}
+                      className="h-4 w-4 text-[#E9A534] focus:ring-[#E9A534]"
+                    />
+                  </label>
+                </div>
+              </div>
+
               <button
                 type="button"
                 disabled={isProcessing}
-                onClick={handlePayment}
-                className="mt-8 flex w-full items-center justify-center gap-2 rounded-full border border-[#F2C66D] bg-gradient-to-r from-[#F3D49B] to-[#DDB56D] py-4 font-sans text-[13px] font-bold uppercase tracking-[0.14em] text-[#3C080D] shadow-[0_8px_20px_rgba(233,165,52,0.25)] transition-transform hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:translate-y-0"
+                onClick={() => handlePayment(selectedPaymentMode)}
+                className="mt-6 flex w-full items-center justify-center gap-2 rounded-full border border-[#F2C66D] bg-gradient-to-r from-[#F3D49B] to-[#DDB56D] py-4 font-sans text-[13px] font-bold uppercase tracking-[0.14em] text-[#3C080D] shadow-[0_8px_20px_rgba(233,165,52,0.25)] transition-transform hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:translate-y-0"
               >
-                <Lock size={16} />
-                {isProcessing ? "Processing..." : "Proceed to Payment"}
+                {selectedPaymentMode === "upi_qr" ? <QrCode size={17} /> : <Lock size={16} />}
+                {isProcessing
+                  ? "Processing..."
+                  : selectedPaymentMode === "upi_qr"
+                  ? "Scan UPI QR to Pay"
+                  : "Proceed with Razorpay"}
               </button>
 
               <div className="mt-4 flex items-center justify-center gap-2 font-sans text-[11px] text-[#F5E5C7]/50">
                 <ShieldCheck size={14} />
-                Secure Encrypted Checkout
+                Secure 256-Bit Encrypted Payment
               </div>
             </div>
           </div>
           
         </div>
       </div>
+
+      {/* Instant UPI QR Code Modal */}
+      <UPIPaymentModal
+        isOpen={showUpiModal}
+        onClose={() => setShowUpiModal(false)}
+        amount={activeOrderData?.totalAmount || 0}
+        orderNumber={activeOrderData?.orderNumber}
+        localOrderId={activeOrderData?.localOrderId}
+        upiId={activeOrderData?.upiId || "8005824565@paytm"}
+        onOpenRazorpay={() => openRazorpayModal(activeOrderData)}
+        onPaymentSuccess={() => {
+          setShowUpiModal(false);
+          clearCart();
+          navigate("/dashboard");
+        }}
+      />
     </main>
   );
 }

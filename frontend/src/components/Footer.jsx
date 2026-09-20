@@ -21,8 +21,6 @@ function Footer() {
     { label: "Birth Chart / Janam Kundli", href: "/services" },
     { label: "Applied Vastu Consultation", href: "/services" },
     { label: "Kundli Matching / Guidance", href: "/services" },
-    { label: "Location Visit & Map Gridding", href: "/services" },
-    { label: "Plans & Pricing", href: "/#pricing", isHash: true },
   ];
 
   const handleNavClick = (e, item) => {

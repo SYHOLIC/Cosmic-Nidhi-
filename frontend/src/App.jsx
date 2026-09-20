@@ -25,11 +25,21 @@ function AppRoutes() {
   const location = useLocation();
 
   /* =========================================================
-     SCROLL TO TOP ON ROUTE CHANGE
+     SCROLL TO TOP ON ROUTE CHANGE OR SCROLL TO HASH
   ========================================================= */
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-  }, [location.pathname]);
+    if (location.hash) {
+      const id = location.hash.replace("#", "");
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 150);
+    } else {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    }
+  }, [location.pathname, location.hash]);
 
   /* =========================================================
      HIDE FOOTER ON ADMIN & DASHBOARD

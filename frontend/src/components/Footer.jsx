@@ -6,10 +6,12 @@ function Footer() {
   const navigate = useNavigate();
 
   const quickLinks = [
-    { label: "Home", href: "/" },
     { label: "About Us", href: "/about" },
-    { label: "Services & Guidance", href: "/services" },
-    { label: "Zodiac Signs", href: "/#signs", isHash: true },
+    { label: "Numerology Consultation", href: "/services#numerology" },
+    { label: "Birth Chart / Janam Kundli", href: "/services#birth-chart" },
+    { label: "Applied Vastu Consultation", href: "/services#vastu" },
+    { label: "Kundli Matching / Guidance", href: "/services#kundli-matching" },
+    { label: "Zodiac Signs", href: "/#signs" },
     { label: "Zodiac Store", href: "/products" },
     { label: "Pitra Dosh Calculator", href: "/pitra-dosh-calculator" },
     { label: "Contact Us", href: "/contact" },
@@ -17,23 +19,26 @@ function Footer() {
   ];
 
   const services = [
-    { label: "Numerology Consultation", href: "/services" },
-    { label: "Birth Chart / Janam Kundli", href: "/services" },
-    { label: "Applied Vastu Consultation", href: "/services" },
-    { label: "Kundli Matching / Guidance", href: "/services" },
+    { label: "Numerology Consultation", href: "/services#numerology" },
+    { label: "Birth Chart / Janam Kundli", href: "/services#birth-chart" },
+    { label: "Applied Vastu Consultation", href: "/services#vastu" },
+    { label: "Kundli Matching / Guidance", href: "/services#kundli-matching" },
   ];
 
   const handleNavClick = (e, item) => {
-    if (!item.isHash) return;
-    e.preventDefault();
-    const sectionId = item.href.replace(/^\/?#/, "");
-    if (location.pathname === "/" || location.pathname === "/home") {
-      document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
-    } else {
-      navigate("/");
-      setTimeout(() => {
-        document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
-      }, 400);
+    if (!item.href.includes("#")) return;
+    const [path, hash] = item.href.split("#");
+    const targetPath = path || "/";
+    const isCurrentPage =
+      location.pathname === targetPath ||
+      (targetPath === "/" && (location.pathname === "/" || location.pathname === "/home"));
+
+    if (isCurrentPage) {
+      e.preventDefault();
+      const element = document.getElementById(hash);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
     }
   };
 
@@ -293,65 +298,35 @@ function Footer() {
             <ul className="space-y-3.5">
               {quickLinks.map((item) => (
                 <li key={item.label}>
-                  {item.isHash ? (
-                    <a
-                      href={item.href}
-                      onClick={(e) => handleNavClick(e, item)}
+                  <Link
+                    to={item.href}
+                    onClick={(e) => handleNavClick(e, item)}
+                    className="
+                      group
+                      inline-flex
+                      items-center
+                      gap-1.5
+                      font-sans
+                      text-sm
+                      text-[#FDECC8]/60
+                      transition-colors
+                      duration-300
+                      hover:text-[#E9A534]
+                      cursor-pointer
+                    "
+                  >
+                    <span
                       className="
-                        group
-                        inline-flex
-                        items-center
-                        gap-1.5
-                        font-sans
-                        text-sm
-                        text-[#FDECC8]/60
-                        transition-colors
+                        h-px
+                        w-0
+                        bg-[#E9A534]
+                        transition-all
                         duration-300
-                        hover:text-[#E9A534]
-                        cursor-pointer
+                        group-hover:w-3
                       "
-                    >
-                      <span
-                        className="
-                          h-px
-                          w-0
-                          bg-[#E9A534]
-                          transition-all
-                          duration-300
-                          group-hover:w-3
-                        "
-                      />
-                      {item.label}
-                    </a>
-                  ) : (
-                    <Link
-                      to={item.href}
-                      className="
-                        group
-                        inline-flex
-                        items-center
-                        gap-1.5
-                        font-sans
-                        text-sm
-                        text-[#FDECC8]/60
-                        transition-colors
-                        duration-300
-                        hover:text-[#E9A534]
-                      "
-                    >
-                      <span
-                        className="
-                          h-px
-                          w-0
-                          bg-[#E9A534]
-                          transition-all
-                          duration-300
-                          group-hover:w-3
-                        "
-                      />
-                      {item.label}
-                    </Link>
-                  )}
+                    />
+                    {item.label}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -375,65 +350,35 @@ function Footer() {
             <ul className="space-y-3.5">
               {services.map((item) => (
                 <li key={item.label}>
-                  {item.isHash ? (
-                    <a
-                      href={item.href}
-                      onClick={(e) => handleNavClick(e, item)}
+                  <Link
+                    to={item.href}
+                    onClick={(e) => handleNavClick(e, item)}
+                    className="
+                      group
+                      inline-flex
+                      items-center
+                      gap-1.5
+                      font-sans
+                      text-sm
+                      text-[#FDECC8]/60
+                      transition-colors
+                      duration-300
+                      hover:text-[#E9A534]
+                      cursor-pointer
+                    "
+                  >
+                    <span
                       className="
-                        group
-                        inline-flex
-                        items-center
-                        gap-1.5
-                        font-sans
-                        text-sm
-                        text-[#FDECC8]/60
-                        transition-colors
+                        h-px
+                        w-0
+                        bg-[#E9A534]
+                        transition-all
                         duration-300
-                        hover:text-[#E9A534]
-                        cursor-pointer
+                        group-hover:w-3
                       "
-                    >
-                      <span
-                        className="
-                          h-px
-                          w-0
-                          bg-[#E9A534]
-                          transition-all
-                          duration-300
-                          group-hover:w-3
-                        "
-                      />
-                      {item.label}
-                    </a>
-                  ) : (
-                    <Link
-                      to={item.href}
-                      className="
-                        group
-                        inline-flex
-                        items-center
-                        gap-1.5
-                        font-sans
-                        text-sm
-                        text-[#FDECC8]/60
-                        transition-colors
-                        duration-300
-                        hover:text-[#E9A534]
-                      "
-                    >
-                      <span
-                        className="
-                          h-px
-                          w-0
-                          bg-[#E9A534]
-                          transition-all
-                          duration-300
-                          group-hover:w-3
-                        "
-                      />
-                      {item.label}
-                    </Link>
-                  )}
+                    />
+                    {item.label}
+                  </Link>
                 </li>
               ))}
             </ul>

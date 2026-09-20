@@ -27,6 +27,7 @@ import heroZodiac from "../assets/hero-zodiac3.png";
 const SERVICES = [
   {
     id: "01",
+    slug: "numerology",
     title: "Numerology Consultation",
     subtitle: "Decode Your Numbers. Understand Your Patterns. Discover Your Possibilities.",
     desc: "Numbers are more than just digits. In traditional numerology, numbers associated with your name and date of birth are interpreted to understand recurring patterns, tendencies and life themes.\n\nAt Cosmic Nidhi, we bring a modern and personalized approach to Vedic Numerology, combining traditional principles with detailed analysis and practical interpretation.\n\nBeyond Traditional Number Reading:\nOur approach goes beyond simply calculating numbers. We study the relationship between different numerical influences, look for recurring patterns and place them in the context of your individual circumstances. The objective is not simply to predict events, but to help you understand patterns, explore possibilities and gain a different perspective on your journey.\n\nYour Numbers. Your Patterns. Your Journey:\nEvery individual has a unique numerical profile. Discover what your numbers traditionally represent and explore your journey with a personalized Numerology consultation.",
@@ -53,6 +54,7 @@ const SERVICES = [
   },
   {
     id: "02",
+    slug: "birth-chart",
     title: "Birth Chart / Janam Kundli Reading",
     subtitle: "Understand your life patterns & timing",
     desc: "A personalised birth-chart consultation uses your date, exact time and place of birth to explore selected themes such as personality patterns, relationships, work, strengths, challenges and upcoming periods. The session is tailored to your questions and does not present life as fixed or predetermined.",
@@ -77,6 +79,7 @@ const SERVICES = [
   },
   {
     id: "03",
+    slug: "vastu",
     title: "Applied Vastu Consultation",
     subtitle: "Align Your Space. Transform Your Experience.",
     desc: "Every space has its own character, layout and flow. Our Advanced Vastu Consultation brings together traditional Vastu principles with a structured and practical approach to understanding your home, office or commercial environment.\n\nWe study directions, zones, entrances, room placement, spatial relationships and elemental balance to identify areas that may benefit from thoughtful changes or traditional Vastu remedies.\n\nUnderstand your space. Create greater harmony. Make your environment work for you.",
@@ -99,6 +102,7 @@ const SERVICES = [
   },
   {
     id: "04",
+    slug: "kundli-matching",
     title: "Kundli Matching / Relationship Guidance",
     subtitle: "Understand the Connection. Explore the Compatibility. Strengthen the Journey.",
     desc: "Every relationship has its own unique dynamics. Through a comparative reading of two birth charts, we explore planetary influences, compatibility indicators, communication patterns, strengths and areas that may require greater understanding.\n\nOur approach goes beyond simply looking at traditional matching scores. It brings together relevant astrological perspectives to help you understand the patterns, possibilities and dynamics within a relationship.\n\nThe consultation is designed to encourage awareness, meaningful conversation and thoughtful reflection, helping you approach your relationship journey with greater clarity and understanding.",
@@ -132,6 +136,7 @@ function ServiceCard({ service, index, onBook }) {
 
   return (
     <motion.article
+      id={service.slug}
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.55, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
@@ -146,6 +151,7 @@ function ServiceCard({ service, index, onBook }) {
         hover:-translate-y-1.5
         hover:border-[#E9A534]/50
         hover:shadow-[0_24px_55px_rgba(60,8,13,0.14)]
+        scroll-mt-28
       "
     >
       {/* Gold top line */}

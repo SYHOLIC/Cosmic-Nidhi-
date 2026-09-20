@@ -6,6 +6,7 @@ import BookingModal from './BookingModal';
 const SERVICES = [
   {
     id: '01',
+    slug: 'numerology',
     title: 'Numerology Consultation',
     subtitle: 'Decode Your Numbers. Understand Your Patterns. Discover Your Possibilities.',
     desc: 'Numbers are more than just digits. In traditional numerology, numbers associated with your name and date of birth are interpreted to understand recurring patterns, tendencies and life themes.\n\nAt Cosmic Nidhi, we bring a modern and personalized approach to Vedic Numerology, combining traditional principles with detailed analysis and practical interpretation.',
@@ -41,6 +42,7 @@ const SERVICES = [
   },
   {
     id: '02',
+    slug: 'birth-chart',
     title: 'Birth Chart / Janam Kundli Reading',
     subtitle: 'Understand your life patterns & timing',
     desc: 'A personalised birth-chart consultation uses your date, exact time and place of birth to explore selected themes such as personality patterns, relationships, work, strengths, challenges and upcoming periods. The session is tailored to your questions and does not present life as fixed or predetermined.',
@@ -54,6 +56,7 @@ const SERVICES = [
   },
   {
     id: '03',
+    slug: 'vastu',
     title: 'Applied Vastu Consultation',
     subtitle: 'Align Your Space. Transform Your Experience.',
     desc: 'Every space has its own character, layout and flow. Our Advanced Vastu Consultation brings together traditional Vastu principles with a structured and practical approach to understanding your home, office or commercial environment.\n\nWe study directions, zones, entrances, room placement, spatial relationships and elemental balance to identify areas that may benefit from thoughtful changes or traditional Vastu remedies.\n\nUnderstand your space. Create greater harmony. Make your environment work for you.',
@@ -67,6 +70,7 @@ const SERVICES = [
   },
   {
     id: '04',
+    slug: 'kundli-matching',
     title: 'Kundli Matching / Relationship Guidance',
     subtitle: 'Understand the Connection. Explore the Compatibility. Strengthen the Journey.',
     desc: 'Every relationship has its own unique dynamics. Through a comparative reading of two birth charts, we explore planetary influences, compatibility indicators, communication patterns, strengths and areas that may require greater understanding.\n\nOur approach goes beyond simply looking at traditional matching scores. It brings together relevant astrological perspectives to help you understand the patterns, possibilities and dynamics within a relationship.\n\nThe consultation is designed to encourage awareness, meaningful conversation and thoughtful reflection, helping you approach your relationship journey with greater clarity and understanding.',
@@ -143,7 +147,8 @@ function ServiceRow({ item, index, onBook }) {
   return (
     <motion.article
       ref={ref}
-      className="relative w-full"
+      id={item.slug}
+      className="relative w-full scroll-mt-24"
       style={{ minHeight: 480, borderBottom: '1px solid rgba(90,14,20,0.15)' }}
     >
       {/* Desktop: 2-column grid | Mobile: Single column */}

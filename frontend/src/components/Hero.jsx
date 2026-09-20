@@ -801,7 +801,7 @@ function Hero() {
           }
 
           .cosmic-heading {
-            font-size: 58px;
+            font-size: 56px;
             line-height: 1.12;
           }
 
@@ -835,7 +835,7 @@ function Hero() {
           }
 
           .cosmic-heading {
-            font-size: 48px;
+            font-size: 46px;
             line-height: 1.14;
           }
 
@@ -875,7 +875,7 @@ function Hero() {
           }
 
           .cosmic-heading {
-            font-size: 40px;
+            font-size: 38px;
             line-height: 1.16;
           }
 
@@ -920,7 +920,7 @@ function Hero() {
           }
 
           .cosmic-heading {
-            font-size: 32px;
+            font-size: 30px;
             line-height: 1.18;
           }
 
@@ -958,7 +958,7 @@ function Hero() {
           }
 
           .cosmic-heading {
-            font-size: 26px;
+            font-size: 24px;
             line-height: 1.2;
           }
 

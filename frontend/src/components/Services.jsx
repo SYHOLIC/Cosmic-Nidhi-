@@ -43,8 +43,8 @@ const SERVICES = [
   {
     id: '04',
     title: 'Kundli Matching / Relationship Guidance',
-    subtitle: 'Explore compatibility & communication patterns',
-    desc: 'A side-by-side reading of two birth charts — planetary strengths, challenges and the threads that connect them. This service is intended to support conversation and reflection. It should not be used as the sole basis for marriage, separation or any major life decision.',
+    subtitle: 'Understand the Connection. Explore the Compatibility. Strengthen the Journey.',
+    desc: 'Every relationship has its own unique dynamics. Through a comparative reading of two birth charts, we explore planetary influences, compatibility indicators, communication patterns, strengths and areas that may require greater understanding.\n\nOur approach goes beyond simply looking at traditional matching scores. It brings together relevant astrological perspectives to help you understand the patterns, possibilities and dynamics within a relationship.\n\nThe consultation is designed to encourage awareness, meaningful conversation and thoughtful reflection, helping you approach your relationship journey with greater clarity and understanding.',
     image: 'https://www.hiastro.in/_next/image?url=https:%2F%2Fsteadfast-cows-9445c3a50f.media.strapiapp.com%2FUnlock_Zodiac_Love_Compatibility_Your_Cosmic_Guide_2bfc1451f0.jpg&w=1920&q=75',
     accent: '#C1272D',
     type: 'Compatibility',
@@ -236,11 +236,11 @@ function ServiceRow({ item, index, onBook }) {
             initial={{ opacity: 0, y: 10 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, ease: silk, delay: 0.35 }}
-            className="font-sans leading-relaxed mb-4 text-justify"
+            className="font-sans leading-relaxed mb-4 text-justify whitespace-pre-line"
             style={{
               color: '#2C1210/70',
-              fontSize: '0.9rem',
-              maxWidth: '36ch',
+              fontSize: '0.88rem',
+              maxWidth: '44ch',
             }}
           >
             {item.desc}

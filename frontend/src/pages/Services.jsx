@@ -94,8 +94,8 @@ const SERVICES = [
   {
     id: "04",
     title: "Kundli Matching / Relationship Guidance",
-    subtitle: "Explore compatibility & communication patterns",
-    desc: "A side-by-side reading of two birth charts — planetary strengths, challenges and the threads that connect them. This service is intended to support conversation and reflection. It should not be used as the sole basis for marriage, separation or any major life decision.",
+    subtitle: "Understand the Connection. Explore the Compatibility. Strengthen the Journey.",
+    desc: "Every relationship has its own unique dynamics. Through a comparative reading of two birth charts, we explore planetary influences, compatibility indicators, communication patterns, strengths and areas that may require greater understanding.\n\nOur approach goes beyond simply looking at traditional matching scores. It brings together relevant astrological perspectives to help you understand the patterns, possibilities and dynamics within a relationship.\n\nThe consultation is designed to encourage awareness, meaningful conversation and thoughtful reflection, helping you approach your relationship journey with greater clarity and understanding.",
     image:
       "https://www.hiastro.in/_next/image?url=https:%2F%2Fsteadfast-cows-9445c3a50f.media.strapiapp.com%2FUnlock_Zodiac_Love_Compatibility_Your_Cosmic_Guide_2bfc1451f0.jpg&w=1920&q=75",
     accent: "#C1272D",
@@ -218,7 +218,7 @@ function ServiceCard({ service, index, onBook }) {
         </p>
 
         {/* Desc */}
-        <p className="mt-3 font-sans text-[13.5px] leading-[1.7] text-[#2C1210]/75 text-justify">
+        <p className="mt-3 font-sans text-[13.5px] leading-[1.7] text-[#2C1210]/75 text-justify whitespace-pre-line">
           {service.desc}
         </p>
 

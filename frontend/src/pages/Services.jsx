@@ -366,7 +366,7 @@ export default function ServicesPage() {
           </Reveal>
 
           <Reveal delay={180}>
-            <p className="mt-5 max-w-[680px] font-sans text-[15px] leading-[1.7] text-[#F5E5C7]/85 sm:text-[16px]">
+            <p className="mt-5 max-w-[680px] font-sans text-[15px] leading-[1.7] text-[#F5E5C7]/85 sm:text-[16px] text-justify">
               Every consultation is thoughtfully personalized, combining the timeless wisdom of Vedic Numerology, Advanced Vastu and Ancient Vedic Astrology with a modern, analytical approach. Our approach is designed to help you understand, reflect and make informed personal choices, while always respecting your privacy, individuality and personal journey.
             </p>
           </Reveal>

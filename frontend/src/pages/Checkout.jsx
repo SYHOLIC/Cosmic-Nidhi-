@@ -162,15 +162,29 @@ export default function CheckoutPage() {
 
     try {
       const token = localStorage.getItem("token");
-      const address = addresses.find(a => a._id === selectedAddressId);
-      const subtotal = getCartTotal();
-      const totalAmount = appliedCoupon ? appliedCoupon.newTotal : subtotal; // add shipping/taxes here if any
+      const address = addresses.find(a => a._id === selectedAddressId) || {};
+      const parsePrice = (val) => {
+        if (typeof val === "number") return val;
+        return parseFloat(String(val || 0).replace(/[^\d.]/g, "")) || 0;
+      };
+
+      const rawSubtotal = getCartTotal();
+      const subtotal = parsePrice(rawSubtotal);
+      const totalAmount = parsePrice(appliedCoupon ? appliedCoupon.newTotal : subtotal);
+
+      const cleanItems = cartItems.map(item => ({
+        product: item.id || item._id,
+        name: item.name,
+        price: parsePrice(item.price),
+        quantity: parseInt(item.quantity, 10) || 1,
+        image: item.image || (Array.isArray(item.images) ? (item.images[0]?.url || item.images[0]) : "") || ""
+      }));
 
       // 1. Create MongoDB Order (pending state)
       const orderRes = await axios.post(
         `${API_URL}/orders`,
         {
-          items: cartItems.map(item => ({ product: item.id, name: item.name, price: item.price, quantity: item.quantity, image: item.image })),
+          items: cleanItems,
           shippingAddress: {
             name: address.name,
             phone: address.phone,
@@ -199,7 +213,7 @@ export default function CheckoutPage() {
       const razorpayKey = rzpRes.data.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_TeAqFB25uZz5vD";
       const options = {
         key: razorpayKey,
-        amount: totalAmount * 100,
+        amount: Math.round(totalAmount * 100),
         currency: "INR",
         name: "Cosmic Nidhi",
         description: "Order Payment",

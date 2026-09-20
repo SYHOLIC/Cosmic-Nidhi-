@@ -19,8 +19,19 @@ const createOrder = async (req, res) => {
       notes,
     } = req.body;
 
+    const cleanNumber = (val) => {
+      if (typeof val === 'number') return val;
+      return parseFloat(String(val || 0).replace(/[^\d.]/g, '')) || 0;
+    };
+
+    const sanitizedItems = (items || []).map(item => ({
+      ...item,
+      price: cleanNumber(item.price),
+      quantity: parseInt(item.quantity, 10) || 1,
+    }));
+
     // Validate items and check stock
-    for (const item of items) {
+    for (const item of sanitizedItems) {
       const product = await Product.findById(item.product);
       if (!product) {
         return res.status(404).json({
@@ -39,15 +50,15 @@ const createOrder = async (req, res) => {
     // Create order
     const order = await Order.create({
       user: req.user.id,
-      items,
+      items: sanitizedItems,
       shippingAddress,
       paymentMethod,
-      subtotal,
-      tax,
-      shippingCost,
-      totalAmount,
+      subtotal: cleanNumber(subtotal),
+      tax: cleanNumber(tax),
+      shippingCost: cleanNumber(shippingCost),
+      totalAmount: cleanNumber(totalAmount),
       couponCode,
-      discount,
+      discount: cleanNumber(discount),
       notes,
     });
 

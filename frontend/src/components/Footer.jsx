@@ -5,19 +5,6 @@ function Footer() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const quickLinks = [
-    { label: "About Us", href: "/about" },
-    { label: "Numerology Consultation", href: "/services#numerology" },
-    { label: "Birth Chart / Janam Kundli", href: "/services#birth-chart" },
-    { label: "Applied Vastu Consultation", href: "/services#vastu" },
-    { label: "Kundli Matching / Guidance", href: "/services#kundli-matching" },
-    { label: "Zodiac Signs", href: "/#signs" },
-    { label: "Zodiac Store", href: "/products" },
-    { label: "Pitra Dosh Calculator", href: "/pitra-dosh-calculator" },
-    { label: "Contact Us", href: "/contact" },
-    { label: "FAQ", href: "/page/faq" },
-  ];
-
   const services = [
     { label: "Numerology Consultation", href: "/services#numerology" },
     { label: "Birth Chart / Janam Kundli", href: "/services#birth-chart" },
@@ -108,7 +95,7 @@ function Footer() {
         {/* =========================================
             MAIN FOOTER GRID
         ========================================= */}
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-4 lg:gap-14">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-3 lg:gap-16">
           {/* =======================================
               BRAND
           ======================================= */}
@@ -278,58 +265,6 @@ function Footer() {
                 </svg>
               </a>
             </div>
-          </div>
-
-          {/* =======================================
-              QUICK LINKS
-          ======================================= */}
-          <div>
-            <h4
-              className="
-                mb-5
-                font-display
-                text-lg
-                text-[#FFF8EC]
-              "
-            >
-              Quick Links
-            </h4>
-
-            <ul className="space-y-3.5">
-              {quickLinks.map((item) => (
-                <li key={item.label}>
-                  <Link
-                    to={item.href}
-                    onClick={(e) => handleNavClick(e, item)}
-                    className="
-                      group
-                      inline-flex
-                      items-center
-                      gap-1.5
-                      font-sans
-                      text-sm
-                      text-[#FDECC8]/60
-                      transition-colors
-                      duration-300
-                      hover:text-[#E9A534]
-                      cursor-pointer
-                    "
-                  >
-                    <span
-                      className="
-                        h-px
-                        w-0
-                        bg-[#E9A534]
-                        transition-all
-                        duration-300
-                        group-hover:w-3
-                      "
-                    />
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
           </div>
 
           {/* =======================================

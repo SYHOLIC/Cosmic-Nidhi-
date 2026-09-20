@@ -6,18 +6,6 @@ import BookingModal from './BookingModal';
 const SERVICES = [
   {
     id: '01',
-    title: 'Birth Chart / Janam Kundli Reading',
-    subtitle: 'Understand your life patterns & timing',
-    desc: 'A personalised birth-chart consultation uses your date, exact time and place of birth to explore selected themes such as personality patterns, relationships, work, strengths, challenges and upcoming periods. The session is tailored to your questions and does not present life as fixed or predetermined.',
-    image: 'https://cosmicnidhi.in/wp-content/uploads/2019/05/img_2-700x800.jpg',
-    accent: '#C1272D',
-    type: 'Vedic & Western',
-    deliverables: 'Chart PDF, consultation call, written summary, recording, follow-up questions',
-    duration: '60–75 minutes',
-    cta: 'Book Your Birth Chart Reading',
-  },
-  {
-    id: '02',
     title: 'Numerology Profile',
     subtitle: 'Explore your numbers & personal themes',
     desc: 'A numerology profile offers a reflective reading of selected numbers connected to your name and date of birth. It can be used to explore personal tendencies, communication style, goals and areas for intentional growth.',
@@ -27,6 +15,18 @@ const SERVICES = [
     deliverables: 'Numerology report, video/phone call, name-analysis notes',
     duration: '45–60 minutes',
     cta: 'Explore Your Numbers',
+  },
+  {
+    id: '02',
+    title: 'Birth Chart / Janam Kundli Reading',
+    subtitle: 'Understand your life patterns & timing',
+    desc: 'A personalised birth-chart consultation uses your date, exact time and place of birth to explore selected themes such as personality patterns, relationships, work, strengths, challenges and upcoming periods. The session is tailored to your questions and does not present life as fixed or predetermined.',
+    image: 'https://cosmicnidhi.in/wp-content/uploads/2019/05/img_2-700x800.jpg',
+    accent: '#C1272D',
+    type: 'Vedic & Western',
+    deliverables: 'Chart PDF, consultation call, written summary, recording, follow-up questions',
+    duration: '60–75 minutes',
+    cta: 'Book Your Birth Chart Reading',
   },
   {
     id: '03',

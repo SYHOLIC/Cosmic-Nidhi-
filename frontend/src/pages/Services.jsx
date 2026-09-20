@@ -27,6 +27,28 @@ import heroZodiac from "../assets/hero-zodiac3.png";
 const SERVICES = [
   {
     id: "01",
+    title: "Numerology Profile",
+    subtitle: "Explore your numbers & personal themes",
+    desc: "A numerology profile offers a reflective reading of selected numbers connected to your name and date of birth. It can be used to explore personal tendencies, communication style, goals and areas for intentional growth.",
+    image:
+      "https://cosmicnidhi.in/wp-content/uploads/2024/04/img_5-700x800.jpg",
+    accent: "#E9A534",
+    type: "Numerology",
+    deliverables: "Numerology report, video/phone call, name-analysis notes",
+    duration: "45–60 minutes",
+    cta: "Explore Your Numbers",
+    icon: Calendar,
+    whatToExpect: [
+      "Analysis of your life path and destiny numbers",
+      "Communication style insights",
+      "Goal and growth areas",
+      "Reflective reading of your numbers",
+    ],
+    whoItsFor:
+      "Anyone curious about the symbolic relationship between their name, birth date, and personal themes.",
+  },
+  {
+    id: "02",
     title: "Birth Chart / Janam Kundli Reading",
     subtitle: "Understand your life patterns & timing",
     desc: "A personalised birth-chart consultation uses your date, exact time and place of birth to explore selected themes such as personality patterns, relationships, work, strengths, challenges and upcoming periods. The session is tailored to your questions and does not present life as fixed or predetermined.",
@@ -47,28 +69,6 @@ const SERVICES = [
     ],
     whoItsFor:
       "Anyone seeking clarity about their life path, relationships, career, and personal growth through the lens of their birth chart.",
-  },
-  {
-    id: "02",
-    title: "Numerology Profile",
-    subtitle: "Explore your numbers & personal themes",
-    desc: "A numerology profile offers a reflective reading of selected numbers connected to your name and date of birth. It can be used to explore personal tendencies, communication style, goals and areas for intentional growth.",
-    image:
-      "https://cosmicnidhi.in/wp-content/uploads/2024/04/img_5-700x800.jpg",
-    accent: "#E9A534",
-    type: "Numerology",
-    deliverables: "Numerology report, video/phone call, name-analysis notes",
-    duration: "45–60 minutes",
-    cta: "Explore Your Numbers",
-    icon: Calendar,
-    whatToExpect: [
-      "Analysis of your life path and destiny numbers",
-      "Communication style insights",
-      "Goal and growth areas",
-      "Reflective reading of your numbers",
-    ],
-    whoItsFor:
-      "Anyone curious about the symbolic relationship between their name, birth date, and personal themes.",
   },
   {
     id: "03",

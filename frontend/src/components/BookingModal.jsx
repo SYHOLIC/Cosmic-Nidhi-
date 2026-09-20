@@ -21,20 +21,20 @@ import { API_URL } from "../config/api";
 
 const SERVICES_LIST = [
   {
-    type: "birth-chart",
-    name: "Birth Chart / Janam Kundli Reading",
-    duration: "60–75 minutes",
-    icon: Star,
-    amount: 1100,
-    deliverables: "Chart PDF, consultation call, written summary, recording",
-  },
-  {
     type: "numerology",
     name: "Numerology Profile",
     duration: "45–60 minutes",
     icon: Calendar,
     amount: 1100,
     deliverables: "Numerology report, video/phone call, name-analysis notes",
+  },
+  {
+    type: "birth-chart",
+    name: "Birth Chart / Janam Kundli Reading",
+    duration: "60–75 minutes",
+    icon: Star,
+    amount: 1100,
+    deliverables: "Chart PDF, consultation call, written summary, recording",
   },
   {
     type: "vastu",

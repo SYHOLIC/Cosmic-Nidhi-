@@ -401,13 +401,12 @@ function SectionHeading({ onBook }) {
           <button
             type="button"
             onClick={() => onBook?.(SERVICES[0])}
-            className="group relative inline-flex items-center gap-3 bg-[#C1272D] px-8 py-3.5 text-xs tracking-[0.2em] uppercase text-[#FFF7E9] hover:text-[#FFF7E9] transition-colors rounded-full shadow-lg shadow-[#C1272D]/30 hover:shadow-[#C1272D]/50 font-sans"
+            className="group inline-flex items-center gap-3 bg-[#C1272D] hover:bg-[#A81E24] px-8 py-3.5 text-xs tracking-[0.2em] uppercase text-[#FFF7E9] rounded-full shadow-lg shadow-[#C1272D]/30 hover:shadow-[#C1272D]/50 transition-all duration-300 font-sans cursor-pointer"
           >
-            <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-[#E94E54] to-[#C1272D] transition-transform duration-500 group-hover:translate-x-0 rounded-full" />
-            <span className="relative">Book a Consultation</span>
+            <span>Book a Consultation</span>
             <svg
               viewBox="0 0 16 16"
-              className="relative w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+              className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
               fill="none"
               stroke="currentColor"
               strokeWidth="2"

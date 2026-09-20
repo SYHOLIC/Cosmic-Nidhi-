@@ -122,7 +122,7 @@ function ServiceRow({ item, index, onBook }) {
     >
       {/* Desktop: 2-column grid | Mobile: Single column */}
       <div
-        className="grid grid-cols-1 lg:grid-cols-[52%_48%]"
+        className="grid grid-cols-1 lg:grid-cols-[46%_54%]"
         style={{ minHeight: 480 }}
       >
         {/* ─ Image Side ─ */}
@@ -143,9 +143,8 @@ function ServiceRow({ item, index, onBook }) {
         <div
           className={`relative flex flex-col justify-center order-2 ${
             isEven ? 'lg:order-2' : 'lg:order-1'
-          }`}
+          } p-6 sm:p-8 md:p-10 lg:p-12 xl:p-14 pr-10 lg:pr-14`}
           style={{
-            padding: '2rem 1.5rem 2.5rem',
             backgroundColor: '#FFF7E9',
           }}
         >
@@ -181,7 +180,7 @@ function ServiceRow({ item, index, onBook }) {
             initial={{ opacity: 0, x: isEven ? 20 : -20 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.7, ease: silk, delay: 0.15 }}
-            className="flex items-center gap-3 mb-5"
+            className="flex items-center gap-3 mb-4"
           >
             <span
               className="font-sans text-[10px] tracking-[0.32em] uppercase font-bold"
@@ -202,7 +201,7 @@ function ServiceRow({ item, index, onBook }) {
           </motion.div>
 
           {/* Title */}
-          <div className="overflow-hidden mb-3">
+          <div className="overflow-hidden mb-3 max-w-3xl">
             <motion.h2
               initial={{ y: '105%' }}
               animate={inView ? { y: '0%' } : {}}
@@ -210,7 +209,7 @@ function ServiceRow({ item, index, onBook }) {
               className="font-display"
               style={{
                 fontSize: 'clamp(1.8rem, 3.2vw, 3rem)',
-                lineHeight: 1.05,
+                lineHeight: 1.08,
                 fontWeight: 300,
                 letterSpacing: '-0.01em',
                 color: '#3C080D',
@@ -225,26 +224,28 @@ function ServiceRow({ item, index, onBook }) {
             initial={{ opacity: 0, y: 10 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, ease: silk, delay: 0.3 }}
-            className="text-sm font-medium mb-3"
+            className="text-sm font-medium mb-3 max-w-3xl"
             style={{ color: item.accent }}
           >
             {item.subtitle}
           </motion.p>
 
           {/* Description */}
-          <motion.p
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, ease: silk, delay: 0.35 }}
-            className="font-sans leading-relaxed mb-4 text-justify whitespace-pre-line"
+            className="font-sans leading-relaxed mb-5 text-justify space-y-3 w-full max-w-3xl"
             style={{
-              color: '#2C1210/70',
-              fontSize: '0.88rem',
-              maxWidth: '44ch',
+              color: 'rgba(44, 18, 16, 0.78)',
+              fontSize: '0.91rem',
+              lineHeight: 1.72,
             }}
           >
-            {item.desc}
-          </motion.p>
+            {item.desc.split('\n\n').map((para, pIdx) => (
+              <p key={pIdx}>{para}</p>
+            ))}
+          </motion.div>
 
           {/* Deliverables */}
           {item.deliverables && (
@@ -252,14 +253,14 @@ function ServiceRow({ item, index, onBook }) {
               initial={{ opacity: 0, y: 10 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, ease: silk, delay: 0.4 }}
-              className="mb-4"
+              className="mb-5 flex flex-wrap items-center gap-x-6 gap-y-2 max-w-3xl pt-2 border-t border-[#5A0E14]/10"
             >
-              <p className="text-[0.6rem] uppercase tracking-[0.15em] text-[#5A0E14]/50 font-sans">
-                <span className="text-[#C1272D]">✦</span> Includes: {item.deliverables}
+              <p className="text-[11px] uppercase tracking-[0.14em] text-[#5A0E14]/60 font-sans font-medium flex items-center gap-1.5">
+                <span className="text-[#C1272D] text-xs">✦</span> Includes: {item.deliverables}
               </p>
               {item.duration && (
-                <p className="text-[0.6rem] uppercase tracking-[0.15em] text-[#5A0E14]/40 font-sans mt-1">
-                  <span className="text-[#E9A534]">✦</span> Duration: {item.duration}
+                <p className="text-[11px] uppercase tracking-[0.14em] text-[#5A0E14]/50 font-sans font-medium flex items-center gap-1.5">
+                  <span className="text-[#E9A534] text-xs">✦</span> Duration: {item.duration}
                 </p>
               )}
             </motion.div>

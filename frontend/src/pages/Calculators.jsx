@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   Calculator, 
@@ -20,12 +21,22 @@ import {
   MapPin,
   ChevronDown,
   ChevronUp,
-  CheckCircle
+  CheckCircle,
+  Flame
 } from 'lucide-react';
 import Reveal from '../components/Reveal';
 
 // Calculator Data
 const CALCULATORS = [
+  {
+    id: 'pitra-dosh',
+    title: 'Pitra Dosh Calculator',
+    icon: Flame,
+    badge: 'NEW',
+    description: 'Check ancestral karmic afflictions, 9th house planetary aspects, and Pitra Rin in your Kundli',
+    color: '#8E1B24',
+    fields: ['Full Name', 'Date of Birth', 'Time of Birth', 'Place of Birth', 'Father / Gotra Name'],
+  },
   {
     id: 'zodiac',
     title: 'Zodiac Sign Calculator',
@@ -78,6 +89,26 @@ const CALCULATORS = [
 
 // Sample results data (for demonstration)
 const sampleResults = {
+  'pitra-dosh': {
+    doshaStatus: 'Mild Pitra Dosh Detected',
+    planetaryAspect: 'Surya & Rahu Conjunction (9th House)',
+    karmicInfluence: 'Ancestral Debt & Spiritual Blockage',
+    description: 'Vedic planetary alignment indicates a mild to moderate Pitra Dosh influence in your 9th house (Dharma & Ancestors). In Vedic astrology, this relates to ancestral karma that may cause temporary obstacles in career consistency, auspicious milestones, or family peace.',
+    symptoms: [
+      'Unexplained delays in major career transitions or education',
+      'Occasional domestic discord or disharmony among family members',
+      'Lack of peace of mind despite honest hard work',
+      'Dreams of departed elders or feeling spiritual restlessness'
+    ],
+    remedies: [
+      'Perform Tarpan and donate black sesame seeds (til), raw food grains, and clothes on Amavasya or Pitru Paksha',
+      'Offer Surya Arghya (fresh water mixed with kumkum and red flowers) to Lord Surya daily during sunrise',
+      'Feed cows (gau seva), stray dogs, and crows regularly with fresh food or grains',
+      'Chant Gayatri Mantra or Maha Mrityunjaya Mantra 108 times daily',
+      'Plant a Peepal or Banyan tree and water it on Saturdays without touching',
+      'Perform Pitra Dosh Shanti Puja or consult Cosmic Nidhi lead astrologer for personalized remedies'
+    ]
+  },
   zodiac: {
     sunSign: 'Aries ♈',
     moonSign: 'Taurus ♉',
@@ -134,7 +165,14 @@ function CalculatorCard({ calculator, index, onOpen }) {
           <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ backgroundColor: calculator.color + '20' }}>
             <Icon className="w-7 h-7" style={{ color: calculator.color }} />
           </div>
-          <span className="text-xs font-medium text-[#5A0E14]/30 font-sans">0{index + 1}</span>
+          <div className="flex items-center gap-2">
+            {calculator.badge && (
+              <span className="rounded-[4px] bg-[#7EA326] px-2 py-0.5 font-sans text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
+                {calculator.badge}
+              </span>
+            )}
+            <span className="text-xs font-medium text-[#5A0E14]/30 font-sans">0{index + 1}</span>
+          </div>
         </div>
         
         <h3 className="font-display text-xl text-[#3C080D] mt-4 group-hover:text-[#C1272D] transition-colors duration-300">
@@ -314,6 +352,17 @@ function CalculatorModal({ calculator, isOpen, onClose }) {
 
 export default function CalculatorsPage() {
   const [selectedCalculator, setSelectedCalculator] = useState(null);
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const calcParam = searchParams.get('calc');
+    if (calcParam) {
+      const found = CALCULATORS.find((c) => c.id === calcParam);
+      if (found) {
+        setSelectedCalculator(found);
+      }
+    }
+  }, [searchParams]);
 
   return (
     <>

@@ -373,28 +373,44 @@ function Nav() {
             </Link>
 
             {/* =================================================
-                LOGIN / USER
+                PITRA DOSH CALCULATOR (NEW) + USER
             ================================================= */}
 
-            <div className="hidden lg:flex">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Link
+                to="/pitra-dosh-calculator"
+                className="
+                  group flex items-center gap-2 rounded-[8px]
+                  border border-white/85 bg-transparent
+                  px-3 py-1.5 font-sans
+                  text-white transition-all duration-300
+                  hover:bg-white/10 hover:border-white hover:shadow-[0_0_15px_rgba(255,255,255,0.2)]
+                  sm:px-3.5 sm:py-1.5
+                "
+              >
+                <span className="text-[12.5px] sm:text-[13.5px] font-semibold text-white tracking-wide whitespace-nowrap">
+                  Pitra Dosh Calculator
+                </span>
+                <span className="rounded-[4px] bg-[#7EA326] px-1.5 py-0.5 text-[9.5px] sm:text-[10px] font-bold uppercase tracking-wider text-white shadow-sm leading-none">
+                  NEW
+                </span>
+              </Link>
+
               {isLoggedIn ? (
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <Link
                     to={userRole === "admin" ? "/admin" : "/dashboard"}
                     aria-label="Dashboard"
                     className="
                       flex h-9 w-9 items-center justify-center rounded-full
-                      border border-[#E9A534]/35 bg-[#E9A534]/[0.05]
-                      text-[#FDECC8] transition-all duration-300
-                      hover:border-[#E9A534]/65
-                      hover:bg-[#E9A534]/[0.12]
-                      hover:text-[#E9C76D]
+                      text-white/90 transition-all duration-300
+                      hover:bg-white/10 hover:text-white
                     "
                   >
                     {userRole === "admin" ? (
-                      <Shield size={15} />
+                      <Shield size={19} strokeWidth={1.75} />
                     ) : (
-                      <User size={15} />
+                      <User size={19} strokeWidth={1.75} />
                     )}
                   </Link>
 
@@ -402,27 +418,26 @@ function Nav() {
                     type="button"
                     onClick={handleLogout}
                     className="
-                      font-sans text-[13px] font-medium text-[#FFF4E4]/75
+                      hidden xl:inline font-sans text-[12px] font-medium text-white/70
                       transition-colors duration-300
                       hover:text-[#E9C76D]
-                      xl:text-[14px]
                     "
                   >
                     Logout
                   </button>
                 </div>
               ) : (
-                <a
-                  href="/auth"
+                <Link
+                  to="/auth"
+                  aria-label="Account Login"
                   className="
-                    whitespace-nowrap font-sans text-[13px] font-medium
-                    text-[#FFF4E4]/90 transition-colors duration-300
-                    hover:text-[#E9C76D]
-                    xl:text-[14px]
+                    flex h-9 w-9 items-center justify-center rounded-full
+                    text-white/90 transition-all duration-300
+                    hover:bg-white/10 hover:text-white
                   "
                 >
-                  Login
-                </a>
+                  <User size={19} strokeWidth={1.75} />
+                </Link>
               )}
             </div>
 
@@ -599,6 +614,25 @@ function Nav() {
                   </Link>
                 )
               )}
+
+              {/* Pitra Dosh Calculator Mobile Link */}
+              <Link
+                to="/pitra-dosh-calculator"
+                onClick={closeMobileMenu}
+                className="
+                  my-2 flex items-center justify-between rounded-[9px]
+                  border border-white/85 bg-white/[0.05]
+                  px-3.5 py-2.5 text-white transition-all
+                  hover:bg-white/10
+                "
+              >
+                <span className="font-sans text-[13.5px] font-semibold text-white">
+                  Pitra Dosh Calculator
+                </span>
+                <span className="rounded-[4px] bg-[#7EA326] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm leading-none">
+                  NEW
+                </span>
+              </Link>
 
               {/* Auth */}
               {isLoggedIn ? (

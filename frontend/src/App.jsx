@@ -16,6 +16,7 @@ import CheckoutPage from "./pages/Checkout";
 import StaticPage from "./pages/StaticPage";
 import ProductDetails from "./pages/ProductDetails";
 import Contact from "./pages/Contact";
+import PitraDoshCalculator from "./pages/PitraDoshCalculator";
 import FloatingSocialConnect from "./components/FloatingSocialConnect";
 import { CartProvider } from "./context/CartContext";
 
@@ -46,6 +47,8 @@ function AppRoutes() {
         <Route path="/services" element={<ServicesPage />} />
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/calculators" element={<CalculatorsPage />} />
+        <Route path="/pitra-dosh-calculator" element={<PitraDoshCalculator />} />
+        <Route path="/calculators/pitra-dosh" element={<PitraDoshCalculator />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/admin" element={<AdminPage />} />

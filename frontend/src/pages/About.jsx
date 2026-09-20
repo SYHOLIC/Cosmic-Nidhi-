@@ -198,7 +198,7 @@ export default function About() {
             <div>
               <Reveal>
                 <p className="font-display italic text-[#C1272D] text-xl md:text-2xl font-semibold mb-5">
-                  Astrology · Numerology · Vastu
+                  Numerology · Astrology · Vastu
                 </p>
               </Reveal>
 

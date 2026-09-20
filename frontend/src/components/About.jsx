@@ -47,13 +47,13 @@ export default function About() {
   const features = [
     {
       icon: "✦",
-      title: "Astrology",
-      desc: "Birth chart analysis, planetary effects, and timing of life events",
+      title: "Numerology",
+      desc: "Understanding your life path, destiny, and personal year cycles",
     },
     {
       icon: "✦",
-      title: "Numerology",
-      desc: "Understanding your life path, destiny, and personal year cycles",
+      title: "Astrology",
+      desc: "Birth chart analysis, planetary effects, and timing of life events",
     },
     {
       icon: "✦",
@@ -144,7 +144,7 @@ export default function About() {
           <div>
             <Reveal>
               <p className="font-display italic text-[#C1272D] text-lg md:text-xl font-semibold mb-4">
-                Astrology · Numerology · Vastu
+                Numerology · Astrology · Vastu
               </p>
             </Reveal>
 

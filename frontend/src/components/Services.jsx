@@ -6,9 +6,9 @@ import BookingModal from './BookingModal';
 const SERVICES = [
   {
     id: '01',
-    title: 'Numerology Profile',
-    subtitle: 'Explore your numbers & personal themes',
-    desc: 'A numerology profile offers a reflective reading of selected numbers connected to your name and date of birth. It can be used to explore personal tendencies, communication style, goals and areas for intentional growth.',
+    title: 'Numerology Consultation',
+    subtitle: 'Decode Your Numbers. Understand Your Patterns. Discover Your Possibilities.',
+    desc: 'Numbers are more than just digits. In traditional numerology, numbers associated with your name and date of birth are interpreted to understand recurring patterns, tendencies and life themes.\n\nAt Cosmic Nidhi, we bring a modern and personalized approach to Vedic Numerology, combining traditional principles with detailed analysis and practical interpretation.',
     image: 'https://cosmicnidhi.in/wp-content/uploads/2024/04/img_5-700x800.jpg',
     accent: '#E9A534',
     type: 'Numerology',

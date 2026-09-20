@@ -22,7 +22,7 @@ import { API_URL } from "../config/api";
 const SERVICES_LIST = [
   {
     type: "numerology",
-    name: "Numerology Profile",
+    name: "Numerology Consultation",
     duration: "45–60 minutes",
     icon: Calendar,
     amount: 1100,

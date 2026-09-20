@@ -374,7 +374,7 @@ function Hero() {
                     hover:shadow-[0_17px_42px_rgba(0,0,0,0.38)]
                   "
                 >
-                  <span>Book a Reading</span>
+                  <span>Book for Consultancy</span>
 
                   <ArrowRight
                     size={17}
@@ -415,7 +415,7 @@ function Hero() {
                       group-hover:border-[#E9A534]
                     "
                   >
-                    Explore Services
+                    Services Offered
                   </span>
 
                   <ArrowRight

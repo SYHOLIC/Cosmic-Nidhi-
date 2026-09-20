@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
+  orderNumber: {
+    type: String,
+    unique: true,
+    sparse: true,
+    default: () => `CN-${Date.now().toString().slice(-6)}-${Math.floor(100 + Math.random() * 900)}`,
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

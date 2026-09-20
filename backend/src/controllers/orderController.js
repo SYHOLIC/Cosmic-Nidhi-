@@ -48,7 +48,9 @@ const createOrder = async (req, res) => {
     }
 
     // Create order
+    const generatedOrderNumber = req.body.orderNumber || ('CN-' + Date.now().toString().slice(-6) + '-' + Math.floor(100 + Math.random() * 900));
     const order = await Order.create({
+      orderNumber: generatedOrderNumber,
       user: req.user.id,
       items: sanitizedItems,
       shippingAddress,

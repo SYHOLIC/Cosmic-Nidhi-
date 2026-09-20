@@ -7,7 +7,7 @@ const PLANS = [
     id: "starter",
     name: "Starter",
     tagline: "For a quick, focused answer",
-    price: "₹1,100",
+    price: "₹1,500",
     features: [
       "1 question answered in depth",
       "30-minute reading",
@@ -20,7 +20,7 @@ const PLANS = [
     id: "pro",
     name: "Pro",
     tagline: "For a fuller picture of what's ahead",
-    price: "₹2,100",
+    price: "₹2,400",
     features: [
       "Up to 3 questions answered",
       "60-minute reading",
@@ -35,7 +35,7 @@ const PLANS = [
     id: "business",
     name: "Business",
     tagline: "For major decisions and new ventures",
-    price: "₹3,100",
+    price: "₹5,100",
     features: [
       "10+ questions answered",
       "2-hour reading",

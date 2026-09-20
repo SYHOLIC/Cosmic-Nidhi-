@@ -13,7 +13,8 @@ const SERVICES = [
     accent: '#E9A534',
     type: 'Numerology',
     deliverables: 'Numerology report, video/phone call, name-analysis notes',
-    duration: '45–60 minutes',
+    duration: '30–40 minutes',
+    fee: '₹2,100',
     cta: 'Explore Your Numbers',
   },
   {
@@ -25,7 +26,8 @@ const SERVICES = [
     accent: '#C1272D',
     type: 'Vedic & Western',
     deliverables: 'Chart PDF, consultation call, written summary, recording, follow-up questions',
-    duration: '60–75 minutes',
+    duration: '30 minutes',
+    fee: '₹2,100',
     cta: 'Book Your Birth Chart Reading',
   },
   {
@@ -36,8 +38,9 @@ const SERVICES = [
     image: 'https://www.grahai.com/images/doshas/mangal-dosha.png',
     accent: '#5A0E14',
     type: 'Vastu',
-    deliverables: 'Annotated plan, written recommendations, call, follow-up',
-    duration: '60–90 minutes',
+    deliverables: 'Annotated plan, recommendations, call · Location Visit: ₹5,100 · Map Gridding: ₹12/sq.ft',
+    duration: '50–60 minutes',
+    fee: '₹3,100',
     cta: 'Review Your Space',
   },
   {
@@ -49,7 +52,8 @@ const SERVICES = [
     accent: '#C1272D',
     type: 'Compatibility',
     deliverables: 'Compatibility report and/or consultation',
-    duration: '60–75 minutes',
+    duration: '30 minutes',
+    fee: '₹2,100',
     cta: 'Check Compatibility',
   },
 ];
@@ -247,7 +251,7 @@ function ServiceRow({ item, index, onBook }) {
             ))}
           </motion.div>
 
-          {/* Deliverables */}
+          {/* Deliverables, Duration & Fee */}
           {item.deliverables && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -255,14 +259,19 @@ function ServiceRow({ item, index, onBook }) {
               transition={{ duration: 0.8, ease: silk, delay: 0.4 }}
               className="mb-5 flex flex-wrap items-center gap-x-6 gap-y-2 max-w-3xl pt-2 border-t border-[#5A0E14]/10"
             >
-              <p className="text-[11px] uppercase tracking-[0.14em] text-[#5A0E14]/60 font-sans font-medium flex items-center gap-1.5">
-                <span className="text-[#C1272D] text-xs">✦</span> Includes: {item.deliverables}
-              </p>
+              {item.fee && (
+                <p className="text-[11px] uppercase tracking-[0.14em] text-[#C1272D] font-sans font-bold flex items-center gap-1.5">
+                  <span className="text-[#C1272D] text-xs">✦</span> Fee: {item.fee}
+                </p>
+              )}
               {item.duration && (
-                <p className="text-[11px] uppercase tracking-[0.14em] text-[#5A0E14]/50 font-sans font-medium flex items-center gap-1.5">
+                <p className="text-[11px] uppercase tracking-[0.14em] text-[#5A0E14]/65 font-sans font-medium flex items-center gap-1.5">
                   <span className="text-[#E9A534] text-xs">✦</span> Duration: {item.duration}
                 </p>
               )}
+              <p className="text-[11px] uppercase tracking-[0.14em] text-[#5A0E14]/60 font-sans font-medium flex items-center gap-1.5">
+                <span className="text-[#C1272D] text-xs">✦</span> Includes: {item.deliverables}
+              </p>
             </motion.div>
           )}
 

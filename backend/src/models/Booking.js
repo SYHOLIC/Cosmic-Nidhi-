@@ -12,6 +12,8 @@ const bookingSchema = new mongoose.Schema({
       'birth-chart',
       'numerology',
       'vastu',
+      'vastu-visit',
+      'vastu-gridding',
       'kundli-matching',
       'career-guidance',
       'muhurat',

@@ -14,6 +14,7 @@ import {
   Star,
   Shield,
   FileText,
+  Compass,
 } from "lucide-react";
 import axios from "axios";
 
@@ -23,33 +24,55 @@ const SERVICES_LIST = [
   {
     type: "numerology",
     name: "Numerology Consultation",
-    duration: "45–60 minutes",
+    duration: "30–40 minutes",
     icon: Calendar,
-    amount: 1100,
+    amount: 2100,
+    priceDisplay: "₹2,100",
     deliverables: "Numerology report, video/phone call, name-analysis notes",
   },
   {
     type: "birth-chart",
     name: "Birth Chart / Janam Kundli Reading",
-    duration: "60–75 minutes",
+    duration: "30 minutes",
     icon: Star,
-    amount: 1100,
+    amount: 2100,
+    priceDisplay: "₹2,100",
     deliverables: "Chart PDF, consultation call, written summary, recording",
   },
   {
     type: "vastu",
     name: "Applied Vastu Consultation",
-    duration: "60–90 minutes",
+    duration: "50–60 minutes",
     icon: Shield,
-    amount: 2100,
+    amount: 3100,
+    priceDisplay: "₹3,100",
     deliverables: "Annotated plan, written recommendations, call, follow-up",
+  },
+  {
+    type: "vastu-visit",
+    name: "Location Visit for Applied Vastu",
+    duration: "On-site visit",
+    icon: MapPin,
+    amount: 5100,
+    priceDisplay: "₹5,100",
+    deliverables: "On-site space inspection, directional audit, remedy plan",
+  },
+  {
+    type: "vastu-gridding",
+    name: "Gridding for Home Map (Vastu)",
+    duration: "Floor plan analysis",
+    icon: Compass,
+    amount: 12,
+    priceDisplay: "₹12 / sq.ft",
+    deliverables: "16-zone Shakti Chakra map grid (₹12 per sq. ft)",
   },
   {
     type: "kundli-matching",
     name: "Kundli Matching / Relationship Guidance",
-    duration: "60–75 minutes",
+    duration: "30 minutes",
     icon: Sparkles,
     amount: 2100,
+    priceDisplay: "₹2,100",
     deliverables: "Side-by-side chart reading, compatibility report",
   },
 ];
@@ -253,6 +276,9 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
                   <p className="flex items-center gap-2 font-semibold">
                     <Clock size={14} className="text-[#E9A534]" /> Session Duration: {activeService.duration}
                   </p>
+                  <p className="mt-1 flex items-center gap-2 font-semibold text-[#8B2F2B]">
+                    <span>✦</span> Fee: {activeService.priceDisplay || `₹${activeService.amount}`}
+                  </p>
                   <p className="mt-1 flex items-center gap-2">
                     <FileText size={14} className="text-[#E9A534]" /> Deliverables: {activeService.deliverables}
                   </p>
@@ -314,7 +340,7 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
                               {svc.name}
                             </p>
                             <p className="font-sans text-[11px] text-[#6B3A2A]/70">
-                              {svc.duration} · ₹{svc.amount}
+                              {svc.duration} · {svc.priceDisplay || `₹${svc.amount}`}
                             </p>
                           </div>
                         </button>

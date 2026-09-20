@@ -35,7 +35,8 @@ const SERVICES = [
     accent: "#E9A534",
     type: "Numerology",
     deliverables: "Numerology report, video/phone call, name-analysis notes",
-    duration: "45–60 minutes",
+    duration: "30–40 minutes",
+    fee: "₹2,100",
     cta: "Explore Your Numbers",
     icon: Calendar,
     whatToExpect: [
@@ -58,7 +59,8 @@ const SERVICES = [
     type: "Vedic & Western",
     deliverables:
       "Chart PDF, consultation call, written summary, recording, follow-up questions",
-    duration: "60–75 minutes",
+    duration: "30 minutes",
+    fee: "₹2,100",
     cta: "Book Your Birth Chart Reading",
     icon: Star,
     whatToExpect: [
@@ -78,8 +80,9 @@ const SERVICES = [
     image: "https://www.grahai.com/images/doshas/mangal-dosha.png",
     accent: "#5A0E14",
     type: "Vastu",
-    deliverables: "Annotated plan, written recommendations, call, follow-up",
-    duration: "60–90 minutes",
+    deliverables: "Annotated plan, recommendations, call · Location Visit: ₹5,100 · Map Gridding: ₹12/sq.ft",
+    duration: "50–60 minutes",
+    fee: "₹3,100",
     cta: "Review Your Space",
     icon: Shield,
     whatToExpect: [
@@ -101,7 +104,8 @@ const SERVICES = [
     accent: "#C1272D",
     type: "Compatibility",
     deliverables: "Compatibility report and/or consultation",
-    duration: "60–75 minutes",
+    duration: "30 minutes",
+    fee: "₹2,100",
     cta: "Check Compatibility",
     icon: Moon,
     whatToExpect: [
@@ -196,7 +200,12 @@ function ServiceCard({ service, index, onBook }) {
       ============================================ */}
       <div className="flex flex-1 flex-col p-6 sm:p-7">
         {/* Meta row */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
+          {service.fee && (
+            <span className="rounded-full bg-[#C1272D]/10 px-2.5 py-0.5 font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-[#C1272D]">
+              Fee: {service.fee}
+            </span>
+          )}
           <span className="flex items-center gap-1.5 font-sans text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8A5A1F]">
             <Clock className="h-3.5 w-3.5" strokeWidth={1.7} />
             {service.duration}

@@ -20,9 +20,9 @@ services:
       - key: FRONTEND_URL
         value: https://cosmic-nidhi.onrender.com
       - key: RAZORPAY_KEY_ID
-        value: rzp_test_placeholder_key_id
+        value: rzp_test_TeAqFB25uZz5vD
       - key: RAZORPAY_KEY_SECRET
-        value: rzp_test_placeholder_secret
+        value: b64:RlZIWm9qRm9RUFNJbVpydkpSSUd4M2Ja
       - key: SENDGRID_API_KEY
         value: b64:U0cua01sNjBZZnJTb205ZUNCcC1SbkxlUS5Vc0ZJcXZ6ajBaT3d2bzJmMnppWHlQTWdaZnFLa1c0QnBvQjBoejJzZ3ZZ
       - key: SENDGRID_FROM_EMAIL
@@ -44,3 +44,5 @@ services:
     envVars:
       - key: VITE_API_URL
         value: https://cosmic-nidhi-backend.onrender.com/api
+      - key: VITE_RAZORPAY_KEY_ID
+        value: rzp_test_TeAqFB25uZz5vD

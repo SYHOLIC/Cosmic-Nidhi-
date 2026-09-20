@@ -2,11 +2,23 @@ const Razorpay = require('razorpay');
 const crypto = require('crypto');
 const Order = require('../models/Order');
 
-// Initialize Razorpay
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || 'rzp_test_placeholder_key_id',
-  key_secret: process.env.RAZORPAY_KEY_SECRET || 'rzp_test_placeholder_secret',
-});
+// Initialize Razorpay client helper
+const getRazorpayClient = () => {
+  let secret = process.env.RAZORPAY_KEY_SECRET || 'FVHZojFoQPSImZrvJRIGx3bZ';
+  if (secret.startsWith('b64:')) {
+    try {
+      secret = Buffer.from(secret.slice(4), 'base64').toString('utf8');
+    } catch (e) {
+      console.error('Failed to decode b64 RAZORPAY_KEY_SECRET:', e);
+    }
+  }
+  const keyId = (process.env.RAZORPAY_KEY_ID || 'rzp_test_TeAqFB25uZz5vD').trim();
+  return {
+    client: new Razorpay({ key_id: keyId, key_secret: secret.trim() }),
+    keyId,
+    secret: secret.trim(),
+  };
+};
 
 // @desc    Create Razorpay order
 // @route   POST /api/payment/create-order
@@ -14,21 +26,23 @@ const razorpay = new Razorpay({
 const createRazorpayOrder = async (req, res) => {
   try {
     const { amount } = req.body;
+    const { client, keyId } = getRazorpayClient();
 
     const options = {
-      amount: amount * 100, // amount in the smallest currency unit (paise)
+      amount: Math.round(amount * 100), // amount in the smallest currency unit (paise)
       currency: 'INR',
       receipt: `receipt_${Date.now()}`,
     };
 
-    const order = await razorpay.orders.create(options);
+    const order = await client.orders.create(options);
 
     res.status(200).json({
       success: true,
       order,
+      keyId,
     });
   } catch (error) {
-    console.error(error);
+    console.error('Create Razorpay Order Error:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to create Razorpay order',
@@ -49,9 +63,11 @@ const verifyPayment = async (req, res) => {
       local_order_id,
     } = req.body;
 
+    const { secret } = getRazorpayClient();
+
     const sign = razorpay_order_id + '|' + razorpay_payment_id;
     const expectedSign = crypto
-      .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET || 'rzp_test_placeholder_secret')
+      .createHmac('sha256', secret)
       .update(sign.toString())
       .digest('hex');
 

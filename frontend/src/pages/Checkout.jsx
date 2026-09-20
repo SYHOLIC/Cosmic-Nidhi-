@@ -196,8 +196,9 @@ export default function CheckoutPage() {
       const razorpayOrderId = rzpRes.data.order.id;
 
       // 3. Open Razorpay Modal
+      const razorpayKey = rzpRes.data.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_TeAqFB25uZz5vD";
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_placeholder_key_id",
+        key: razorpayKey,
         amount: totalAmount * 100,
         currency: "INR",
         name: "Cosmic Nidhi",
@@ -221,7 +222,7 @@ export default function CheckoutPage() {
             navigate("/dashboard");
           } catch (err) {
             console.error("Payment verification failed", err);
-            alert("Payment verification failed. Please contact support.");
+            alert("Payment verification failed: " + (err.response?.data?.message || err.message));
           }
         },
         prefill: {
@@ -235,12 +236,13 @@ export default function CheckoutPage() {
 
       const rzp = new window.Razorpay(options);
       rzp.on("payment.failed", function (response) {
-        alert("Payment failed: " + response.error.description);
+        alert("Payment failed: " + (response.error?.description || "Transaction cancelled"));
       });
       rzp.open();
     } catch (err) {
       console.error(err);
-      alert("Something went wrong while initiating payment.");
+      const errMsg = err.response?.data?.error || err.response?.data?.message || "Something went wrong while initiating payment.";
+      alert(errMsg);
     } finally {
       setIsProcessing(false);
     }

@@ -385,10 +385,9 @@ function SectionHeading({ onBook }) {
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 1, ease: silk, delay: 0.35 }}
           className="font-sans"
-          style={{ color: 'rgba(253,236,200,0.6)', fontSize: '0.9rem', maxWidth: '48ch' }}
+          style={{ color: 'rgba(253,236,200,0.7)', fontSize: '0.92rem', maxWidth: '56ch', lineHeight: '1.65' }}
         >
-          Every consultation is approached with care, context and confidentiality — 
-          translating traditional systems into clear observations and practical questions for modern life.
+          Every consultation is thoughtfully personalized, combining the timeless wisdom of Vedic Numerology, Advanced Vastu and Ancient Vedic Astrology with a modern, analytical approach.
         </motion.p>
 
         {/* CTA Button */}

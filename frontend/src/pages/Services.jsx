@@ -19,6 +19,7 @@ import Pricing from "../components/Pricing";
 
 /* Zodiac chakra backdrop */
 import heroZodiac from "../assets/hero-zodiac3.png";
+import vastuPurushImg from "../assets/vastu-purush.png";
 
 /* ================================================================
    SERVICES DATA
@@ -77,7 +78,7 @@ const SERVICES = [
     title: "Applied Vastu Consultation",
     subtitle: "Align Your Space. Transform Your Experience.",
     desc: "Every space has its own character, layout and flow. Our Advanced Vastu Consultation brings together traditional Vastu principles with a structured and practical approach to understanding your home, office or commercial environment.\n\nWe study directions, zones, entrances, room placement, spatial relationships and elemental balance to identify areas that may benefit from thoughtful changes or traditional Vastu remedies.\n\nUnderstand your space. Create greater harmony. Make your environment work for you.",
-    image: "https://www.grahai.com/images/doshas/mangal-dosha.png",
+    image: vastuPurushImg,
     accent: "#5A0E14",
     type: "Vastu",
     deliverables: "Annotated plan, recommendations, call · Location Visit: ₹5,100 · Map Gridding: ₹12/sq.ft",

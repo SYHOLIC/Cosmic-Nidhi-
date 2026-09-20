@@ -30,9 +30,9 @@ const SERVICES = [
   },
   {
     id: '03',
-    title: 'Vastu Consultation',
-    subtitle: 'Review your space through a Vastu-informed lens',
-    desc: 'A Vastu consultation reviews the orientation, layout and use of a space and provides practical observations and suggestions. Recommendations should be considered alongside safety, accessibility, building regulations, budget and advice from qualified architects or engineers.',
+    title: 'Applied Vastu Consultation',
+    subtitle: 'Align Your Space. Transform Your Experience.',
+    desc: 'Every space has its own character, layout and flow. Our Advanced Vastu Consultation brings together traditional Vastu principles with a structured and practical approach to understanding your home, office or commercial environment.\n\nWe study directions, zones, entrances, room placement, spatial relationships and elemental balance to identify areas that may benefit from thoughtful changes or traditional Vastu remedies.\n\nUnderstand your space. Create greater harmony. Make your environment work for you.',
     image: 'https://www.grahai.com/images/doshas/mangal-dosha.png',
     accent: '#5A0E14',
     type: 'Vastu',

@@ -38,7 +38,7 @@ const SERVICES_LIST = [
   },
   {
     type: "vastu",
-    name: "Vastu Consultation",
+    name: "Applied Vastu Consultation",
     duration: "60–90 minutes",
     icon: Shield,
     amount: 2100,

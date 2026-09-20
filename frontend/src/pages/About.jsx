@@ -119,7 +119,7 @@ export default function About() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <p className="text-sm tracking-[0.3em] uppercase text-[#C1272D] font-sans font-semibold">
+              <p className="text-lg md:text-xl font-bold tracking-[0.25em] uppercase text-[#C1272D] font-sans">
                 About Cosmic Nidhi
               </p>
             </motion.div>

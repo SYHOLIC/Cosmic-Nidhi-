@@ -85,7 +85,7 @@ export default function About() {
         {/* Header */}
         <div className="text-center mb-16 md:mb-20">
           <Reveal>
-            <p className="text-xs tracking-[0.3em] uppercase text-[#C1272D] font-sans font-semibold">
+            <p className="text-sm sm:text-base md:text-lg font-bold tracking-[0.25em] uppercase text-[#C1272D] font-sans">
               About Cosmic Nidhi
             </p>
           </Reveal>

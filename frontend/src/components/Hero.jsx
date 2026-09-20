@@ -36,9 +36,9 @@ function Hero() {
 
   const trustItems = [
     {
-      icon: Sparkles,
-      title: "Accurate Readings",
-      subtitle: "Chart-based insights",
+      icon: Flower2,
+      title: "Spiritual Growth",
+      subtitle: "Clarity for your journey",
     },
     {
       icon: ShieldCheck,
@@ -46,9 +46,9 @@ function Hero() {
       subtitle: "Personal & confidential",
     },
     {
-      icon: Flower2,
-      title: "Spiritual Growth",
-      subtitle: "Clarity for your journey",
+      icon: Sparkles,
+      title: "Accurate Readings",
+      subtitle: "Chart-based insights",
     },
   ];
 

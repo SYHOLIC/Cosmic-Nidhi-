@@ -151,7 +151,7 @@ export default function About() {
             <Reveal delay={120}>
               <div className="prose prose-lg max-w-none">
                 <p className="text-[#2C1210]/80 leading-relaxed font-sans text-base md:text-lg text-justify">
-                  At <span className="text-[#C1272D] font-semibold">Cosmic Nidhi</span>, we believe that self-understanding can be a powerful first step toward intentional living. Our work brings together astrology, numerology and Vastu-inspired perspectives to help people reflect on their patterns, choices, relationships, spaces and next steps.
+                  At <span className="text-[#C1272D] font-semibold">Cosmic Nidhi</span>, we believe in spiritual growth first, followed by trusted guidance and accurate readings. Our work brings together astrology, numerology and Vastu-inspired perspectives to help people reflect on their patterns, choices, relationships, spaces and next steps.
                 </p>
                 <p className="mt-4 text-[#2C1210]/70 leading-relaxed font-sans text-base md:text-lg text-justify">
                   Every consultation is approached with care, context and confidentiality. Rather than using fear-based predictions or one-size-fits-all answers, Cosmic Nidhi aims to translate traditional systems into clear observations and practical questions for modern life.

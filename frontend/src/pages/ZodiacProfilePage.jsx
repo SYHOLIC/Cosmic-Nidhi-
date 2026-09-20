@@ -529,7 +529,7 @@ function ProductDetailModal({ product, onClose }) {
                   </button>
 
                   <a
-                    href="tel:8826044955"
+                    href="tel:9560437360"
                     className="
                       group inline-flex items-center justify-center gap-2
                       rounded-full
@@ -828,7 +828,7 @@ export default function ZodiacProfilePage() {
                   </Link>
 
                   <a
-                    href="tel:8826044955"
+                    href="tel:9560437360"
                     className="group inline-flex items-center justify-center gap-2.5 rounded-full border border-transparent px-5 py-4 font-sans text-[12px] font-bold uppercase tracking-[0.16em] text-[#D8C8A8]/70 transition-colors duration-300 hover:text-[#E9C76D]"
                   >
                     <Phone size={14} strokeWidth={1.8} />

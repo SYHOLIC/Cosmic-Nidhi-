@@ -9,7 +9,7 @@ mongoose.connect(process.env.MONGODB_URI).then(async () => {
   const hashedPassword = await bcrypt.hash('admin123', salt);
   
   await User.updateOne(
-    { email: 'admin@cosmicnidhi.com' },
+    { email: 'admin@cosmicnidhi.in' },
     { $set: { role: 'admin', password: hashedPassword, name: 'Admin' } },
     { upsert: true }
   );

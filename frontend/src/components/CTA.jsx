@@ -342,7 +342,7 @@ function CTA() {
                   PRIMARY CTA
               ===================================== */}
               <a
-                href="tel:8826044955"
+                href="tel:9560437360"
                 className="
                   group
                   relative
@@ -673,20 +673,20 @@ function CTA() {
               Still have questions?{" "}
 
               <a
-                href="tel:8826044955"
+                href="tel:9560437360"
                 className="
                   text-[#8E1B24]
                   transition-colors
                   hover:text-[#E9A534]
                 "
               >
-                Call us at 8826 044 955
+                Call us at +91 95604 37360 / 88260 44955
               </a>
 
               {" "}or{" "}
 
               <a
-                href="mailto:info@cosmicnidhi.in"
+                href="mailto:cosmicnidhi.astro@gmail.com"
                 className="
                   text-[#8E1B24]
                   transition-colors

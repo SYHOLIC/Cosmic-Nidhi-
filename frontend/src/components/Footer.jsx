@@ -153,7 +153,9 @@ function Footer() {
 
               {/* Instagram */}
               <a
-                href="#"
+                href="https://www.instagram.com/cosmicnidhi.astrology/"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="Instagram"
                 className="
                   flex
@@ -184,7 +186,9 @@ function Footer() {
 
               {/* YouTube */}
               <a
-                href="#"
+                href="https://www.youtube.com/@nidhiasthana3699"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="YouTube"
                 className="
                   flex
@@ -210,6 +214,39 @@ function Footer() {
                   viewBox="0 0 24 24"
                 >
                   <path d="M23.498 6.186a2.997 2.997 0 00-2.11-2.12C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.388.566a2.997 2.997 0 00-2.11 2.12C0 8.07 0 12 0 12s0 3.93.502 5.814a2.997 2.997 0 002.11 2.12c1.883.566 9.388.566 9.388.566s7.505 0 9.388-.566a2.997 2.997 0 002.11-2.12C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                </svg>
+              </a>
+
+              {/* LinkedIn */}
+              <a
+                href="https://www.linkedin.com/in/nidhi-asthana"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                className="
+                  flex
+                  h-9
+                  w-9
+                  items-center
+                  justify-center
+                  rounded-full
+                  border
+                  border-[#E9A534]/15
+                  text-[#FDECC8]/55
+                  transition-all
+                  duration-300
+                  hover:-translate-y-1
+                  hover:border-[#E9A534]/40
+                  hover:bg-[#E9A534]/[0.08]
+                  hover:text-[#E9A534]
+                "
+              >
+                <svg
+                  className="h-4 w-4"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                 </svg>
               </a>
             </div>
@@ -335,19 +372,15 @@ function Footer() {
             <ul className="space-y-4">
               {/* Phone */}
               <li>
-                <a
-                  href="tel:8826044955"
+                <div
                   className="
                     group
                     flex
-                    items-center
+                    items-start
                     gap-3
                     font-sans
                     text-sm
                     text-[#FDECC8]/65
-                    transition-colors
-                    duration-300
-                    hover:text-[#E9A534]
                   "
                 >
                   <span
@@ -371,14 +404,21 @@ function Footer() {
                     ☎
                   </span>
 
-                  +91 8826 044 955
-                </a>
+                  <div className="flex flex-col gap-0.5">
+                    <a href="tel:9560437360" className="hover:text-[#E9A534] transition-colors">
+                      +91 95604 37360
+                    </a>
+                    <a href="tel:8826044955" className="hover:text-[#E9A534] transition-colors">
+                      +91 88260 44955
+                    </a>
+                  </div>
+                </div>
               </li>
 
               {/* Email */}
               <li>
                 <a
-                  href="mailto:info@cosmicnidhi.in"
+                  href="mailto:cosmicnidhi.astro@gmail.com"
                   className="
                     group
                     flex
@@ -413,39 +453,44 @@ function Footer() {
                     @
                   </span>
 
-                  info@cosmicnidhi.in
+                  cosmicnidhi.astro@gmail.com
                 </a>
               </li>
 
               {/* Location */}
-              <li
-                className="
-                  flex
-                  items-center
-                  gap-3
-                  font-sans
-                  text-sm
-                  text-[#FDECC8]/65
-                "
-              >
-                <span
+              <li>
+                <div
                   className="
                     flex
-                    h-8
-                    w-8
-                    shrink-0
-                    items-center
-                    justify-center
-                    rounded-full
-                    border
-                    border-[#E9A534]/20
-                    text-[#E9A534]
+                    items-start
+                    gap-3
+                    font-sans
+                    text-sm
+                    text-[#FDECC8]/65
                   "
                 >
-                  ✦
-                </span>
+                  <span
+                    className="
+                      flex
+                      h-8
+                      w-8
+                      shrink-0
+                      items-center
+                      justify-center
+                      rounded-full
+                      border
+                      border-[#E9A534]/20
+                      text-[#E9A534]
+                      mt-0.5
+                    "
+                  >
+                    ✦
+                  </span>
 
-                India
+                  <span className="leading-relaxed text-xs sm:text-sm">
+                    A-56/1, 4th Floor, A Block, Sector 50, Noida, Uttar Pradesh 201301
+                  </span>
+                </div>
               </li>
             </ul>
           </div>
@@ -481,6 +526,19 @@ function Footer() {
             <span>
               © {new Date().getFullYear()} All rights reserved By: Cosmic Nidhi.
             </span>
+
+            <span className="text-[#E9A534]/40 select-none">|</span>
+
+            <a
+              href="https://www.cosmicnidhi.in"
+              className="
+                transition-colors
+                duration-300
+                hover:text-[#E9A534]
+              "
+            >
+              www.cosmicnidhi.in
+            </a>
 
             <span className="text-[#E9A534]/40 select-none">|</span>
 

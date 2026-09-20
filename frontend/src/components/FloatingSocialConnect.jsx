@@ -11,22 +11,63 @@ export default function FloatingSocialConnect() {
     return null;
   }
 
-  // Pre-configured WhatsApp details (phone in footer is +91 8826 044 955)
-  const whatsappNumber = "918826044955";
+  // Pre-configured WhatsApp details
+  const whatsappNumber = "919560437360";
   const whatsappMessage = encodeURIComponent(
-    "Hello Cosmic Nidhi! 🙏 I would like to know more about your astrology consultations and services."
+    "Hello Cosmic Nidhi! 🙏 I would like to know more about your astrology consultations and guidance."
   );
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
-  // Pre-configured Instagram profile URL
-  const instagramUrl = "https://www.instagram.com/cosmicnidhi/";
+  // Pre-configured social URLs
+  const instagramUrl = "https://www.instagram.com/cosmicnidhi.astrology/";
+  const youtubeUrl = "https://www.youtube.com/@nidhiasthana3699";
 
   return (
     <aside
       aria-label="Social Connect Floating Actions"
       className="fixed bottom-6 right-5 sm:bottom-7 sm:right-7 z-50 flex flex-col items-end gap-3 pointer-events-auto select-none"
     >
-      {/* 1. INSTAGRAM FLOATING BUTTON */}
+      {/* 1. YOUTUBE FLOATING BUTTON */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.7, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.05, ease: "easeOut" }}
+        className="relative flex items-center group"
+        onMouseEnter={() => setHoveredIcon("youtube")}
+        onMouseLeave={() => setHoveredIcon(null)}
+      >
+        <AnimatePresence>
+          {hoveredIcon === "youtube" && (
+            <motion.span
+              initial={{ opacity: 0, x: 10, scale: 0.9 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 10, scale: 0.9 }}
+              transition={{ duration: 0.18 }}
+              className="hidden sm:inline-flex items-center gap-1.5 absolute right-full mr-3 whitespace-nowrap rounded-full bg-[#1A0307]/95 px-3.5 py-1.5 text-[12px] font-medium tracking-wide text-[#FFF8EC] border border-[#E9A534]/30 shadow-[0_8px_20px_rgba(0,0,0,0.45)] backdrop-blur-md"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FF0000] animate-pulse"></span>
+              Watch on YouTube
+            </motion.span>
+          )}
+        </AnimatePresence>
+
+        <a
+          href={youtubeUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Visit Cosmic Nidhi on YouTube"
+          className="relative flex h-11 w-11 sm:h-[45px] sm:w-[45px] items-center justify-center rounded-full text-white shadow-[0_6px_20px_rgba(255,0,0,0.35)] transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:shadow-[0_10px_26px_rgba(255,0,0,0.55)] focus:outline-none"
+          style={{
+            background: "linear-gradient(145deg, #ff3d3d 0%, #FF0000 60%, #a80000 100%)",
+          }}
+        >
+          <svg className="h-5 w-5 fill-current drop-shadow-sm" viewBox="0 0 24 24">
+            <path d="M23.498 6.186a2.997 2.997 0 00-2.11-2.12C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.388.566a2.997 2.997 0 00-2.11 2.12C0 8.07 0 12 0 12s0 3.93.502 5.814a2.997 2.997 0 002.11 2.12c1.883.566 9.388.566 9.388.566s7.505 0 9.388-.566a2.997 2.997 0 002.11-2.12C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+          </svg>
+        </a>
+      </motion.div>
+
+      {/* 2. INSTAGRAM FLOATING BUTTON */}
       <motion.div
         initial={{ opacity: 0, scale: 0.7, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}

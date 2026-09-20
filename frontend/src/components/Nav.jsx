@@ -431,7 +431,7 @@ function Nav() {
             ================================================= */}
 
             <a
-              href="tel:8826044955"
+              href="tel:9560437360"
               className="
                 group hidden h-[45px] items-center gap-3 rounded-[8px]
                 border border-[#D8A948]/75
@@ -466,7 +466,7 @@ function Nav() {
             ================================================= */}
 
             <a
-              href="tel:8826044955"
+              href="tel:9560437360"
               className="
                 flex h-[39px] items-center gap-1.5 rounded-[7px]
                 border border-[#D8A948]/70
@@ -654,7 +654,7 @@ function Nav() {
 
             {/* Mobile phone */}
             <a
-              href="tel:8826044955"
+              href="tel:9560437360"
               onClick={closeMobileMenu}
               className="
                 group mt-5 flex items-center justify-between
@@ -671,8 +671,8 @@ function Nav() {
                   <p className="font-sans text-[9px] font-semibold uppercase tracking-[0.2em] text-[#E9A534]">
                     Call / WhatsApp
                   </p>
-                  <p className="mt-1 font-sans text-[14px] font-semibold text-[#FFF8EC]">
-                    8826 044 955
+                  <p className="mt-1 font-sans text-[13px] font-semibold text-[#FFF8EC]">
+                    95604 37360 / 8826 044 955
                   </p>
                 </div>
               </div>
@@ -682,7 +682,7 @@ function Nav() {
 
             {/* Mobile CTA */}
             <a
-              href="tel:8826044955"
+              href="tel:9560437360"
               onClick={closeMobileMenu}
               className="
                 mt-3 flex h-[50px] items-center justify-center gap-2.5

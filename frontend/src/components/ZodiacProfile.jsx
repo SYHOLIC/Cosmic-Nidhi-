@@ -453,7 +453,7 @@ export default function ZodiacProfile({ sign, onClose }) {
 
                   {/* Ghost — Book a Consultation */}
                   <a
-                    href="tel:8826044955"
+                    href="tel:9560437360"
                     className="
                       group inline-flex items-center justify-center gap-2.5
                       rounded-full

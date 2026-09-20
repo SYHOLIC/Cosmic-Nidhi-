@@ -48,6 +48,10 @@ const bookingSchema = new mongoose.Schema({
     dateOfBirth: String,
     timeOfBirth: String,
     placeOfBirth: String,
+    partnerName: String,
+    partnerDateOfBirth: String,
+    partnerTimeOfBirth: String,
+    partnerPlaceOfBirth: String,
     questions: String,
   },
   notes: {

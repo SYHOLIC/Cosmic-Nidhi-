@@ -73,7 +73,7 @@ const SERVICES_LIST = [
     icon: Sparkles,
     amount: 2100,
     priceDisplay: "₹2,100",
-    deliverables: "Side-by-side chart reading, compatibility report",
+    deliverables: "Side-by-side chart reading, compatibility report (Requires Bride & Groom Name & DOB)",
   },
 ];
 
@@ -98,6 +98,10 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
     dateOfBirth: "",
     timeOfBirth: "",
     placeOfBirth: "",
+    partnerName: "",
+    partnerDateOfBirth: "",
+    partnerTimeOfBirth: "",
+    partnerPlaceOfBirth: "",
     questions: "",
   });
 
@@ -163,6 +167,31 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
     setLoading(true);
     setErrorMsg("");
 
+    const isMatching = activeService.type === "kundli-matching";
+
+    if (isMatching) {
+      if (!clientDetails.name?.trim()) {
+        setErrorMsg("Bride's Full Name is required for matching.");
+        setLoading(false);
+        return;
+      }
+      if (!clientDetails.dateOfBirth) {
+        setErrorMsg("Bride's Date of Birth is required for matching.");
+        setLoading(false);
+        return;
+      }
+      if (!clientDetails.partnerName?.trim()) {
+        setErrorMsg("Groom's Full Name is required for matching.");
+        setLoading(false);
+        return;
+      }
+      if (!clientDetails.partnerDateOfBirth) {
+        setErrorMsg("Groom's Date of Birth is required for matching.");
+        setLoading(false);
+        return;
+      }
+    }
+
     try {
       const token = localStorage.getItem("token");
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
@@ -181,9 +210,15 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
           dateOfBirth: clientDetails.dateOfBirth,
           timeOfBirth: clientDetails.timeOfBirth,
           placeOfBirth: clientDetails.placeOfBirth,
+          partnerName: clientDetails.partnerName,
+          partnerDateOfBirth: clientDetails.partnerDateOfBirth,
+          partnerTimeOfBirth: clientDetails.partnerTimeOfBirth,
+          partnerPlaceOfBirth: clientDetails.partnerPlaceOfBirth,
           questions: clientDetails.questions,
         },
-        notes: clientDetails.questions,
+        notes: isMatching
+          ? `[Kundli Matching] Bride: ${clientDetails.name} (DOB: ${clientDetails.dateOfBirth}) | Groom: ${clientDetails.partnerName} (DOB: ${clientDetails.partnerDateOfBirth}) | Notes: ${clientDetails.questions || "None"}`
+          : clientDetails.questions,
       };
 
       const res = await axios.post(`${API_URL}/bookings`, payload, { headers });
@@ -385,112 +420,295 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
                   </div>
                 </div>
 
-                {/* 3. Client Information */}
-                <div>
-                  <label className="mb-2 block font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-[#8A5A1F]">
-                    3. Your Details
-                  </label>
-                  <div className="grid gap-3.5 sm:grid-cols-2">
-                    <div>
-                      <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-[#6B3A2A]/80">
-                        Full Name *
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          required
-                          placeholder="e.g. Priya Sharma"
-                          value={clientDetails.name}
-                          onChange={(e) =>
-                            setClientDetails({ ...clientDetails, name: e.target.value })
-                          }
-                          className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
-                        />
+                {/* Notice for Kundli Matching */}
+                {activeService.type === "kundli-matching" ? (
+                  <>
+                    <div className="rounded-[8px] border border-[#C1272D]/30 bg-[#C1272D]/5 p-3.5 flex items-start gap-2.5">
+                      <span className="text-[#C1272D] text-sm mt-0.5 shrink-0">✦</span>
+                      <p className="font-sans text-[12px] leading-[1.6] text-[#5A0E14]">
+                        <strong>Kundli / Match Making:</strong> Both <strong>Date of Birth</strong> and <strong>Full Name</strong> are required to match (Bride &amp; Groom).
+                      </p>
+                    </div>
+
+                    {/* Bride's Details */}
+                    <div className="rounded-[8px] border border-[#C1272D]/20 bg-[#FFF7E9] p-4">
+                      <p className="mb-2.5 font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#C1272D] flex items-center gap-1.5">
+                        <span>✦</span> Bride's Details (Required)
+                      </p>
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <div>
+                          <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.12em] text-[#6B3A2A]/80">
+                            Bride's Full Name *
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. Priya Sharma"
+                            value={clientDetails.name}
+                            onChange={(e) =>
+                              setClientDetails({ ...clientDetails, name: e.target.value })
+                            }
+                            className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.12em] text-[#6B3A2A]/80">
+                            Bride's Date of Birth *
+                          </label>
+                          <input
+                            type="date"
+                            required
+                            value={clientDetails.dateOfBirth}
+                            onChange={(e) =>
+                              setClientDetails({ ...clientDetails, dateOfBirth: e.target.value })
+                            }
+                            className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.12em] text-[#6B3A2A]/80">
+                            Exact Time of Birth (Optional)
+                          </label>
+                          <input
+                            type="time"
+                            value={clientDetails.timeOfBirth}
+                            onChange={(e) =>
+                              setClientDetails({ ...clientDetails, timeOfBirth: e.target.value })
+                            }
+                            className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.12em] text-[#6B3A2A]/80">
+                            Place of Birth (Optional)
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="e.g. Udaipur, Rajasthan"
+                            value={clientDetails.placeOfBirth}
+                            onChange={(e) =>
+                              setClientDetails({ ...clientDetails, placeOfBirth: e.target.value })
+                            }
+                            className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
+                          />
+                        </div>
                       </div>
                     </div>
 
-                    <div>
-                      <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-[#6B3A2A]/80">
-                        Phone / WhatsApp *
-                      </label>
-                      <input
-                        type="tel"
-                        required
-                        placeholder="e.g. 9876543210"
-                        value={clientDetails.phone}
-                        onChange={(e) =>
-                          setClientDetails({ ...clientDetails, phone: e.target.value })
-                        }
-                        className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
-                      />
+                    {/* Groom's Details */}
+                    <div className="rounded-[8px] border border-[#E9A534]/30 bg-[#FDECC8]/30 p-4">
+                      <p className="mb-2.5 font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#8A5A1F] flex items-center gap-1.5">
+                        <span>✦</span> Groom's Details (Required)
+                      </p>
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <div>
+                          <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.12em] text-[#6B3A2A]/80">
+                            Groom's Full Name *
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. Rahul Verma"
+                            value={clientDetails.partnerName}
+                            onChange={(e) =>
+                              setClientDetails({ ...clientDetails, partnerName: e.target.value })
+                            }
+                            className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.12em] text-[#6B3A2A]/80">
+                            Groom's Date of Birth *
+                          </label>
+                          <input
+                            type="date"
+                            required
+                            value={clientDetails.partnerDateOfBirth}
+                            onChange={(e) =>
+                              setClientDetails({ ...clientDetails, partnerDateOfBirth: e.target.value })
+                            }
+                            className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.12em] text-[#6B3A2A]/80">
+                            Exact Time of Birth (Optional)
+                          </label>
+                          <input
+                            type="time"
+                            value={clientDetails.partnerTimeOfBirth}
+                            onChange={(e) =>
+                              setClientDetails({ ...clientDetails, partnerTimeOfBirth: e.target.value })
+                            }
+                            className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.12em] text-[#6B3A2A]/80">
+                            Place of Birth (Optional)
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="e.g. Jaipur, Rajasthan"
+                            value={clientDetails.partnerPlaceOfBirth}
+                            onChange={(e) =>
+                              setClientDetails({ ...clientDetails, partnerPlaceOfBirth: e.target.value })
+                            }
+                            className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
+                          />
+                        </div>
+                      </div>
                     </div>
 
-                    <div className="sm:col-span-2">
-                      <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-[#6B3A2A]/80">
-                        Email Address *
+                    {/* Contact Info */}
+                    <div>
+                      <label className="mb-2 block font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-[#8A5A1F]">
+                        Contact Details
                       </label>
-                      <input
-                        type="email"
-                        required
-                        placeholder="e.g. priya@example.com"
-                        value={clientDetails.email}
-                        onChange={(e) =>
-                          setClientDetails({ ...clientDetails, email: e.target.value })
-                        }
-                        className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
-                      />
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <div>
+                          <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-[#6B3A2A]/80">
+                            Phone / WhatsApp *
+                          </label>
+                          <input
+                            type="tel"
+                            required
+                            placeholder="e.g. 9876543210"
+                            value={clientDetails.phone}
+                            onChange={(e) =>
+                              setClientDetails({ ...clientDetails, phone: e.target.value })
+                            }
+                            className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-[#6B3A2A]/80">
+                            Email Address *
+                          </label>
+                          <input
+                            type="email"
+                            required
+                            placeholder="e.g. priya@example.com"
+                            value={clientDetails.email}
+                            onChange={(e) =>
+                              setClientDetails({ ...clientDetails, email: e.target.value })
+                            }
+                            className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
+                          />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
+                  </>
+                ) : (
+                  <>
+                    {/* 3. Client Information */}
+                    <div>
+                      <label className="mb-2 block font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-[#8A5A1F]">
+                        3. Your Details
+                      </label>
+                      <div className="grid gap-3.5 sm:grid-cols-2">
+                        <div>
+                          <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-[#6B3A2A]/80">
+                            Full Name *
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="text"
+                              required
+                              placeholder="e.g. Priya Sharma"
+                              value={clientDetails.name}
+                              onChange={(e) =>
+                                setClientDetails({ ...clientDetails, name: e.target.value })
+                              }
+                              className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
+                            />
+                          </div>
+                        </div>
 
-                {/* 4. Astrological Chart Details (Optional / Contextual) */}
-                <div className="rounded-[8px] border border-[#E9A534]/20 bg-[#FDECC8]/25 p-4">
-                  <p className="mb-2.5 font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-[#8A5A1F]">
-                    Birth Details (Optional but Recommended for Kundli & Numerology)
-                  </p>
-                  <div className="grid gap-3 sm:grid-cols-3">
-                    <div>
-                      <label className="mb-1 block font-sans text-[9px] font-bold uppercase text-[#6B3A2A]/75">
-                        Date of Birth
-                      </label>
-                      <input
-                        type="date"
-                        value={clientDetails.dateOfBirth}
-                        onChange={(e) =>
-                          setClientDetails({ ...clientDetails, dateOfBirth: e.target.value })
-                        }
-                        className="w-full rounded-[6px] border border-[#5A0E14]/15 bg-white px-3 py-1.5 font-sans text-[12px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
-                      />
+                        <div>
+                          <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-[#6B3A2A]/80">
+                            Phone / WhatsApp *
+                          </label>
+                          <input
+                            type="tel"
+                            required
+                            placeholder="e.g. 9876543210"
+                            value={clientDetails.phone}
+                            onChange={(e) =>
+                              setClientDetails({ ...clientDetails, phone: e.target.value })
+                            }
+                            className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
+                          />
+                        </div>
+
+                        <div className="sm:col-span-2">
+                          <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-[#6B3A2A]/80">
+                            Email Address *
+                          </label>
+                          <input
+                            type="email"
+                            required
+                            placeholder="e.g. priya@example.com"
+                            value={clientDetails.email}
+                            onChange={(e) =>
+                              setClientDetails({ ...clientDetails, email: e.target.value })
+                            }
+                            className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
+                          />
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <label className="mb-1 block font-sans text-[9px] font-bold uppercase text-[#6B3A2A]/75">
-                        Exact Time of Birth
-                      </label>
-                      <input
-                        type="time"
-                        value={clientDetails.timeOfBirth}
-                        onChange={(e) =>
-                          setClientDetails({ ...clientDetails, timeOfBirth: e.target.value })
-                        }
-                        className="w-full rounded-[6px] border border-[#5A0E14]/15 bg-white px-3 py-1.5 font-sans text-[12px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
-                      />
+
+                    {/* 4. Astrological Chart Details (Optional / Contextual) */}
+                    <div className="rounded-[8px] border border-[#E9A534]/20 bg-[#FDECC8]/25 p-4">
+                      <p className="mb-2.5 font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-[#8A5A1F]">
+                        Birth Details (Optional but Recommended for Kundli &amp; Numerology)
+                      </p>
+                      <div className="grid gap-3 sm:grid-cols-3">
+                        <div>
+                          <label className="mb-1 block font-sans text-[9px] font-bold uppercase text-[#6B3A2A]/75">
+                            Date of Birth
+                          </label>
+                          <input
+                            type="date"
+                            value={clientDetails.dateOfBirth}
+                            onChange={(e) =>
+                              setClientDetails({ ...clientDetails, dateOfBirth: e.target.value })
+                            }
+                            className="w-full rounded-[6px] border border-[#5A0E14]/15 bg-white px-3 py-1.5 font-sans text-[12px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="mb-1 block font-sans text-[9px] font-bold uppercase text-[#6B3A2A]/75">
+                            Exact Time of Birth
+                          </label>
+                          <input
+                            type="time"
+                            value={clientDetails.timeOfBirth}
+                            onChange={(e) =>
+                              setClientDetails({ ...clientDetails, timeOfBirth: e.target.value })
+                            }
+                            className="w-full rounded-[6px] border border-[#5A0E14]/15 bg-white px-3 py-1.5 font-sans text-[12px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="mb-1 block font-sans text-[9px] font-bold uppercase text-[#6B3A2A]/75">
+                            City / Place of Birth
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="e.g. Udaipur, Rajasthan"
+                            value={clientDetails.placeOfBirth}
+                            onChange={(e) =>
+                              setClientDetails({ ...clientDetails, placeOfBirth: e.target.value })
+                            }
+                            className="w-full rounded-[6px] border border-[#5A0E14]/15 bg-white px-3 py-1.5 font-sans text-[12px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
+                          />
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <label className="mb-1 block font-sans text-[9px] font-bold uppercase text-[#6B3A2A]/75">
-                        City / Place of Birth
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Udaipur, Rajasthan"
-                        value={clientDetails.placeOfBirth}
-                        onChange={(e) =>
-                          setClientDetails({ ...clientDetails, placeOfBirth: e.target.value })
-                        }
-                        className="w-full rounded-[6px] border border-[#5A0E14]/15 bg-white px-3 py-1.5 font-sans text-[12px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
-                      />
-                    </div>
-                  </div>
-                </div>
+                  </>
+                )}
 
                 {/* 5. Questions / Notes */}
                 <div>

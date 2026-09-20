@@ -73,7 +73,7 @@ const SERVICES = [
     image: 'https://www.hiastro.in/_next/image?url=https:%2F%2Fsteadfast-cows-9445c3a50f.media.strapiapp.com%2FUnlock_Zodiac_Love_Compatibility_Your_Cosmic_Guide_2bfc1451f0.jpg&w=1920&q=75',
     accent: '#C1272D',
     type: 'Compatibility',
-    deliverables: 'Compatibility report and/or consultation',
+    deliverables: 'Compatibility report and/or consultation · Both Bride & Groom DOB and Name required',
     duration: '30 minutes',
     fee: '₹2,100',
     cta: 'Check Compatibility',

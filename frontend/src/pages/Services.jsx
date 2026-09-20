@@ -40,14 +40,18 @@ const SERVICES = [
     fee: "₹2,100",
     cta: "Explore Your Numbers",
     icon: Calendar,
+    whatTitle: "What We Explore",
     whatToExpect: [
-      "Birth & Life Path Numbers — Core number significance",
-      "Name Analysis & Name Correction Guidance",
-      "Business, Brand & Corporate Numerology",
-      "Mobile & Bank Account Number Analysis",
-      "Signature Analysis from numerological perspective",
-      "Personal Year & Recurring Life Cycles",
-      "Relationship Compatibility & Numerical Dynamics",
+      "Birth & Life Path Numbers — Understand the traditional significance of your core numbers.",
+      "Name Analysis — Explore the numerological relationship between your name and birth details.",
+      "Name Correction — Traditional numerological guidance for selecting or modifying names.",
+      "Business & Brand Name Analysis — Evaluate names from a numerological perspective.",
+      "Mobile Number Analysis — Understand the traditional interpretation of your mobile number.",
+      "Corporate Numerology",
+      "Bank Account Number analysis.",
+      "Signature Analysis — Explore the numerological perspective of your signature.",
+      "Personal Year & Cycles — Understand recurring numerical cycles and their traditional interpretations.",
+      "Compatibility Analysis — Explore relationship dynamics through numerological patterns.",
     ],
     whoItsFor:
       "Anyone curious about the symbolic relationship between their name, birth date, and personal themes.",
@@ -246,7 +250,7 @@ function ServiceCard({ service, index, onBook }) {
           <div className="mb-3 flex items-center gap-3">
             <span className="h-px w-6 bg-[#E9A534]" />
             <p className="font-sans text-[10px] font-bold uppercase tracking-[0.24em] text-[#8A5A1F]">
-              What to Expect
+              {service.whatTitle || "What to Expect"}
             </p>
           </div>
 

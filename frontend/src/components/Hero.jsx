@@ -1,4 +1,6 @@
+import { useState } from "react";
 import Reveal from "./Reveal";
+import BookingModal from "./BookingModal";
 import {
   ArrowRight,
   Flower2,
@@ -49,6 +51,7 @@ const TRUST_ITEMS = [
 ];
 
 function Hero() {
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
   return (
     <section
@@ -348,8 +351,10 @@ function Hero() {
               >
                 {/* PRIMARY */}
 
-                <a
-                  href="tel:9560437360"
+                <button
+                  type="button"
+                  onClick={() => setIsBookingModalOpen(true)}
+                  aria-label="Book for Consultancy"
                   className="
                     group
                     inline-flex
@@ -372,6 +377,7 @@ function Hero() {
                     duration-300
                     hover:-translate-y-[2px]
                     hover:shadow-[0_17px_42px_rgba(0,0,0,0.38)]
+                    cursor-pointer
                   "
                 >
                   <span>Book for Consultancy</span>
@@ -385,12 +391,19 @@ function Hero() {
                       group-hover:translate-x-1
                     "
                   />
-                </a>
+                </button>
 
                 {/* SECONDARY */}
 
                 <a
                   href="#services"
+                  onClick={(e) => {
+                    const el = document.getElementById("services");
+                    if (el) {
+                      e.preventDefault();
+                      el.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }}
                   className="
                     group
                     inline-flex
@@ -403,6 +416,7 @@ function Hero() {
                     transition-colors
                     duration-300
                     hover:text-[#E9A534]
+                    cursor-pointer
                   "
                 >
                   <span
@@ -1002,6 +1016,15 @@ function Hero() {
           }
         }
       `}</style>
+
+      <BookingModal
+        isOpen={isBookingModalOpen}
+        onClose={() => setIsBookingModalOpen(false)}
+        initialService={{
+          title: "Personal Astrology Consultation",
+          type: "consultancy",
+        }}
+      />
     </section>
   );
 }

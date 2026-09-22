@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
-import { useScrollY } from '../hooks/useReveal';
 import BookingModal from './BookingModal';
 
 const SERVICES = [

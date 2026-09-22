@@ -1,4 +1,3 @@
-import { useScrollY } from "../hooks/useReveal";
 import Reveal from "./Reveal";
 import {
   ArrowRight,
@@ -10,47 +9,46 @@ import {
 import heroZodiac from "../assets/hero-zodiac3.png";
 import astrologerPortrait from "../assets/crystalss.png";
 
+const STARS = [
+  [8, 28, 2],
+  [13, 67, 1],
+  [19, 39, 1],
+  [25, 75, 2],
+  [31, 22, 1],
+  [37, 54, 1],
+  [40, 32, 2],
+  [45, 18, 1],
+  [48, 70, 1],
+  [53, 26, 2],
+  [57, 58, 1],
+  [62, 17, 1],
+  [67, 39, 2],
+  [72, 72, 1],
+  [77, 24, 1],
+  [83, 53, 2],
+  [88, 31, 1],
+  [94, 66, 1],
+];
+
+const TRUST_ITEMS = [
+  {
+    icon: Flower2,
+    title: "Spiritual Growth",
+    subtitle: "Clarity for your journey",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Trusted Guidance",
+    subtitle: "Personal & confidential",
+  },
+  {
+    icon: Sparkles,
+    title: "Accurate Readings",
+    subtitle: "Chart-based insights",
+  },
+];
+
 function Hero() {
-  const scrollY = useScrollY();
-
-  const stars = [
-    [8, 28, 2],
-    [13, 67, 1],
-    [19, 39, 1],
-    [25, 75, 2],
-    [31, 22, 1],
-    [37, 54, 1],
-    [40, 32, 2],
-    [45, 18, 1],
-    [48, 70, 1],
-    [53, 26, 2],
-    [57, 58, 1],
-    [62, 17, 1],
-    [67, 39, 2],
-    [72, 72, 1],
-    [77, 24, 1],
-    [83, 53, 2],
-    [88, 31, 1],
-    [94, 66, 1],
-  ];
-
-  const trustItems = [
-    {
-      icon: Flower2,
-      title: "Spiritual Growth",
-      subtitle: "Clarity for your journey",
-    },
-    {
-      icon: ShieldCheck,
-      title: "Trusted Guidance",
-      subtitle: "Personal & confidential",
-    },
-    {
-      icon: Sparkles,
-      title: "Accurate Readings",
-      subtitle: "Chart-based insights",
-    },
-  ];
 
   return (
     <section
@@ -93,7 +91,8 @@ function Hero() {
           w-[600px]
           rounded-full
           bg-[#7C1B23]/10
-          blur-[150px]
+          blur-[120px]
+          transform-gpu
         "
       />
 
@@ -107,7 +106,8 @@ function Hero() {
           w-[460px]
           rounded-full
           bg-[#5A0E14]/20
-          blur-[120px]
+          blur-[100px]
+          transform-gpu
         "
       />
 
@@ -133,7 +133,7 @@ function Hero() {
       ===================================================== */}
 
       <div className="pointer-events-none absolute inset-0 z-[2]">
-        {stars.map(([x, y, size], index) => (
+        {STARS.map(([x, y, size], index) => (
           <span
             key={index}
             className="
@@ -438,7 +438,7 @@ function Hero() {
             <Reveal delay={400}>
               <div className="hero-trust mt-[48px] flex w-full max-w-[660px] items-stretch">
 
-                {trustItems.map((item, index) => {
+                {TRUST_ITEMS.map((item, index) => {
                   const Icon = item.icon;
 
                   return (
@@ -587,23 +587,15 @@ function Hero() {
           ================================================= */}
 
           <Reveal delay={150}>
-            <div
-              className="hero-zodiac pointer-events-none absolute z-20"
-              style={{
-                transform:
-                  typeof window !== "undefined" &&
-                  window.innerWidth >= 1024
-                    ? `translateY(${scrollY * -0.006}px)`
-                    : "none",
-              }}
-            >
+            <div className="hero-zodiac pointer-events-none absolute z-20">
               <div
                 className="
                   absolute
                   inset-[13%]
                   rounded-full
                   bg-[#E9A534]/[0.055]
-                  blur-[80px]
+                  blur-[60px]
+                  transform-gpu
                 "
               />
 

@@ -379,7 +379,7 @@ function TestimonialCarousel() {
       setActiveIndex((current) => {
         return (current + 1) % total;
       });
-    }, 2000);
+    }, 5000);
 
     return () => {
       window.clearInterval(timer);

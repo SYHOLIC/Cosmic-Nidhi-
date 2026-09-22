@@ -156,6 +156,39 @@ const updateProduct = async (req, res) => {
       });
     }
 
+    // Regenerate slug if name changed or slug is missing
+    if ((req.body.name && req.body.name !== product.name) || !product.slug) {
+      const base = (req.body.name || product.name || 'product')
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+      req.body.slug = `${base}-${Date.now()}`;
+    }
+
+    // Normalize category if an object was passed
+    if (req.body.category && typeof req.body.category === 'object') {
+      req.body.category = req.body.category._id || req.body.category.id;
+    }
+
+    // Sync image and images array
+    if (req.body.image && (!req.body.images || req.body.images.length === 0)) {
+      req.body.images = [req.body.image];
+    } else if (Array.isArray(req.body.images) && req.body.images.length > 0 && !req.body.image) {
+      req.body.image = req.body.images[0];
+    }
+
+    // Ensure price and stock are parsed as numbers
+    if (req.body.price !== undefined) {
+      req.body.price = Number(req.body.price);
+    }
+    if (req.body.originalPrice !== undefined && req.body.originalPrice !== null && req.body.originalPrice !== '') {
+      req.body.originalPrice = Number(req.body.originalPrice);
+    }
+    if (req.body.stock !== undefined) {
+      req.body.stock = Number(req.body.stock);
+    }
+
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
       req.body,

@@ -18,6 +18,7 @@ import { useCart } from "../context/CartContext";
 import UPIPaymentModal from "../components/UPIPaymentModal";
 
 import { API_URL } from "../config/api";
+import { loadRazorpay } from "../utils/loadRazorpay";
 
 export default function CheckoutPage() {
   const { cartItems, getCartTotal, clearCart } = useCart();
@@ -162,8 +163,13 @@ export default function CheckoutPage() {
 
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const openRazorpayModal = (orderData) => {
+  const openRazorpayModal = async (orderData) => {
     if (!orderData) return;
+    const loaded = await loadRazorpay();
+    if (!loaded || !window.Razorpay) {
+      alert("Unable to load payment gateway. Please check your internet connection.");
+      return;
+    }
     const { totalAmount, razorpayOrderId, razorpayKey, localOrderId, address } = orderData;
 
     const options = {

@@ -71,10 +71,21 @@ const SLUG_TO_NAME = {
    HELPERS
 ============================================================ */
 
+const formatPrice = (val) => {
+  if (val == null || val === "") return "";
+  if (typeof val === "string" && val.includes("₹")) return val;
+  const num = typeof val === "number" ? val : parseFloat(String(val).replace(/[^0-9.]/g, ""));
+  return isNaN(num) ? String(val) : `₹${num.toLocaleString("en-IN")}`;
+};
+
 const calcDiscount = (price, original) => {
-  if (!original) return null;
-  const p = parseInt(price.replace(/[₹,]/g, ""), 10);
-  const o = parseInt(original.replace(/[₹,]/g, ""), 10);
+  const toNum = (val) => {
+    if (val == null || val === "") return 0;
+    if (typeof val === "number") return val;
+    return parseInt(String(val).replace(/[₹,\s]/g, ""), 10) || 0;
+  };
+  const p = toNum(price);
+  const o = toNum(original);
   if (!o || o <= p) return null;
   return Math.round(((o - p) / o) * 100);
 };
@@ -130,7 +141,7 @@ function ProductCard({ crystal, onViewDetails, onAddToCart }) {
       {/* IMAGE */}
       <div className="relative aspect-square overflow-hidden bg-[#F4E4C8]/30">
         <img
-          src={crystal.image}
+          src={crystal.images?.[0] || crystal.image || ""}
           alt={crystal.name}
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -245,12 +256,12 @@ function ProductCard({ crystal, onViewDetails, onAddToCart }) {
 
         <div className="mt-3 flex flex-wrap items-baseline gap-2">
           <span className="font-display text-[22px] font-bold leading-none text-[#C1272D]">
-            {crystal.price}
+            {formatPrice(crystal.price)}
           </span>
 
           {crystal.originalPrice && (
             <span className="font-sans text-[12px] text-[#5A0E14]/45 line-through">
-              {crystal.originalPrice}
+              {formatPrice(crystal.originalPrice)}
             </span>
           )}
 

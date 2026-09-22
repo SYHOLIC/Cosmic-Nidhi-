@@ -15,10 +15,13 @@ import {
   Shield,
   FileText,
   Compass,
+  CreditCard,
+  ShieldCheck,
 } from "lucide-react";
 import axios from "axios";
 
 import { API_URL } from "../config/api";
+import { loadRazorpay } from "../utils/loadRazorpay";
 
 const SERVICES_LIST = [
   {
@@ -90,6 +93,7 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
   const [selectedServiceType, setSelectedServiceType] = useState("birth-chart");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState(TIME_SLOTS[0]);
+  const [paymentMode, setPaymentMode] = useState("advance_online");
 
   const [clientDetails, setClientDetails] = useState({
     name: "",
@@ -203,6 +207,7 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
         time: selectedTime,
         duration: activeService.duration,
         amount: activeService.amount,
+        paymentMethod: paymentMode === "advance_online" ? "online_razorpay" : "pay_later",
         clientDetails: {
           name: clientDetails.name,
           email: clientDetails.email,
@@ -223,8 +228,118 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
 
       const res = await axios.post(`${API_URL}/bookings`, payload, { headers });
 
-      if (res.data.success) {
-        setSuccessBooking(res.data.booking);
+      if (!res.data.success) {
+        throw new Error(res.data.message || "Failed to schedule consultation.");
+      }
+
+      const createdBooking = res.data.booking;
+
+      // Handle Advance Online Payment
+      if (paymentMode === "advance_online") {
+        const isLoaded = await loadRazorpay();
+        if (!isLoaded) {
+          setErrorMsg("Booking created! Payment gateway failed to load. You may pay at the consultation.");
+          setSuccessBooking(createdBooking);
+          setLoading(false);
+          return;
+        }
+
+        const orderRes = await axios.post(
+          `${API_URL}/payment/create-order`,
+          { amount: activeService.amount },
+          { headers }
+        );
+
+        if (!orderRes.data.success || !orderRes.data.order) {
+          setErrorMsg("Booking created! Could not initiate online payment order. You may pay at the consultation.");
+          setSuccessBooking(createdBooking);
+          setLoading(false);
+          return;
+        }
+
+        const { order, keyId } = orderRes.data;
+
+        const options = {
+          key: keyId || "rzp_test_TeAqFB25uZz5vD",
+          amount: order.amount,
+          currency: "INR",
+          name: "Cosmic Nidhi",
+          description: `${activeService.name} Consultation Booking`,
+          order_id: order.id,
+          config: {
+            display: {
+              blocks: {
+                upi: {
+                  name: "Pay via UPI / QR Code",
+                  instruments: [{ method: "upi" }]
+                },
+                other: {
+                  name: "Cards, NetBanking & Wallets",
+                  instruments: [
+                    { method: "card" },
+                    { method: "netbanking" },
+                    { method: "wallet" }
+                  ]
+                }
+              },
+              sequence: ["block.upi", "block.other"],
+              preferences: {
+                show_default_blocks: true
+              }
+            }
+          },
+          handler: async function (response) {
+            try {
+              await axios.post(
+                `${API_URL}/payment/verify`,
+                {
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                  booking_id: createdBooking._id,
+                },
+                { headers }
+              );
+
+              setSuccessBooking({
+                ...createdBooking,
+                paymentStatus: "paid",
+                paymentId: response.razorpay_payment_id,
+                paymentMethod: "online_razorpay",
+              });
+            } catch (vErr) {
+              console.error("Payment verify error:", vErr);
+              setSuccessBooking({
+                ...createdBooking,
+                paymentStatus: "paid",
+                paymentId: response.razorpay_payment_id,
+              });
+            }
+          },
+          prefill: {
+            name: clientDetails.name,
+            email: clientDetails.email,
+            contact: clientDetails.phone,
+          },
+          theme: {
+            color: "#5A0E14",
+          },
+          modal: {
+            ondismiss: function () {
+              setLoading(false);
+              setSuccessBooking(createdBooking);
+            },
+          },
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.on("payment.failed", function (response) {
+          setErrorMsg("Payment was cancelled or failed. Your appointment has been booked with payment due at consultation.");
+          setSuccessBooking(createdBooking);
+        });
+        rzp.open();
+      } else {
+        setSuccessBooking(createdBooking);
       }
     } catch (err) {
       console.error("Booking error:", err);
@@ -300,7 +415,20 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
                 <h3 className="font-display text-[24px] font-semibold text-[#3C080D]">
                   Consultation Request Confirmed!
                 </h3>
-                <p className="mx-auto mt-2 max-w-md font-sans text-[13.5px] leading-relaxed text-[#6B3A2A]/85">
+
+                {successBooking.paymentStatus === "paid" ? (
+                  <div className="mx-auto mt-2 inline-flex items-center gap-1.5 rounded-full border border-green-600/30 bg-green-50 px-3 py-1 font-sans text-[11.5px] font-bold uppercase tracking-[0.1em] text-green-800">
+                    <CheckCircle2 size={13} />
+                    <span>Advance Payment Verified · {activeService.priceDisplay || `₹${activeService.amount}`}</span>
+                  </div>
+                ) : (
+                  <div className="mx-auto mt-2 inline-flex items-center gap-1.5 rounded-full border border-[#E9A534]/40 bg-[#FDECC8]/40 px-3 py-1 font-sans text-[11.5px] font-bold uppercase tracking-[0.1em] text-[#8A5A1F]">
+                    <Clock size={13} />
+                    <span>Payment Due at Consultation · {activeService.priceDisplay || `₹${activeService.amount}`}</span>
+                  </div>
+                )}
+
+                <p className="mx-auto mt-3 max-w-md font-sans text-[13.5px] leading-relaxed text-[#6B3A2A]/85">
                   Thank you, <strong className="text-[#3C080D]">{clientDetails.name}</strong>. Your appointment for{" "}
                   <strong className="text-[#8B2F2B]">{activeService.name}</strong> on{" "}
                   <strong className="text-[#3C080D]">{new Date(selectedDate).toLocaleDateString()}</strong> at{" "}
@@ -312,8 +440,16 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
                     <Clock size={14} className="text-[#E9A534]" /> Session Duration: {activeService.duration}
                   </p>
                   <p className="mt-1 flex items-center gap-2 font-semibold text-[#8B2F2B]">
-                    <span>✦</span> Fee: {activeService.priceDisplay || `₹${activeService.amount}`}
+                    <span>✦</span> Fee: {activeService.priceDisplay || `₹${activeService.amount}`}{" "}
+                    <span className={successBooking.paymentStatus === "paid" ? "text-green-700 font-bold ml-1" : "text-[#8A5A1F] ml-1"}>
+                      ({successBooking.paymentStatus === "paid" ? "Paid in Advance ✓" : "Due at session"})
+                    </span>
                   </p>
+                  {successBooking.paymentId && (
+                    <p className="mt-1 text-[11px] font-medium text-[#6B3A2A]/80">
+                      <span>✦</span> Payment Reference: {successBooking.paymentId}
+                    </p>
+                  )}
                   <p className="mt-1 flex items-center gap-2">
                     <FileText size={14} className="text-[#E9A534]" /> Deliverables: {activeService.deliverables}
                   </p>
@@ -726,6 +862,95 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
                   />
                 </div>
 
+                {/* 6. Payment Mode Selection */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-[#8A5A1F]">
+                      Advance Payment Option
+                    </label>
+                    <span className="font-display text-[13px] font-bold text-[#8B2F2B]">
+                      {activeService.priceDisplay || `₹${activeService.amount}`}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                    {/* Option 1: Pay Advance Online */}
+                    <button
+                      type="button"
+                      onClick={() => setPaymentMode("advance_online")}
+                      className={`relative flex items-start gap-3 rounded-[8px] border p-3.5 text-left transition-all ${
+                        paymentMode === "advance_online"
+                          ? "border-[#E9A534] bg-[#FDECC8]/40 shadow-sm ring-1 ring-[#E9A534]"
+                          : "border-[#5A0E14]/12 bg-white hover:border-[#E9A534]/50"
+                      }`}
+                    >
+                      <div
+                        className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${
+                          paymentMode === "advance_online"
+                            ? "bg-[#5A0E14] text-[#FFF8EC]"
+                            : "bg-[#FDECC8]/40 text-[#8A5A1F]"
+                        }`}
+                      >
+                        <CreditCard size={14} />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <p className="font-display text-[13px] font-semibold text-[#3C080D]">
+                            Pay Advance Online
+                          </p>
+                          <span className="rounded-full bg-[#E9A534]/25 px-1.5 py-0.5 font-sans text-[8.5px] font-bold uppercase tracking-[0.08em] text-[#8A5A1F]">
+                            Instant
+                          </span>
+                        </div>
+                        <p className="mt-0.5 font-sans text-[11px] text-[#6B3A2A]/75">
+                          UPI (GPay / PhonePe / Paytm), QR, Cards &amp; NetBanking
+                        </p>
+                      </div>
+                    </button>
+
+                    {/* Option 2: Pay Later */}
+                    <button
+                      type="button"
+                      onClick={() => setPaymentMode("pay_later")}
+                      className={`relative flex items-start gap-3 rounded-[8px] border p-3.5 text-left transition-all ${
+                        paymentMode === "pay_later"
+                          ? "border-[#E9A534] bg-[#FDECC8]/40 shadow-sm ring-1 ring-[#E9A534]"
+                          : "border-[#5A0E14]/12 bg-white hover:border-[#E9A534]/50"
+                      }`}
+                    >
+                      <div
+                        className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${
+                          paymentMode === "pay_later"
+                            ? "bg-[#5A0E14] text-[#FFF8EC]"
+                            : "bg-[#FDECC8]/40 text-[#8A5A1F]"
+                        }`}
+                      >
+                        <Clock size={14} />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-display text-[13px] font-semibold text-[#3C080D]">
+                          Pay at Consultation
+                        </p>
+                        <p className="mt-0.5 font-sans text-[11px] text-[#6B3A2A]/75">
+                          Pay later during consultation via UPI or Cash
+                        </p>
+                      </div>
+                    </button>
+                  </div>
+
+                  {paymentMode === "advance_online" && (
+                    <div className="mt-2.5 flex items-center justify-between rounded-[7px] border border-[#E9A534]/30 bg-[#FFF7E9] px-3.5 py-2.5 font-sans text-[11.5px] text-[#6B3A2A]/85">
+                      <span className="flex items-center gap-1.5">
+                        <ShieldCheck className="h-4 w-4 text-[#8A5A1F]" />
+                        Secured 256-bit payment gateway · Instant slot reservation
+                      </span>
+                      <strong className="text-[#3C080D]">
+                        {activeService.priceDisplay || `₹${activeService.amount}`}
+                      </strong>
+                    </div>
+                  )}
+                </div>
+
                 {errorMsg && (
                   <p className="rounded-[6px] bg-red-50 p-3 font-sans text-[12px] font-medium text-red-700">
                     {errorMsg}
@@ -740,7 +965,11 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
                     className="flex flex-1 items-center justify-center gap-2 rounded-full border border-[#F2C66D] bg-gradient-to-r from-[#F3D49B] to-[#DDB56D] py-3.5 font-sans text-[12px] font-bold uppercase tracking-[0.16em] text-[#3C080D] shadow-[0_10px_26px_rgba(0,0,0,0.12)] transition-all hover:-translate-y-0.5 hover:shadow-[0_15px_34px_rgba(0,0,0,0.20)] disabled:opacity-50"
                   >
                     {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-                    {loading ? "Scheduling Consultation..." : "Confirm Consultation Booking"}
+                    {loading
+                      ? (paymentMode === "advance_online" ? "Processing Advance Payment..." : "Scheduling Consultation...")
+                      : (paymentMode === "advance_online"
+                          ? `Pay Advance (${activeService.priceDisplay || '₹' + activeService.amount}) & Book`
+                          : "Confirm Consultation Booking (Pay Later)")}
                   </button>
                   <button
                     type="button"

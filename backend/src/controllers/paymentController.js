@@ -1,6 +1,7 @@
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
 const Order = require('../models/Order');
+const Booking = require('../models/Booking');
 
 // Initialize Razorpay client helper
 const getRazorpayClient = () => {
@@ -64,7 +65,7 @@ const createRazorpayOrder = async (req, res) => {
 
 // @desc    Verify Razorpay payment
 // @route   POST /api/payment/verify
-// @access  Private
+// @access  Private / Public (optionalProtect)
 const verifyPayment = async (req, res) => {
   try {
     const {
@@ -72,6 +73,7 @@ const verifyPayment = async (req, res) => {
       razorpay_payment_id,
       razorpay_signature,
       local_order_id,
+      booking_id,
     } = req.body;
 
     const { secret } = getRazorpayClient();
@@ -96,9 +98,25 @@ const verifyPayment = async (req, res) => {
         }
       }
 
+      // If we passed the booking ID, update booking payment status
+      let updatedBooking = null;
+      if (booking_id) {
+        const booking = await Booking.findById(booking_id);
+        if (booking) {
+          booking.paymentStatus = 'paid';
+          booking.paymentId = razorpay_payment_id;
+          booking.paymentMethod = 'online_razorpay';
+          booking.status = 'confirmed';
+          await booking.save();
+          updatedBooking = booking;
+        }
+      }
+
       return res.status(200).json({
         success: true,
         message: 'Payment verified successfully',
+        paymentId: razorpay_payment_id,
+        booking: updatedBooking,
       });
     } else {
       return res.status(400).json({
@@ -118,14 +136,37 @@ const verifyPayment = async (req, res) => {
 
 // @desc    Verify manual/direct UPI QR payment with UTR number
 // @route   POST /api/payment/verify-upi
-// @access  Private
+// @access  Private / Public (optionalProtect)
 const verifyUpiPayment = async (req, res) => {
   try {
-    const { local_order_id, utr_number } = req.body;
-    if (!local_order_id || !utr_number) {
+    const { local_order_id, booking_id, utr_number } = req.body;
+    if ((!local_order_id && !booking_id) || !utr_number) {
       return res.status(400).json({
         success: false,
-        message: 'Order ID and UPI Reference / UTR number are required',
+        message: 'Order ID or Booking ID, and UPI Reference / UTR number are required',
+      });
+    }
+
+    if (booking_id) {
+      const booking = await Booking.findById(booking_id);
+      if (!booking) {
+        return res.status(404).json({
+          success: false,
+          message: 'Booking not found',
+        });
+      }
+
+      booking.paymentStatus = 'paid';
+      booking.paymentId = `UPI-${utr_number.trim()}`;
+      booking.paymentMethod = 'online_upi';
+      booking.status = 'confirmed';
+      booking.notes = (booking.notes ? booking.notes + ' | ' : '') + `UPI UTR: ${utr_number.trim()}`;
+      await booking.save();
+
+      return res.status(200).json({
+        success: true,
+        message: 'UPI Payment submitted and verified successfully for booking!',
+        booking,
       });
     }
 

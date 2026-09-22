@@ -39,7 +39,12 @@ function SafeImage({ src, alt, className, iconFallback: Icon }) {
   const [failed, setFailed] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
-  if (failed) {
+  useEffect(() => {
+    setFailed(false);
+    setLoaded(false);
+  }, [src]);
+
+  if (!src || failed) {
     return (
       <div className={`${className} flex items-center justify-center bg-gradient-to-br from-[#3C080D] to-[#1F0306]`}>
         {Icon && <Icon className="h-10 w-10 text-[#E9A534]/45" strokeWidth={1.5} />}
@@ -63,6 +68,13 @@ function SafeImage({ src, alt, className, iconFallback: Icon }) {
     </>
   );
 }
+
+const formatPrice = (val) => {
+  if (val == null || val === "") return "";
+  if (typeof val === "string" && val.includes("₹")) return val;
+  const num = typeof val === "number" ? val : parseFloat(String(val).replace(/[^0-9.]/g, ""));
+  return isNaN(num) ? String(val) : `₹${num.toLocaleString("en-IN")}`;
+};
 
 const discountPct = (price, original) => {
   const toNum = (val) => {
@@ -200,6 +212,10 @@ function ProductCard({ product, index, onQuickView, isWishlisted }) {
     setTimeout(() => setAdded(false), 2000);
   };
 
+  const isAvailable = product.inStock !== undefined ? product.inStock : (product.stock === undefined || product.stock > 0);
+  const productImage = product.images?.[0] || product.image || "";
+  const reviewCount = Array.isArray(product.reviews) ? product.reviews.length : (product.reviews || 0);
+
   return (
     <motion.article
       initial={{ opacity: 0, y: 20 }}
@@ -224,7 +240,7 @@ function ProductCard({ product, index, onQuickView, isWishlisted }) {
       {/* IMAGE */}
       <div className="relative aspect-square overflow-hidden bg-[#F4E4C8]/30">
         <SafeImage
-          src={product.image}
+          src={productImage}
           alt={product.name}
           iconFallback={Gem}
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -282,10 +298,10 @@ function ProductCard({ product, index, onQuickView, isWishlisted }) {
           <div className="flex items-center gap-1">
             <Star className="h-3 w-3 fill-[#E9A534] text-[#E9A534]" strokeWidth={0} />
             <span className="font-sans text-[11px] font-bold text-[#3C080D]">
-              {product.rating}
+              {product.rating ?? 4.8}
             </span>
             <span className="font-sans text-[10px] text-[#5A0E14]/50">
-              ({product.reviews})
+              ({reviewCount})
             </span>
           </div>
 
@@ -293,10 +309,10 @@ function ProductCard({ product, index, onQuickView, isWishlisted }) {
 
           <span
             className={`font-sans text-[10px] font-medium ${
-              product.inStock ? "text-green-700" : "text-[#C1272D]"
+              isAvailable ? "text-green-700" : "text-[#C1272D]"
             }`}
           >
-            {product.inStock ? "In stock" : "Out of stock"}
+            {isAvailable ? "In stock" : "Out of stock"}
           </span>
         </div>
 
@@ -306,11 +322,11 @@ function ProductCard({ product, index, onQuickView, isWishlisted }) {
 
         <div className="mt-2.5 flex flex-wrap items-baseline gap-2">
           <span className="font-display text-[19px] font-bold leading-none text-[#C1272D]">
-            {product.price}
+            {formatPrice(product.price)}
           </span>
           {product.originalPrice && (
             <span className="font-sans text-[11px] text-[#5A0E14]/40 line-through">
-              {product.originalPrice}
+              {formatPrice(product.originalPrice)}
             </span>
           )}
           {off && (
@@ -322,7 +338,7 @@ function ProductCard({ product, index, onQuickView, isWishlisted }) {
 
         <button
           type="button"
-          disabled={!product.inStock || added}
+          disabled={!isAvailable || added}
           onClick={handleAddToCart}
           className={`
             mt-3.5 flex w-full items-center justify-center gap-2
@@ -345,7 +361,7 @@ function ProductCard({ product, index, onQuickView, isWishlisted }) {
           `}
         >
           <ShoppingBag className="h-3.5 w-3.5" strokeWidth={1.9} />
-          {added ? "Added!" : (product.inStock ? "Add to Cart" : "Notify Me")}
+          {added ? "Added!" : (isAvailable ? "Add to Cart" : "Notify Me")}
         </button>
       </div>
     </motion.article>

@@ -10,6 +10,7 @@ import {
   Save,
   Package,
   AlertCircle,
+  CheckCircle,
   Upload,
   Loader2,
   Tag,
@@ -275,9 +276,15 @@ function ProductFormModal({
       .map(f => f.trim())
       .filter(f => f.length > 0);
 
+    const finalImage = formData.image || editingProduct?.images?.[0] || editingProduct?.image || "";
+    const finalImages = finalImage
+      ? [finalImage, ...(editingProduct?.images?.filter(img => img !== finalImage) || [])]
+      : (editingProduct?.images || []);
+
     onSave({
       ...formData,
-      images: formData.image ? [formData.image] : [],
+      image: finalImage,
+      images: finalImages,
       features: parsedFeatures,
       price: Number(formData.price),
       originalPrice: formData.originalPrice ? Number(formData.originalPrice) : undefined,

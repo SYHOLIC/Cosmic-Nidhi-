@@ -42,6 +42,7 @@ import CouponTab from "../components/admin/CouponTab";
 import ReviewTab from "../components/admin/ReviewTab";
 import SeoTab from "../components/admin/SeoTab";
 import PageTab from "../components/admin/PageTab";
+import AdminNotifications from "../components/admin/AdminNotifications";
 
 import { API_URL } from "../config/api";
 
@@ -276,22 +277,15 @@ function Sidebar({
    TOP BAR
 ================================================================ */
 
-function TopBar({ activeTab, onMenuClick, handleLogout }) {
+function TopBar({ activeTab, setActiveTab, onMenuClick, handleLogout, orders, bookings }) {
   return (
-    <div
-      className="
-        sticky top-[74px] z-[70]
-        border-b border-[#5A0E14]/12
-        bg-[#FFFDF9]/95 backdrop-blur-md
-        lg:top-[78px]
-      "
-    >
-      <div className="flex h-14 items-center justify-between gap-4 px-4 sm:px-6">
+    <div className="sticky top-0 z-30 border-b border-[#5A0E14]/12 bg-[#FFFDF9]/95 backdrop-blur-md">
+      <div className="flex h-16 items-center justify-between px-4 sm:px-6">
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={onMenuClick}
-            aria-label="Open menu"
+            aria-label="Open sidebar"
             className="
               flex h-9 w-9 items-center justify-center rounded-full
               border border-[#5A0E14]/15 text-[#5A0E14]
@@ -316,18 +310,11 @@ function TopBar({ activeTab, onMenuClick, handleLogout }) {
         </div>
 
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            aria-label="Notifications"
-            className="
-              relative flex h-9 w-9 items-center justify-center rounded-full
-              border border-[#5A0E14]/15 text-[#5A0E14]
-              transition-colors hover:border-[#E9A534]/50 hover:text-[#8B2F2B]
-            "
-          >
-            <Bell className="h-4 w-4" strokeWidth={1.7} />
-            <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-[#C1272D]" />
-          </button>
+          <AdminNotifications
+            onSelectTab={setActiveTab}
+            fallbackOrders={orders}
+            fallbackBookings={bookings}
+          />
 
           <div className="flex items-center gap-2 rounded-full border border-[#5A0E14]/15 bg-[#FDECC8]/30 py-1 pl-1 pr-3">
             <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-[#3C080D] to-[#5A0E14]">
@@ -919,8 +906,11 @@ export default function AdminPage() {
 
         <TopBar
           activeTab={activeTab}
+          setActiveTab={setActiveTab}
           onMenuClick={() => setMobileOpen(true)}
           handleLogout={handleLogout}
+          orders={orders}
+          bookings={bookings}
         />
 
         <main className="px-4 py-5 sm:px-6 sm:py-6">

@@ -9,6 +9,13 @@ import SEOHead from "../components/SEOHead";
 
 import { API_URL } from "../config/api";
 
+const formatPrice = (val) => {
+  if (val == null || val === "") return "";
+  if (typeof val === "string" && val.includes("₹")) return val;
+  const num = typeof val === "number" ? val : parseFloat(String(val).replace(/[^0-9.]/g, ""));
+  return isNaN(num) ? String(val) : `₹${num.toLocaleString("en-IN")}`;
+};
+
 export default function ProductDetails() {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -140,11 +147,11 @@ export default function ProductDetails() {
 
             <div className="mt-4 flex items-baseline gap-4">
               <span className="font-display text-[32px] font-bold text-[#C1272D]">
-                ₹{product.price}
+                {formatPrice(product.price)}
               </span>
               {product.originalPrice && (
                 <span className="text-lg text-[#5A0E14]/40 line-through">
-                  ₹{product.originalPrice}
+                  {formatPrice(product.originalPrice)}
                 </span>
               )}
             </div>

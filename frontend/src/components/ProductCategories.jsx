@@ -1,430 +1,4 @@
-// import { useState } from "react";
-// import { motion, AnimatePresence } from "framer-motion";
-// import {
-//   Gem,
-//   Sparkles,
-//   Flame,
-//   BookOpen,
-//   Home,
-//   Moon,
-//   Star,
-//   ShoppingBag,
-//   Eye,
-//   Heart,
-//   ChevronRight,
-//   Plus,
-//   Minus,
-// } from "lucide-react";
-// import Reveal from "./Reveal";
-
-// // ---------------------------------------------------------------------------
-// // Data
-// // ---------------------------------------------------------------------------
-
-// const CATEGORIES = [
-//   {
-//     id: 1,
-//     name: "Crystals & Gemstones",
-//     slug: "crystals",
-//     icon: Gem,
-//     description: "Natural crystals and gemstones for healing, meditation and spiritual practices",
-//     image: "https://www.crystalage.com/img/products/amethyst-cluster-uruguayan-8cm_66.jpg?w=800&h=600&fit=crop",
-//     productCount: 24,
-//   },
-//   {
-//     id: 2,
-//     name: "Spiritual Jewelry",
-//     slug: "jewelry",
-//     icon: Sparkles,
-//     description: "Handcrafted jewelry with healing stones, rudraksha, and gemstone beads",
-//     image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=800&h=600&fit=crop",
-//     productCount: 18,
-//   },
-//   {
-//     id: 3,
-//     name: "Puja & Ritual Items",
-//     slug: "puja",
-//     icon: Flame,
-//     description: "Incense, diyas, yantras, and ritual items for spiritual practices",
-//     image: "https://tse1.mm.bing.net/th/id/OIP.YF5MioibMUoo-PSW_NtuvAHaE8?r=0&rs=1&pid=ImgDetMain&o=7&rm=3?w=800&h=600&fit=crop",
-//     productCount: 20,
-//   },
-//   {
-//     id: 4,
-//     name: "Books & Guides",
-//     slug: "books",
-//     icon: BookOpen,
-//     description: "Books on astrology, numerology, Vastu, and spiritual growth",
-//     image: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=800&h=600&fit=crop",
-//     productCount: 12,
-//   },
-//   {
-//     id: 5,
-//     name: "Home Decor & Vastu",
-//     slug: "home-decor",
-//     icon: Home,
-//     description: "Vastu-friendly home decor, crystals, and energy-balancing items",
-//     image: "https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800&h=600&fit=crop",
-//     productCount: 16,
-//   },
-//   {
-//     id: 6,
-//     name: "Yantras & Sacred Symbols",
-//     slug: "yantras",
-//     icon: Moon,
-//     description: "Sacred yantras, Sri Yantra, and spiritual symbols for meditation",
-//     image: "https://i.pinimg.com/originals/24/f8/33/24f833c00818b27942008a13589cf7b3.jpg?w=800&h=600&fit=crop",
-//     productCount: 10,
-//   },
-// ];
-
-// const PRODUCTS = [
-//   { id: 1, name: "Amethyst Crystal Cluster", price: "₹499", originalPrice: "₹699", image: "https://th.bing.com/th?id=OPAC.1TJUkijeB8%2B0xQ474C474&w=380&h=380&o=5&dpr=1.3&pid=21.1?w=500&h=500&fit=crop", category: "Crystals & Gemstones", rating: 4.9, reviews: 127, inStock: true, badge: "Best Seller" },
-//   { id: 2, name: "Rose Quartz Heart", price: "₹399", originalPrice: "₹549", image: "https://cdn11.bigcommerce.com/s-74zp6w28re/images/stencil/1280x1280/products/3754/87810/new-moon-beginnings-rose-quartz-heart-polished-crystal-csp-aa526__32694.1647332411.jpg?c=1?w=500&h=500&fit=crop", category: "Crystals & Gemstones", rating: 4.8, reviews: 98, inStock: true, badge: "Love Stone" },
-//   { id: 3, name: "Citrine Point", price: "₹599", originalPrice: "₹799", image: "https://th.bing.com/th/id/OIP.IOP-e-U3veYR2kfI0Lvx7AHaHa?r=0&o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3?w=500&h=500&fit=crop", category: "Crystals & Gemstones", rating: 4.7, reviews: 76, inStock: true, badge: "Success Stone" },
-//   { id: 4, name: "Clear Quartz Tower", price: "₹349", originalPrice: "₹499", image: "https://m.media-amazon.com/images/I/71V6lR7hDbS.jpg?w=500&h=500&fit=crop", category: "Crystals & Gemstones", rating: 4.6, reviews: 54, inStock: true, badge: "Healing Stone" },
-//   { id: 5, name: "Selenite Wand", price: "₹699", originalPrice: "₹899", image: "https://shop.atperrys.com/cdn/shop/products/cf5080850659f23007e527f6bbe1c78b.jpg?v=1684615486&width=950?w=500&h=500&fit=crop", category: "Crystals & Gemstones", rating: 4.8, reviews: 62, inStock: true, badge: "Popular" },
-//   { id: 6, name: "Lapis Lazuli Sphere", price: "₹799", originalPrice: "₹999", image: "https://tse3.mm.bing.net/th/id/OIP.AW8vLG6SDd_nhf4Sjqe_fQHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3?w=500&h=500&fit=crop", category: "Crystals & Gemstones", rating: 4.7, reviews: 43, inStock: true, badge: "Wisdom Stone" },
-//   { id: 7, name: "Rudraksha Mala 108 Beads", price: "₹899", originalPrice: "₹1,199", image: "https://5.imimg.com/data5/SELLER/Default/2026/2/586452784/TJ/NY/FO/83730477/rudraksha-mala-1000x1000.png?w=500&h=500&fit=crop", category: "Spiritual Jewelry", rating: 4.9, reviews: 203, inStock: true, badge: "Sacred" },
-//   { id: 8, name: "Gemstone Bracelet", price: "₹699", originalPrice: "₹899", image: "https://venusgems.com/cdn/shop/files/amethyst-bracelet-with-venus-gems-watermark.png?v=1767531070&width=810?w=500&h=500&fit=crop", category: "Spiritual Jewelry", rating: 4.7, reviews: 89, inStock: true, badge: "Handmade" },
-//   { id: 9, name: "Crystal Pendant Necklace", price: "₹1,299", originalPrice: "₹1,699", image: "https://images.unsplash.com/photo-1599459183200-59c7687a0275?w=500&h=500&fit=crop", category: "Spiritual Jewelry", rating: 4.8, reviews: 67, inStock: true, badge: "Limited" },
-//   { id: 10, name: "Natural Incense Sticks Set", price: "₹249", originalPrice: "₹349", image: "https://images.unsplash.com/photo-1602523961358-f9f03dd557db?w=500&h=500&fit=crop", category: "Puja & Ritual Items", rating: 4.5, reviews: 134, inStock: true, badge: "Popular" },
-//   { id: 11, name: "Brass Diya Set of 5", price: "₹399", originalPrice: "₹549", image: "https://5.imimg.com/data5/SELLER/Default/2024/2/391660133/YP/OH/WN/164197319/brass-lotus-shape-5-step-diya-1000x1000.jpg?w=500&h=500&fit=crop", category: "Puja & Ritual Items", rating: 4.6, reviews: 78, inStock: true, badge: "Traditional" },
-//   { id: 12, name: "Astrology Guide Book", price: "₹499", originalPrice: "₹699", image: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=500&h=500&fit=crop", category: "Books & Guides", rating: 4.7, reviews: 45, inStock: true, badge: "Bestseller" },
-//   { id: 13, name: "Numerology Workbook", price: "₹399", originalPrice: "₹549", image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500&h=500&fit=crop", category: "Books & Guides", rating: 4.6, reviews: 32, inStock: true, badge: "New" },
-//   { id: 14, name: "Vastu Pyramid", price: "₹799", originalPrice: "₹999", image: "https://images.unsplash.com/photo-1600210492493-0946911123ea?w=500&h=500&fit=crop", category: "Home Decor & Vastu", rating: 4.4, reviews: 56, inStock: true, badge: "Vastu" },
-//   { id: 15, name: "Crystal Tree", price: "₹1,499", originalPrice: "₹1,999", image: "https://images.unsplash.com/photo-1611080626919-7cf5a9dbc5cb?w=500&h=500&fit=crop", category: "Home Decor & Vastu", rating: 4.8, reviews: 41, inStock: true, badge: "Best Seller" },
-//   { id: 16, name: "Sri Yantra", price: "₹599", originalPrice: "₹799", image: "https://images.unsplash.com/photo-1609766418204-2d5a71b1c8f3?w=500&h=500&fit=crop", category: "Yantras & Sacred Symbols", rating: 4.9, reviews: 88, inStock: true, badge: "Sacred" },
-//   { id: 17, name: "Om Yantra", price: "₹499", originalPrice: "₹699", image: "https://images.unsplash.com/photo-1620503374956-c942862f0372?w=500&h=500&fit=crop", category: "Yantras & Sacred Symbols", rating: 4.7, reviews: 56, inStock: true, badge: "Meditation" },
-// ];
-
-// // ---------------------------------------------------------------------------
-// // Helpers
-// // ---------------------------------------------------------------------------
-
-// /** Image with graceful fallback — never shows a broken-image icon. */
-// function SafeImage({ src, alt, className, iconFallback: Icon }) {
-//   const [failed, setFailed] = useState(false);
-//   const [loaded, setLoaded] = useState(false);
-
-//   if (failed) {
-//     return (
-//       <div className={`${className} flex items-center justify-center bg-gradient-to-br from-[#5A0E14] to-[#3C080D]`}>
-//         {Icon && <Icon className="w-10 h-10 text-[#E9A534]/50" />}
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <>
-//       {!loaded && (
-//         <div className={`${className} absolute inset-0 bg-[#5A0E14]/10 animate-pulse`} />
-//       )}
-//       <img
-//         src={src}
-//         alt={alt}
-//         loading="lazy"
-//         onError={() => setFailed(true)}
-//         onLoad={() => setLoaded(true)}
-//         className={`${className} ${loaded ? "opacity-100" : "opacity-0"} transition-opacity duration-500`}
-//       />
-//     </>
-//   );
-// }
-
-// const discountPct = (price, original) => {
-//   const p = parseInt(price.replace(/[₹,]/g, ""), 10);
-//   const o = parseInt(original.replace(/[₹,]/g, ""), 10);
-//   if (!o || o <= p) return null;
-//   return Math.round(((o - p) / o) * 100);
-// };
-
-// // ---------------------------------------------------------------------------
-// // Product Card
-// // ---------------------------------------------------------------------------
-
-// function ProductCard({ product }) {
-//   const [wishlisted, setWishlisted] = useState(false);
-//   const off = discountPct(product.price, product.originalPrice);
-
-//   return (
-//     <motion.div
-//       initial={{ opacity: 0, y: 16 }}
-//       whileInView={{ opacity: 1, y: 0 }}
-//       transition={{ duration: 0.4 }}
-//       viewport={{ once: true, margin: "-40px" }}
-//       className="group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 border border-[#5A0E14]/10"
-//     >
-//       <div className="relative h-56 overflow-hidden bg-[#FDECC8]/30">
-//         <SafeImage
-//           src={product.image}
-//           alt={product.name}
-//           iconFallback={Gem}
-//           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-//         />
-
-//         {product.badge && (
-//           <div className="absolute top-3 left-3 bg-[#E9A534] text-[#3C080D] px-2.5 py-1 rounded-full text-[11px] font-semibold">
-//             {product.badge}
-//           </div>
-//         )}
-
-//         <button
-//           onClick={() => setWishlisted((w) => !w)}
-//           aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-//           className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm hover:scale-110 transition-transform duration-200"
-//         >
-//           <Heart className={`w-4 h-4 transition-colors ${wishlisted ? "fill-[#C1272D] text-[#C1272D]" : "text-[#5A0E14]/50"}`} />
-//         </button>
-
-//         {/* Quick view — appears on hover, sits above the Add to Cart row on hover only */}
-//         <div className="absolute inset-x-0 bottom-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-gradient-to-t from-[#3C080D]/80 to-transparent px-3 pb-3 pt-6">
-//           <button className="w-full flex items-center justify-center gap-1.5 bg-white/95 text-[#3C080D] text-xs font-medium py-2 rounded-full hover:bg-white transition-colors">
-//             <Eye className="w-3.5 h-3.5" /> Quick View
-//           </button>
-//         </div>
-//       </div>
-
-//       <div className="p-4">
-//         <div className="flex items-center gap-1 text-xs text-[#5A0E14]/60 mb-1.5">
-//           <Star className="w-3 h-3 text-[#E9A534] fill-[#E9A534]" />
-//           <span className="font-medium text-[#3C080D]">{product.rating}</span>
-//           <span>({product.reviews})</span>
-//           <span className="mx-1 text-[#5A0E14]/20">·</span>
-//           <span className={product.inStock ? "text-green-700" : "text-[#C1272D]"}>
-//             {product.inStock ? "In stock" : "Out of stock"}
-//           </span>
-//         </div>
-
-//         <h4 className="font-display text-base text-[#3C080D] leading-snug line-clamp-2 min-h-[2.5rem]">
-//           {product.name}
-//         </h4>
-
-//         <div className="flex items-center justify-between mt-3">
-//           <div className="flex items-baseline gap-2">
-//             <span className="font-display text-xl text-[#C1272D] font-bold">{product.price}</span>
-//             {product.originalPrice && (
-//               <span className="text-xs text-[#5A0E14]/40 line-through">{product.originalPrice}</span>
-//             )}
-//           </div>
-//           {off && <span className="text-[11px] font-semibold text-green-700">{off}% off</span>}
-//         </div>
-
-//         <button
-//           disabled={!product.inStock}
-//           className="mt-3 w-full flex items-center justify-center gap-2 bg-[#C1272D] text-[#FFF7E9] py-2.5 rounded-full text-sm font-medium hover:bg-[#9C1C22] transition-colors duration-200 disabled:bg-[#5A0E14]/20 disabled:text-[#5A0E14]/40 disabled:cursor-not-allowed"
-//         >
-//           <ShoppingBag className="w-4 h-4" />
-//           {product.inStock ? "Add to Cart" : "Notify Me"}
-//         </button>
-//       </div>
-//     </motion.div>
-//   );
-// }
-
-// // ---------------------------------------------------------------------------
-// // Category Card — image stays clearly visible; text sits on a solid panel
-// // ---------------------------------------------------------------------------
-
-// function CategoryCard({ category, onSelect }) {
-//   const Icon = category.icon;
-
-//   return (
-//     <motion.button
-//       onClick={() => onSelect(category.name)}
-//       initial={{ opacity: 0, y: 16 }}
-//       whileInView={{ opacity: 1, y: 0 }}
-//       transition={{ duration: 0.4 }}
-//       viewport={{ once: true, margin: "-40px" }}
-//       className="group relative text-left rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300"
-//     >
-//       <div className="relative h-48 overflow-hidden">
-//         <SafeImage
-//           src={category.image}
-//           alt={category.name}
-//           iconFallback={Icon}
-//           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-//         />
-//         {/* Light scrim only — keeps the photo readable */}
-//         <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
-//         <div className="absolute top-3 left-3 w-9 h-9 rounded-full bg-white/85 backdrop-blur-sm flex items-center justify-center">
-//           <Icon className="w-4.5 h-4.5 text-[#C1272D]" />
-//         </div>
-//         <div className="absolute top-3 right-3 bg-white/85 backdrop-blur-sm rounded-full px-2.5 py-1 text-[11px] font-medium text-[#3C080D]">
-//           {category.productCount} items
-//         </div>
-//       </div>
-
-//       {/* Solid panel — reliably legible regardless of the photo underneath */}
-//       <div className="bg-white p-4">
-//         <h3 className="font-display text-lg text-[#3C080D] group-hover:text-[#C1272D] transition-colors duration-200">
-//           {category.name}
-//         </h3>
-//         <p className="text-sm text-[#5A0E14]/55 leading-relaxed mt-1 line-clamp-2">
-//           {category.description}
-//         </p>
-//         <span className="inline-flex items-center gap-1 text-sm text-[#C1272D] font-medium mt-2 group-hover:gap-2 transition-all duration-200">
-//           Explore <ChevronRight className="w-4 h-4" />
-//         </span>
-//       </div>
-//     </motion.button>
-//   );
-// }
-
-// // ---------------------------------------------------------------------------
-// // Main Section
-// // ---------------------------------------------------------------------------
-
-// export default function ProductCategories() {
-//   const [activeCategory, setActiveCategory] = useState("all");
-//   const [showAllProducts, setShowAllProducts] = useState(false);
-
-//   const categoryNames = [...new Set(PRODUCTS.map((p) => p.category))];
-
-//   const filteredProducts =
-//     activeCategory === "all" ? PRODUCTS : PRODUCTS.filter((p) => p.category === activeCategory);
-
-//   const displayedProducts = showAllProducts ? filteredProducts : filteredProducts.slice(0, 8);
-
-//   const selectCategory = (name) => {
-//     setActiveCategory(name);
-//     setShowAllProducts(false);
-//     document.getElementById("product-grid")?.scrollIntoView({ behavior: "smooth", block: "start" });
-//   };
-
-//   return (
-//     <section className="relative overflow-hidden bg-[#FFF7E9] py-16 md:py-24">
-//       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#C1272D]/5 blur-3xl pointer-events-none" />
-//       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#E9A534]/5 blur-3xl pointer-events-none" />
-
-//       <div className="relative z-10 mx-auto max-w-7xl px-6">
-//         {/* Header */}
-//         <div className="text-center mb-12">
-//           <Reveal>
-//             <p className="text-sm tracking-[0.3em] uppercase text-[#C1272D] font-sans font-semibold">
-//               Our Store
-//             </p>
-//           </Reveal>
-//           <Reveal delay={100}>
-//             <h2 className="mt-4 font-display text-4xl md:text-5xl text-[#3C080D]">
-//               Crystals, Jewels &{" "}
-//               <span className="inline-block bg-gradient-to-r from-[#5A0E14] via-[#C1272D] to-[#E9A534] bg-clip-text text-transparent bg-[length:200%_100%] animate-gradient-x">
-//                 Spiritual Treasures
-//               </span>
-//             </h2>
-//           </Reveal>
-//           <Reveal delay={200}>
-//             <p className="mt-3 max-w-2xl mx-auto text-[#5A0E14]/60 font-sans">
-//               Discover our curated collection of natural crystals, gemstone jewelry, and spiritual products
-//             </p>
-//           </Reveal>
-//         </div>
-
-//         {/* Categories */}
-//         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-//           {CATEGORIES.map((category) => (
-//             <CategoryCard key={category.id} category={category} onSelect={selectCategory} />
-//           ))}
-//         </div>
-
-//         {/* Divider */}
-//         <div className="my-16 flex items-center gap-4">
-//           <div className="h-px flex-1 bg-gradient-to-r from-transparent to-[#E9A534]" />
-//           <span className="text-xs tracking-[0.3em] uppercase text-[#5A0E14]/40 font-sans flex items-center gap-2">
-//             <Gem className="w-4 h-4 text-[#E9A534]" />
-//             Featured Products
-//             <Gem className="w-4 h-4 text-[#E9A534]" />
-//           </span>
-//           <div className="h-px flex-1 bg-gradient-to-l from-transparent to-[#E9A534]" />
-//         </div>
-
-//         {/* Filters */}
-//         <div id="product-grid" className="flex flex-wrap items-center justify-center gap-2 mb-10 scroll-mt-24">
-//           <button
-//             onClick={() => {
-//               setActiveCategory("all");
-//               setShowAllProducts(false);
-//             }}
-//             className={`px-5 py-2 rounded-full text-sm font-medium transition-colors duration-200 ${
-//               activeCategory === "all"
-//                 ? "bg-[#C1272D] text-[#FFF7E9] shadow-sm"
-//                 : "bg-[#FDECC8]/50 text-[#5A0E14] hover:bg-[#FDECC8]"
-//             }`}
-//           >
-//             All Products
-//           </button>
-//           {categoryNames.map((cat) => (
-//             <button
-//               key={cat}
-//               onClick={() => {
-//                 setActiveCategory(cat);
-//                 setShowAllProducts(false);
-//               }}
-//               className={`px-5 py-2 rounded-full text-sm font-medium transition-colors duration-200 ${
-//                 activeCategory === cat
-//                   ? "bg-[#C1272D] text-[#FFF7E9] shadow-sm"
-//                   : "bg-[#FDECC8]/50 text-[#5A0E14] hover:bg-[#FDECC8]"
-//               }`}
-//             >
-//               {cat}
-//             </button>
-//           ))}
-//         </div>
-
-//         {/* Product grid */}
-//         <AnimatePresence mode="wait">
-//           <motion.div
-//             key={activeCategory}
-//             initial={{ opacity: 0 }}
-//             animate={{ opacity: 1 }}
-//             transition={{ duration: 0.25 }}
-//             className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"
-//           >
-//             {displayedProducts.length > 0 ? (
-//               displayedProducts.map((product) => <ProductCard key={product.id} product={product} />)
-//             ) : (
-//               <div className="col-span-full text-center py-16 text-[#5A0E14]/50">
-//                 No products in this category yet.
-//               </div>
-//             )}
-//           </motion.div>
-//         </AnimatePresence>
-
-//         {filteredProducts.length > 8 && (
-//           <div className="text-center mt-10">
-//             <button
-//               onClick={() => setShowAllProducts(!showAllProducts)}
-//               className="group inline-flex items-center gap-3 bg-[#5A0E14] text-[#FFF7E9] px-10 py-4 rounded-full font-semibold text-sm hover:bg-[#3C080D] transition-colors duration-200 shadow-md hover:shadow-lg font-sans"
-//             >
-//               {showAllProducts ? (
-//                 <>
-//                   Show Less <Minus className="w-4 h-4" />
-//                 </>
-//               ) : (
-//                 <>
-//                   View All Products <Plus className="w-4 h-4" />
-//                 </>
-//               )}
-//             </button>
-//           </div>
-//         )}
-//       </div>
-//     </section>
-//   );
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Gem,
@@ -756,7 +330,12 @@ function SafeImage({
   const [failed, setFailed] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
-  if (failed) {
+  useEffect(() => {
+    setFailed(false);
+    setLoaded(false);
+  }, [src]);
+
+  if (!src || failed) {
     return (
       <div
         className={`${className} flex items-center justify-center bg-gradient-to-br from-[#5A0E14] to-[#250408]`}
@@ -792,9 +371,21 @@ function SafeImage({
 // HELPERS
 // ============================================================================
 
+const formatPrice = (val) => {
+  if (val == null || val === "") return "";
+  if (typeof val === "string" && val.includes("₹")) return val;
+  const num = typeof val === "number" ? val : parseFloat(String(val).replace(/[^0-9.]/g, ""));
+  return isNaN(num) ? String(val) : `₹${num.toLocaleString("en-IN")}`;
+};
+
 const discountPct = (price, original) => {
-  const p = parseInt(price.replace(/[₹,]/g, ""), 10);
-  const o = parseInt(original.replace(/[₹,]/g, ""), 10);
+  const toNum = (val) => {
+    if (val == null || val === "") return 0;
+    if (typeof val === "number") return val;
+    return parseInt(String(val).replace(/[₹,\s]/g, ""), 10) || 0;
+  };
+  const p = toNum(price);
+  const o = toNum(original);
 
   if (!o || o <= p) return null;
 
@@ -999,6 +590,10 @@ function ProductCard({ product, index }) {
     product.originalPrice
   );
 
+  const isAvailable = product.inStock !== undefined ? product.inStock : (product.stock === undefined || product.stock > 0);
+  const productImage = product.images?.[0] || product.image || "";
+  const reviewCount = Array.isArray(product.reviews) ? product.reviews.length : (product.reviews || 0);
+
   return (
     <motion.article
       initial={{
@@ -1055,7 +650,7 @@ function ProductCard({ product, index }) {
         "
       >
         <SafeImage
-          src={product.image}
+          src={productImage}
           alt={product.name}
           iconFallback={Gem}
           className="
@@ -1218,10 +813,10 @@ function ProductCard({ product, index }) {
               text-[#6B443D]/50
             "
           >
-            ({product.reviews})
+            ({reviewCount})
           </span>
 
-          {product.inStock && (
+          {isAvailable && (
             <span
               className="
                 ml-auto
@@ -1270,7 +865,7 @@ function ProductCard({ product, index }) {
               text-[#5A0E14]
             "
           >
-            {product.price}
+            {formatPrice(product.price)}
           </span>
 
           {product.originalPrice && (
@@ -1281,7 +876,7 @@ function ProductCard({ product, index }) {
                 line-through
               "
             >
-              {product.originalPrice}
+              {formatPrice(product.originalPrice)}
             </span>
           )}
 
@@ -1302,7 +897,7 @@ function ProductCard({ product, index }) {
 
         <button
           type="button"
-          disabled={!product.inStock}
+          disabled={!isAvailable}
           className="
             mt-3
             flex

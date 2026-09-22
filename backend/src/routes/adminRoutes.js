@@ -7,6 +7,7 @@ const {
   deleteUser,
   getOrders,
   getBookings,
+  getNotifications,
 } = require('../controllers/adminController');
 const {
   getCategories,
@@ -25,9 +26,10 @@ router.get('/users', getUsers);
 router.put('/users/:id/role', updateUserRole);
 router.delete('/users/:id', deleteUser);
 
-// Orders & Bookings
+// Orders, Bookings & Notifications
 router.get('/orders', getOrders);
 router.get('/bookings', getBookings);
+router.get('/notifications', getNotifications);
 
 // Categories (reuse existing controller)
 router.get('/categories', getCategories);

@@ -1,12 +1,10 @@
 import { useEffect, useState, useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { useScrollY } from "../hooks/useReveal";
 import Reveal from "./Reveal";
 import aboutChart from "../assets/about-img.webp";
 import nidhi1 from "../assets/image.png";
 
 export default function About() {
-  const y = useScrollY();
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 

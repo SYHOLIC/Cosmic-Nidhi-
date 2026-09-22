@@ -3,13 +3,40 @@ import axios from "axios";
 
 import { API_URL } from "../config/api";
 
+let cachedSeoList = null;
+let seoPromise = null;
+
+const getSeoList = async () => {
+  if (cachedSeoList) return cachedSeoList;
+  if (seoPromise) return seoPromise;
+
+  seoPromise = axios
+    .get(`${API_URL}/seo`)
+    .then((res) => {
+      cachedSeoList = res.data.seoList || [];
+      return cachedSeoList;
+    })
+    .catch((err) => {
+      console.warn("Failed to fetch SEO config:", err.message);
+      return [];
+    })
+    .finally(() => {
+      seoPromise = null;
+    });
+
+  return seoPromise;
+};
+
 export default function SEOHead({ pageName, fallbackTitle, fallbackDescription }) {
   useEffect(() => {
+    let isMounted = true;
+
     const fetchSEO = async () => {
       try {
-        const res = await axios.get(`${API_URL}/seo`);
-        const seoList = res.data.seoList || [];
-        const match = seoList.find(s => s.pageName.toLowerCase() === pageName.toLowerCase());
+        const seoList = await getSeoList();
+        if (!isMounted) return;
+
+        const match = seoList.find((s) => s.pageName.toLowerCase() === pageName.toLowerCase());
 
         const finalTitle = match?.title || fallbackTitle || "Cosmic Nidhi - Zodiac & Astrology";
         const finalDesc = match?.description || fallbackDescription || "Discover premium zodiac jewelry, crystals, and astrology services.";
@@ -41,6 +68,9 @@ export default function SEOHead({ pageName, fallbackTitle, fallbackDescription }
     };
 
     fetchSEO();
+    return () => {
+      isMounted = false;
+    };
   }, [pageName, fallbackTitle, fallbackDescription]);
 
   return null;

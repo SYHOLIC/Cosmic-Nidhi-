@@ -65,6 +65,14 @@ const bookingSchema = new mongoose.Schema({
   amount: {
     type: Number,
   },
+  paymentId: {
+    type: String,
+  },
+  paymentMethod: {
+    type: String,
+    enum: ['online_razorpay', 'online_upi', 'pay_later'],
+    default: 'pay_later',
+  },
 }, {
   timestamps: true,
 });

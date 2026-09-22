@@ -732,7 +732,10 @@ export default function ProductsPage() {
                     min="0"
                     placeholder="Min ₹"
                     value={minPrice}
-                    onChange={(e) => setMinPrice(e.target.value)}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      setMinPrice(v === '' ? '' : Math.max(0, Number(v)).toString());
+                    }}
                     className="w-20 rounded-full border border-[#5A0E14]/15 bg-[#FFFDF9] px-3 py-1.5 font-sans text-[12px] text-[#3C080D] focus:border-[#E9A534]/60 focus:outline-none"
                   />
                   <span className="text-[#5A0E14]/40">-</span>
@@ -741,7 +744,10 @@ export default function ProductsPage() {
                     min="0"
                     placeholder="Max ₹"
                     value={maxPrice}
-                    onChange={(e) => setMaxPrice(e.target.value)}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      setMaxPrice(v === '' ? '' : Math.max(0, Number(v)).toString());
+                    }}
                     className="w-20 rounded-full border border-[#5A0E14]/15 bg-[#FFFDF9] px-3 py-1.5 font-sans text-[12px] text-[#3C080D] focus:border-[#E9A534]/60 focus:outline-none"
                   />
                 </div>

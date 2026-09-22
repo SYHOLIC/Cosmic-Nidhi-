@@ -12,6 +12,7 @@ import {
   ShoppingCart,
 } from "lucide-react";
 import { useCart } from "../context/CartContext";
+import BookingModal from "./BookingModal";
 
 import logo from "../assets/logo.jpeg";
 
@@ -26,6 +27,7 @@ function Nav() {
   const [userRole, setUserRole] = useState("user");
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const [desktopServicesOpen, setDesktopServicesOpen] = useState(false);
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
 
   /* =========================================================
      PAGE TYPE
@@ -850,20 +852,24 @@ function Nav() {
             </a>
 
             {/* Mobile CTA */}
-            <a
-              href="tel:9560437360"
-              onClick={closeMobileMenu}
+            <button
+              type="button"
+              onClick={() => {
+                closeMobileMenu();
+                setIsBookingOpen(true);
+              }}
               className="
-                mt-3 flex h-[50px] items-center justify-center gap-2.5
+                mt-3 flex h-[50px] w-full items-center justify-center gap-2.5
                 rounded-[8px] border border-[#E9A534]
                 bg-gradient-to-r from-[#E9A534] to-[#DDB56D]
                 font-sans text-[12px] font-bold text-[#3C080D]
                 shadow-[0_8px_25px_rgba(0,0,0,0.18)]
+                cursor-pointer
               "
             >
               Book a Reading
               <ArrowRight size={15} strokeWidth={1.8} />
-            </a>
+            </button>
           </div>
         </div>
       </header>
@@ -908,6 +914,15 @@ function Nav() {
           }
         }
       `}</style>
+
+      <BookingModal
+        isOpen={isBookingOpen}
+        onClose={() => setIsBookingOpen(false)}
+        initialService={{
+          title: "Personal Astrology Consultation",
+          type: "consultancy",
+        }}
+      />
     </>
   );
 }

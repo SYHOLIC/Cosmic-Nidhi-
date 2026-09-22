@@ -22,6 +22,7 @@ import {
   Search
 } from "lucide-react";
 import Reveal from "../components/Reveal";
+import BookingModal from "../components/BookingModal";
 import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import SEOHead from "../components/SEOHead";
@@ -320,6 +321,10 @@ function ProductCard({ product, index, onQuickView, isWishlisted }) {
           {product.name}
         </h3>
 
+        <p className="mt-1 line-clamp-2 min-h-[36px] font-sans text-[12px] leading-relaxed text-[#5A0E14]/70">
+          {product.description || "Discover the energy and benefits of this carefully curated spiritual item."}
+        </p>
+
         <div className="mt-2.5 flex flex-wrap items-baseline gap-2">
           <span className="font-display text-[19px] font-bold leading-none text-[#C1272D]">
             {formatPrice(product.price)}
@@ -377,6 +382,7 @@ export default function ProductsPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userWishlistIds, setUserWishlistIds] = useState(new Set());
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
 
   // Filters
   const [activeCategory, setActiveCategory] = useState("all");
@@ -723,6 +729,7 @@ export default function ProductsPage() {
                 <div className="flex items-center gap-2">
                   <input
                     type="number"
+                    min="0"
                     placeholder="Min ₹"
                     value={minPrice}
                     onChange={(e) => setMinPrice(e.target.value)}
@@ -731,6 +738,7 @@ export default function ProductsPage() {
                   <span className="text-[#5A0E14]/40">-</span>
                   <input
                     type="number"
+                    min="0"
                     placeholder="Max ₹"
                     value={maxPrice}
                     onChange={(e) => setMaxPrice(e.target.value)}
@@ -1042,8 +1050,9 @@ export default function ProductsPage() {
 
               <Reveal delay={240}>
                 <div className="mt-9 flex flex-wrap items-center gap-3">
-                  <a
-                    href="#services"
+                  <button
+                    type="button"
+                    onClick={() => setIsBookingOpen(true)}
                     className="
                       group inline-flex items-center justify-center gap-2.5
                       rounded-full border border-[#F2C66D]
@@ -1055,6 +1064,7 @@ export default function ProductsPage() {
                       transition-all duration-300
                       hover:-translate-y-0.5
                       hover:shadow-[0_15px_34px_rgba(0,0,0,0.40)]
+                      cursor-pointer
                     "
                   >
                     Book a Consultation
@@ -1062,7 +1072,7 @@ export default function ProductsPage() {
                       className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1"
                       strokeWidth={2}
                     />
-                  </a>
+                  </button>
 
                   <a
                     href="tel:9560437360"
@@ -1132,6 +1142,14 @@ export default function ProductsPage() {
           @keyframes zodiacRotate { from, to { transform: none; } }
         }
       `}</style>
+      <BookingModal
+        isOpen={isBookingOpen}
+        onClose={() => setIsBookingOpen(false)}
+        initialService={{
+          title: "Personal Astrology Consultation",
+          type: "consultancy",
+        }}
+      />
     </main>
   );
 }

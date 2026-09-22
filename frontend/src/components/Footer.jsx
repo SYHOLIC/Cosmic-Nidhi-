@@ -101,18 +101,27 @@ function Footer() {
           ======================================= */}
           <div className="space-y-5">
             <div>
-              <span
+              <button
+                type="button"
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 className="
+                  cursor-pointer
                   font-display
                   text-2xl
                   tracking-wide
                   text-[#E9A534]
+                  bg-transparent
+                  border-0
+                  p-0
+                  hover:text-[#F2C66D]
+                  transition-colors
+                  duration-300
 
                   sm:text-3xl
                 "
               >
                 Cosmic Nidhi
-              </span>
+              </button>
 
               {/* Gold underline */}
               <span className="mt-2 block h-[1px] w-10 bg-[#E9A534]" />
@@ -350,33 +359,15 @@ function Footer() {
                     text-[#FDECC8]/65
                   "
                 >
-                  <span
-                    className="
-                      flex
-                      h-8
-                      w-8
-                      shrink-0
-                      items-center
-                      justify-center
-                      rounded-full
-                      border
-                      border-[#E9A534]/20
-                      text-[#E9A534]
-                      transition-all
-                      duration-300
-                      group-hover:border-[#E9A534]/50
-                      group-hover:bg-[#E9A534]/[0.08]
-                    "
-                  >
-                    ☎
-                  </span>
-
-                  <div className="flex flex-col gap-0.5">
-                    <a href="tel:9560437360" className="hover:text-[#E9A534] transition-colors">
-                      +91 95604 37360
-                    </a>
-                    <a href="tel:8826044955" className="hover:text-[#E9A534] transition-colors">
-                      +91 88260 44955
+                  <div className="flex flex-col gap-0.5 pt-0.5">
+                    <span className="text-[0.6rem] uppercase tracking-[0.15em] text-[#E9A534]/60 font-sans mb-0.5">Questions?</span>
+                    <a
+                      href="https://wa.me/919560437360?text=Hi%20Cosmic%20Nidhi%2C%20I%20have%20a%20question"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-[#E9A534] transition-colors duration-300 font-medium"
+                    >
+                      Chat with us on WhatsApp
                     </a>
                   </div>
                 </div>
@@ -426,14 +417,21 @@ function Footer() {
 
               {/* Location */}
               <li>
-                <div
+                <a
+                  href="https://maps.google.com/?q=A-56/1,+4th+Floor,+A+Block,+Sector+50,+Noida,+Uttar+Pradesh+201301"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="
+                    group
                     flex
                     items-start
                     gap-3
                     font-sans
                     text-sm
                     text-[#FDECC8]/65
+                    transition-colors
+                    duration-300
+                    hover:text-[#E9A534]
                   "
                 >
                   <span
@@ -449,15 +447,19 @@ function Footer() {
                       border-[#E9A534]/20
                       text-[#E9A534]
                       mt-0.5
+                      transition-all
+                      duration-300
+                      group-hover:border-[#E9A534]/50
+                      group-hover:bg-[#E9A534]/[0.08]
                     "
                   >
                     ✦
                   </span>
 
-                  <span className="leading-relaxed text-xs sm:text-sm">
+                  <span className="leading-relaxed text-xs sm:text-sm underline-offset-2 group-hover:underline">
                     A-56/1, 4th Floor, A Block, Sector 50, Noida, Uttar Pradesh 201301
                   </span>
-                </div>
+                </a>
               </li>
             </ul>
           </div>

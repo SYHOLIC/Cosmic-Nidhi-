@@ -178,13 +178,7 @@ function ServiceRow({ item, index, onBook }) {
             backgroundColor: '#FFF7E9',
           }}
         >
-          {/* Vertical Ticker - Only on desktop */}
-          <div className="hidden lg:block">
-            <VerticalTicker
-              text={item.title}
-              color={item.accent}
-            />
-          </div>
+
 
           {/* Large Ghost Number - Only on desktop */}
           <motion.span
@@ -528,32 +522,47 @@ export default function Services() {
 
       {/* Footer CTA - Dark Maroon */}
       <div
-        className="flex items-center justify-center py-14"
-        style={{ backgroundColor: '#5A0E14', borderTop: '1px solid rgba(233,165,52,0.15)' }}
+        className="flex items-center justify-center py-16"
+        style={{ backgroundColor: '#3A0709', borderTop: '1px solid rgba(233,165,52,0.2)' }}
       >
         <a
-          href="#pricing"
-          className="relative inline-flex items-center gap-4 group font-sans text-[11px] uppercase tracking-[0.22em] text-[#E9A534]"
-          onMouseEnter={e => (e.currentTarget.querySelector('[data-bar]').style.transform = 'scaleX(1)')}
-          onMouseLeave={e => (e.currentTarget.querySelector('[data-bar]').style.transform = 'scaleX(0)')}
+          href="/services"
+          className="group relative inline-flex items-center gap-3 font-sans text-[11px] uppercase tracking-[0.28em] text-[#E9A534] px-8 py-4 overflow-hidden rounded-full"
+          style={{
+            border: '1px solid rgba(233,165,52,0.45)',
+            background: 'linear-gradient(135deg, rgba(233,165,52,0.06) 0%, rgba(193,39,45,0.06) 100%)',
+            boxShadow: '0 0 30px rgba(233,165,52,0.08), inset 0 1px 0 rgba(233,165,52,0.15)',
+            transition: 'all 0.45s cubic-bezier(0.16,1,0.3,1)',
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(233,165,52,0.18) 0%, rgba(193,39,45,0.12) 100%)';
+            e.currentTarget.style.boxShadow = '0 0 50px rgba(233,165,52,0.22), inset 0 1px 0 rgba(233,165,52,0.3)';
+            e.currentTarget.style.borderColor = 'rgba(233,165,52,0.75)';
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(233,165,52,0.06) 0%, rgba(193,39,45,0.06) 100%)';
+            e.currentTarget.style.boxShadow = '0 0 30px rgba(233,165,52,0.08), inset 0 1px 0 rgba(233,165,52,0.15)';
+            e.currentTarget.style.borderColor = 'rgba(233,165,52,0.45)';
+          }}
         >
+          {/* Shimmer sweep */}
           <span
-            data-bar
-            className="absolute inset-x-0 inset-y-0 -mx-6 -my-3"
+            className="absolute inset-0 rounded-full pointer-events-none"
             style={{
-              backgroundColor: 'rgba(233,165,52,0.08)',
-              transform: 'scaleX(0)',
-              transformOrigin: 'left',
-              transition: 'transform 0.5s cubic-bezier(0.16,1,0.3,1)',
+              background: 'linear-gradient(105deg, transparent 30%, rgba(233,165,52,0.15) 50%, transparent 70%)',
+              backgroundSize: '200% 100%',
+              backgroundPosition: '-100% 0',
+              transition: 'background-position 0.6s ease',
             }}
+            onMouseEnter={e => { e.currentTarget.style.backgroundPosition = '200% 0'; }}
           />
-          <span className="relative">View All Services</span>
+          <span className="relative font-semibold tracking-[0.3em]">View All Services</span>
           <svg
             viewBox="0 0 16 16"
-            className="relative w-4 h-4 transition-transform duration-300 group-hover:translate-x-1.5"
+            className="relative w-3.5 h-3.5 transition-transform duration-400 group-hover:translate-x-1"
             fill="none"
             stroke="currentColor"
-            strokeWidth="1.5"
+            strokeWidth="1.8"
           >
             <path d="M2 8h12M8 2l6 6-6 6" />
           </svg>

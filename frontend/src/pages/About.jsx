@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { useScrollY } from "../hooks/useReveal";
 import Reveal from "../components/Reveal";
+import BookingModal from "../components/BookingModal";
 import nidhi1 from "../assets/image.png";
 
 export default function About() {
@@ -12,6 +13,7 @@ export default function About() {
   // Counter state
   const [years, setYears] = useState(0);
   const [counterStarted, setCounterStarted] = useState(false);
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
 
   // Counter animation using IntersectionObserver directly on the badge
   useEffect(() => {
@@ -37,7 +39,7 @@ export default function About() {
   const startCounter = () => {
     const target = 10;
     let current = 0;
-    const steps = 40;
+    const steps = 50;
     const increment = target / steps;
     let step = 0;
 
@@ -50,12 +52,12 @@ export default function About() {
       } else {
         setYears(Math.floor(current));
       }
-    }, 20);
+    }, 50);  // 50ms × 50 steps = ~2500ms total — smooth and satisfying
 
     const fallbackTimer = setTimeout(() => {
       setYears(target);
       clearInterval(timer);
-    }, 1500);
+    }, 3500);
 
     return () => {
       clearInterval(timer);
@@ -232,20 +234,20 @@ export default function About() {
 
           {/* Vision & Mission */}
           <Reveal delay={200}>
-            <div className="mt-20 grid md:grid-cols-2 gap-8">
-              <div className="bg-[#FDECC8]/30 rounded-2xl border border-[#5A0E14]/10 p-8 md:p-10 shadow-sm hover:shadow-md transition-shadow duration-300">
+            <div className="mt-20 grid md:grid-cols-2 gap-8 items-stretch">
+              <div className="bg-[#FDECC8]/30 rounded-2xl border border-[#5A0E14]/10 p-8 md:p-10 shadow-sm hover:shadow-md transition-shadow duration-300 h-full flex flex-col">
                 <h3 className="font-display text-3xl text-[#3C080D] mb-4">
                   Our <span className="text-[#C1272D]">Vision</span>
                 </h3>
-                <p className="text-[#2C1210]/80 leading-relaxed font-sans text-lg text-justify">
+                <p className="text-[#2C1210]/80 leading-relaxed font-sans text-lg text-justify flex-1">
                   To become a trusted, accessible and responsible digital destination for astrology, numerology, Vastu and spiritual products—helping people approach life decisions with more self-awareness, clarity and intention.
                 </p>
               </div>
-              <div className="bg-[#FDECC8]/30 rounded-2xl border border-[#5A0E14]/10 p-8 md:p-10 shadow-sm hover:shadow-md transition-shadow duration-300">
+              <div className="bg-[#FDECC8]/30 rounded-2xl border border-[#5A0E14]/10 p-8 md:p-10 shadow-sm hover:shadow-md transition-shadow duration-300 h-full flex flex-col">
                 <h3 className="font-display text-3xl text-[#3C080D] mb-4">
                   Our <span className="text-[#E9A534]">Mission</span>
                 </h3>
-                <ul className="space-y-3 text-[#2C1210]/80 leading-relaxed font-sans text-lg">
+                <ul className="space-y-3 text-[#2C1210]/80 leading-relaxed font-sans text-lg flex-1">
                   <li className="flex items-start gap-3">
                     <span className="text-[#E9A534] text-xl mt-0.5">✦</span>
                     Make traditional guidance understandable and relevant
@@ -325,20 +327,29 @@ export default function About() {
           {/* Store & Philosophy */}
           <Reveal delay={360}>
             <div className="mt-20 pt-10 border-t border-[#5A0E14]/10">
-              <div className="grid md:grid-cols-2 gap-10">
-                <div className="bg-[#FDECC8]/20 rounded-2xl p-8 border border-[#5A0E14]/8">
+              <div className="grid md:grid-cols-2 gap-10 items-stretch">
+                <div className="bg-[#FDECC8]/20 rounded-2xl p-8 border border-[#5A0E14]/8 flex flex-col">
                   <h3 className="font-display text-2xl text-[#3C080D] mb-4">
                     Our <span className="text-[#C1272D]">Store</span>
                   </h3>
-                  <p className="text-[#2C1210]/80 leading-relaxed font-sans text-base md:text-lg">
+                  <p className="text-[#2C1210]/80 leading-relaxed font-sans text-base md:text-lg flex-1">
                     Alongside consultations and reports, our store offers selected crystals and spiritual products with transparent descriptions, care guidance and responsible use information.
                   </p>
+                  <div className="mt-6">
+                    <a
+                      href="/products"
+                      className="group inline-flex items-center gap-2 font-sans text-[12px] font-bold uppercase tracking-[0.18em] text-[#C1272D] border border-[#C1272D]/40 rounded-full px-6 py-2.5 hover:bg-[#C1272D] hover:text-[#FFF7E9] transition-all duration-300"
+                    >
+                      Visit Store
+                      <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+                    </a>
+                  </div>
                 </div>
-                <div className="bg-[#FDECC8]/20 rounded-2xl p-8 border border-[#5A0E14]/8">
+                <div className="bg-[#FDECC8]/20 rounded-2xl p-8 border border-[#5A0E14]/8 flex flex-col">
                   <h3 className="font-display text-2xl text-[#3C080D] mb-4">
                     Our <span className="text-[#E9A534]">Philosophy</span>
                   </h3>
-                  <p className="text-[#2C1210]/80 leading-relaxed font-sans text-base md:text-lg">
+                  <p className="text-[#2C1210]/80 leading-relaxed font-sans text-base md:text-lg flex-1">
                     Cosmic Nidhi is a space for reflection and informed personal choice. The guidance shared is spiritual and educational in nature; outcomes depend on many personal, social and practical factors.
                   </p>
                 </div>
@@ -356,17 +367,27 @@ export default function About() {
                 </span>
                 <div className="h-px w-16 bg-gradient-to-l from-transparent to-[#E9A534]" />
               </div>
-              <a
-                href="#services"
-                className="group inline-flex items-center gap-3 bg-[#C1272D] text-[#FFF7E9] px-12 py-5 rounded-full font-semibold text-lg hover:bg-[#9C1C22] transition-all duration-300 shadow-lg shadow-[#C1272D]/30 hover:shadow-[#C1272D]/50 hover:-translate-y-1 font-sans"
+              <button
+                type="button"
+                onClick={() => setIsBookingOpen(true)}
+                className="group inline-flex items-center gap-3 bg-[#C1272D] text-[#FFF7E9] px-12 py-5 rounded-full font-semibold text-lg hover:bg-[#9C1C22] transition-all duration-300 shadow-lg shadow-[#C1272D]/30 hover:shadow-[#C1272D]/50 hover:-translate-y-1 font-sans cursor-pointer"
               >
                 Book a Consultation
                 <span className="transition-transform duration-300 group-hover:translate-x-2 text-xl">→</span>
-              </a>
+              </button>
             </div>
           </Reveal>
         </div>
       </section>
+
+      <BookingModal
+        isOpen={isBookingOpen}
+        onClose={() => setIsBookingOpen(false)}
+        initialService={{
+          title: "Personal Astrology Consultation",
+          type: "consultancy",
+        }}
+      />
     </>
   );
 }

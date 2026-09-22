@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Reveal from "./Reveal";
 import Starfield from "./Starfield";
+import BookingModal from "./BookingModal";
 import heroZodiac from "../assets/hero-zodiac2.png";
 
 // FAQ Data
@@ -36,6 +37,15 @@ const FAQS = [
 ];
 
 function FAQItem({ faq, isOpen, onToggle }) {
+  const contentRef = useRef(null);
+  const [height, setHeight] = useState(0);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      setHeight(isOpen ? contentRef.current.scrollHeight : 0);
+    }
+  }, [isOpen]);
+
   return (
     <div className="border-b border-[#5A0E14]/8 last:border-0">
       <button
@@ -80,45 +90,44 @@ function FAQItem({ faq, isOpen, onToggle }) {
             font-sans
             text-xl
             text-[#E9A534]
-            transition-transform
-            duration-300
-
             md:text-2xl
-
-            ${isOpen ? "rotate-45" : ""}
           `}
+          style={{
+            display: 'inline-block',
+            transition: 'transform 0.4s cubic-bezier(0.16,1,0.3,1)',
+            transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
+          }}
         >
           +
         </span>
       </button>
 
       <div
-        className={`
-          overflow-hidden
-          transition-all
-          duration-500
-          ease-in-out
-          ${
-            isOpen
-              ? "max-h-[500px] pb-4 opacity-100 md:pb-5"
-              : "max-h-0 opacity-0"
-          }
-        `}
+        style={{
+          height: `${height}px`,
+          overflow: 'hidden',
+          transition: 'height 0.45s cubic-bezier(0.16,1,0.3,1), opacity 0.35s ease',
+          opacity: isOpen ? 1 : 0,
+        }}
       >
-        <p
-          className="
-            pr-4
-            font-sans
-            text-sm
-            leading-relaxed
-            text-[#2C1210]/70
+        <div ref={contentRef}>
+          <p
+            className="
+              pr-4
+              font-sans
+              text-sm
+              leading-relaxed
+              text-[#2C1210]/70
+              pb-4
 
-            md:pr-8
-            md:text-base
-          "
-        >
-          {faq.a}
-        </p>
+              md:pr-8
+              md:text-base
+              md:pb-5
+            "
+          >
+            {faq.a}
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -126,6 +135,7 @@ function FAQItem({ faq, isOpen, onToggle }) {
 
 function CTA() {
   const [openIndex, setOpenIndex] = useState(null);
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
 
   const toggleFAQ = (index) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -341,8 +351,9 @@ function CTA() {
               {/* =====================================
                   PRIMARY CTA
               ===================================== */}
-              <a
-                href="tel:9560437360"
+              <button
+                type="button"
+                onClick={() => setIsBookingOpen(true)}
                 className="
                   group
                   relative
@@ -368,6 +379,7 @@ function CTA() {
                   shadow-[0_10px_30px_rgba(90,14,20,0.18)]
                   transition-all
                   duration-300
+                  cursor-pointer
 
                   hover:-translate-y-1
                   hover:shadow-[0_14px_35px_rgba(90,14,20,0.26)]
@@ -420,7 +432,7 @@ function CTA() {
                 >
                   →
                 </span>
-              </a>
+              </button>
 
               {/* =====================================
                   SECONDARY CTA
@@ -703,6 +715,15 @@ function CTA() {
           </div>
         </div>
       </section>
+
+      <BookingModal
+        isOpen={isBookingOpen}
+        onClose={() => setIsBookingOpen(false)}
+        initialService={{
+          title: "Personal Astrology Consultation",
+          type: "consultancy",
+        }}
+      />
     </>
   );
 }

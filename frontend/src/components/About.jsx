@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import Reveal from "./Reveal";
+import BookingModal from "./BookingModal";
 import aboutChart from "../assets/about-img.webp";
 import nidhi1 from "../assets/image.png";
 
@@ -11,6 +12,7 @@ export default function About() {
   // Counter for years
   const [years, setYears] = useState(0);
   const [hasAnimated, setHasAnimated] = useState(false);
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -28,7 +30,7 @@ export default function About() {
             } else {
               setYears(Math.floor(current));
             }
-          }, 25);
+          }, 50);  // 50ms × 60 steps = ~3000ms — smooth and natural
           return () => clearInterval(timer);
         }
       },
@@ -127,7 +129,7 @@ export default function About() {
               initial={{ opacity: 0, x: -20 }}
               animate={isInView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.7, delay: 0.5 }}
-              className="absolute -top-4 -left-4 bg-[#FFF7E9] border-2 border-[#E9A534] rounded-xl px-6 py-4 shadow-xl"
+              className="absolute -top-4 -left-4 bg-[#FFF7E9] border-2 border-[#E9A534] rounded-xl px-6 py-4 shadow-xl text-center"
             >
               <p className="font-display text-4xl bg-gradient-to-r from-[#5A0E14] via-[#C1272D] to-[#E9A534] bg-clip-text text-transparent">
                 {years}+
@@ -199,13 +201,14 @@ export default function About() {
             {/* CTA Button */}
             <Reveal delay={400}>
               <div className="mt-8">
-                <a
-                  href="#services"
-                  className="group relative inline-flex items-center gap-3 bg-[#C1272D] text-[#FFF7E9] px-8 py-4 rounded-full font-semibold text-sm hover:bg-[#9C1C22] transition-all duration-300 shadow-lg shadow-[#C1272D]/30 hover:shadow-[#C1272D]/50 hover:-translate-y-0.5 font-sans"
+                <button
+                  type="button"
+                  onClick={() => setIsBookingOpen(true)}
+                  className="group relative inline-flex items-center gap-3 bg-[#C1272D] text-[#FFF7E9] px-8 py-4 rounded-full font-semibold text-sm hover:bg-[#9C1C22] transition-all duration-300 shadow-lg shadow-[#C1272D]/30 hover:shadow-[#C1272D]/50 hover:-translate-y-0.5 font-sans cursor-pointer"
                 >
                   Book a Consultation
                   <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
-                </a>
+                </button>
               </div>
             </Reveal>
 
@@ -221,20 +224,29 @@ export default function About() {
         {/* Bottom Section - Store & Philosophy */}
         <Reveal delay={350}>
           <div className="mt-20 pt-12 border-t border-[#5A0E14]/10">
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
+            <div className="grid md:grid-cols-2 gap-8 items-stretch">
+              <div className="bg-[#FDECC8]/20 rounded-2xl p-6 border border-[#5A0E14]/8 flex flex-col">
                 <h3 className="font-display text-2xl text-[#3C080D] mb-3">
                   Our <span className="text-[#C1272D]">Store</span>
                 </h3>
-                <p className="text-[#2C1210]/70 leading-relaxed font-sans text-sm">
+                <p className="text-[#2C1210]/70 leading-relaxed font-sans text-sm flex-1">
                   Alongside consultations and reports, our store offers selected crystals and spiritual products with transparent descriptions, care guidance and responsible use information.
                 </p>
+                <div className="mt-5">
+                  <a
+                    href="/products"
+                    className="group inline-flex items-center gap-2 font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-[#C1272D] border border-[#C1272D]/40 rounded-full px-5 py-2 hover:bg-[#C1272D] hover:text-[#FFF7E9] transition-all duration-300"
+                  >
+                    Visit Store
+                    <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+                  </a>
+                </div>
               </div>
-              <div>
+              <div className="bg-[#FDECC8]/20 rounded-2xl p-6 border border-[#5A0E14]/8 flex flex-col">
                 <h3 className="font-display text-2xl text-[#3C080D] mb-3">
                   Our <span className="text-[#E9A534]">Philosophy</span>
                 </h3>
-                <p className="text-[#2C1210]/70 leading-relaxed font-sans text-sm">
+                <p className="text-[#2C1210]/70 leading-relaxed font-sans text-sm flex-1">
                   Cosmic Nidhi is a space for reflection and informed personal choice. The guidance shared is spiritual and educational in nature; outcomes depend on many personal, social and practical factors.
                 </p>
               </div>
@@ -243,5 +255,14 @@ export default function About() {
         </Reveal>
       </div>
     </section>
+
+    <BookingModal
+      isOpen={isBookingOpen}
+      onClose={() => setIsBookingOpen(false)}
+      initialService={{
+        title: "Personal Astrology Consultation",
+        type: "consultancy",
+      }}
+    />
   );
 }

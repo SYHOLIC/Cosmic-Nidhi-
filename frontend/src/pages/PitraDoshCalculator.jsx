@@ -255,37 +255,37 @@ export default function PitraDoshCalculator() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F6F0] pt-24 pb-20 sm:pt-32 print:bg-white print:pt-4 print:pb-4">
+    <div className="min-h-screen bg-[#F4F6F0] pt-20 sm:pt-24 lg:pt-28 xl:pt-32 pb-16 lg:pb-24 print:bg-white print:pt-4 print:pb-4">
       {/* Background celestial ambient light */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden print:hidden">
         <div className="absolute top-10 left-1/4 h-[500px] w-[500px] rounded-full bg-[#E9A534]/10 blur-[120px]" />
         <div className="absolute bottom-20 right-10 h-[450px] w-[450px] rounded-full bg-[#B8380D]/8 blur-[130px]" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-7xl xl:max-w-[1360px] 2xl:max-w-[1520px] px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
         {/* ==============================================================
             HERO / MAIN FORM SECTION (MATCHES SCREENSHOT PIXEL-PERFECTLY)
         ============================================================== */}
-        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-12 print:hidden">
+        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-8 xl:gap-12 2xl:gap-16 print:hidden">
           {/* LEFT SIDE: HEADING & COPY */}
-          <div className="pt-2 lg:col-span-5 lg:pt-8">
+          <div className="pt-1 lg:col-span-5 lg:pt-4 xl:pt-6">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#B8380D]/20 bg-[#B8380D]/10 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-[#B8380D]">
               <Flame size={13} />
               Vedic Kundali Analysis Engine
             </div>
 
-            <h1 className="mt-5 font-serif text-3xl sm:text-4xl md:text-[46px] font-bold leading-[1.18] tracking-tight text-[#2C1210]">
+            <h1 className="mt-4 sm:mt-5 font-serif text-2xl sm:text-3xl lg:text-[34px] xl:text-[42px] 2xl:text-[46px] font-bold leading-[1.18] tracking-tight text-[#2C1210]">
               Pitra Dosha Checker in Your Kundali
             </h1>
 
-            <p className="mt-5 font-sans text-base sm:text-lg leading-relaxed text-[#564540]">
+            <p className="mt-3.5 sm:mt-5 font-sans text-sm sm:text-base xl:text-lg leading-relaxed text-[#564540]">
               Identify ancestral karmic debts and planetary alignments with precision.
               Get highly personalized Vedic insights into the Sun, Saturn, Rahu, and Ketu
               placements in your birth chart.
             </p>
 
             {/* Feature highlights */}
-            <div className="mt-8 space-y-3.5 border-t border-[#2C1210]/10 pt-6 font-sans text-sm text-[#44302C]">
+            <div className="mt-6 sm:mt-8 space-y-2.5 sm:space-y-3.5 border-t border-[#2C1210]/10 pt-5 sm:pt-6 font-sans text-xs sm:text-sm text-[#44302C]">
               <div className="flex items-center gap-3">
                 <CheckCircle2 size={18} className="shrink-0 text-[#7EA326]" />
                 <span>Lahiri Sidereal Ayanamsha &amp; Exact Planetary Longitudes</span>
@@ -307,8 +307,8 @@ export default function PitraDoshCalculator() {
 
           {/* RIGHT SIDE: INTERACTIVE FORM CARD */}
           <div className="lg:col-span-7">
-            <div className="rounded-[24px] border border-black/5 bg-white p-6 sm:p-9 shadow-[0_20px_50px_rgba(0,0,0,0.06)]">
-              <form onSubmit={handleCalculate} className="space-y-5">
+            <div className="rounded-[22px] lg:rounded-[26px] border border-black/5 bg-white p-5 sm:p-7 lg:p-7 xl:p-8 2xl:p-9 shadow-[0_20px_50px_rgba(0,0,0,0.06)]">
+              <form onSubmit={handleCalculate} className="space-y-4 sm:space-y-4.5 xl:space-y-5">
                 {/* Error Banner */}
                 {error && (
                   <div className="flex items-center gap-2 rounded-xl bg-red-50 p-3.5 text-xs sm:text-sm text-red-700 border border-red-200">
@@ -328,12 +328,12 @@ export default function PitraDoshCalculator() {
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="Enter your full name"
-                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3.5 font-sans text-sm text-[#2C1210] placeholder-gray-400 outline-none transition-all focus:border-[#B8380D] focus:ring-2 focus:ring-[#B8380D]/15"
+                    className="w-full rounded-xl border border-gray-200 bg-white px-3.5 py-3 sm:px-4 sm:py-3.5 font-sans text-sm text-[#2C1210] placeholder-gray-400 outline-none transition-all focus:border-[#B8380D] focus:ring-2 focus:ring-[#B8380D]/15"
                   />
                 </div>
 
-                {/* 2. DATE OF BIRTH + TIME OF BIRTH (2-COL ON DESKTOP) */}
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                {/* 2. DATE OF BIRTH + TIME OF BIRTH (RESPONSIVE GRID) */}
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 sm:gap-5">
                   {/* DATE OF BIRTH */}
                   <div>
                     <label className="block font-sans text-[11.5px] font-bold uppercase tracking-wider text-[#4A3B37] mb-2">
@@ -347,14 +347,14 @@ export default function PitraDoshCalculator() {
                         max={new Date().toISOString().split("T")[0]}
                         min="1920-01-01"
                         onChange={(e) => setDateOfBirth(e.target.value)}
-                        className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3.5 font-sans text-sm text-[#2C1210] outline-none transition-all focus:border-[#B8380D] focus:ring-2 focus:ring-[#B8380D]/15"
+                        className="w-full rounded-xl border border-gray-200 bg-white px-3.5 py-3 sm:px-4 sm:py-3.5 font-sans text-sm text-[#2C1210] outline-none transition-all focus:border-[#B8380D] focus:ring-2 focus:ring-[#B8380D]/15"
                       />
                     </div>
                   </div>
 
                   {/* TIME OF BIRTH */}
                   <div>
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="flex flex-wrap items-center justify-between gap-1 mb-2">
                       <label className="block font-sans text-[11.5px] font-bold uppercase tracking-wider text-[#4A3B37]">
                         Time of Birth
                       </label>
@@ -444,7 +444,7 @@ export default function PitraDoshCalculator() {
                       if (birthPlace.trim().length > 1) setShowSuggestions(true);
                     }}
                     placeholder="City, State, Country (e.g. Noida, Uttar Pradesh)"
-                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3.5 font-sans text-sm text-[#2C1210] placeholder-gray-400 outline-none transition-all focus:border-[#B8380D] focus:ring-2 focus:ring-[#B8380D]/15"
+                    className="w-full rounded-xl border border-gray-200 bg-white px-3.5 py-3 sm:px-4 sm:py-3.5 font-sans text-sm text-[#2C1210] placeholder-gray-400 outline-none transition-all focus:border-[#B8380D] focus:ring-2 focus:ring-[#B8380D]/15"
                   />
 
                   {/* City Autocomplete dropdown */}
@@ -547,7 +547,7 @@ export default function PitraDoshCalculator() {
                       value={whatsappNumber}
                       onChange={(e) => setWhatsappNumber(e.target.value)}
                       placeholder="Enter your WhatsApp number (e.g. 98765 43210)"
-                      className="w-full font-sans text-sm text-[#2C1210] placeholder-gray-400 outline-none"
+                      className="w-full min-w-0 font-sans text-sm text-[#2C1210] placeholder-gray-400 outline-none"
                     />
                   </div>
                 </div>
@@ -556,7 +556,7 @@ export default function PitraDoshCalculator() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full rounded-xl bg-[#C13B0E] py-4 font-sans text-base font-bold text-white shadow-lg shadow-[#C13B0E]/30 transition-all duration-300 hover:bg-[#A9330B] hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 cursor-pointer"
+                  className="w-full rounded-xl bg-[#C13B0E] py-3.5 sm:py-4 font-sans text-sm sm:text-base font-bold text-white shadow-lg shadow-[#C13B0E]/30 transition-all duration-300 hover:bg-[#A9330B] hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 cursor-pointer"
                 >
                   {loading ? (
                     <span className="inline-flex items-center gap-2">

@@ -217,33 +217,33 @@ function Nav() {
         <nav
           className="
             mx-auto flex h-[74px] w-full max-w-[1500px]
-            items-center justify-between gap-6
-            px-5 sm:px-7 lg:h-[78px] lg:px-9 xl:px-10
+            items-center justify-between gap-2 sm:gap-4 lg:gap-3 xl:gap-4 2xl:gap-6
+            px-4 sm:px-6 lg:h-[78px] lg:px-5 xl:px-7 2xl:px-10
           "
         >
           {/* =================================================
               LOGO
           ================================================= */}
 
-          <a href="/" className="group flex shrink-0 items-center gap-3">
+          <a href="/" className="group flex shrink-0 items-center gap-2.5 sm:gap-3">
             <img
               src={logo}
               alt="Cosmic Nidhi"
               className="
-                h-[43px] w-auto max-w-[180px] object-contain
+                h-[40px] w-auto max-w-[170px] object-contain
                 transition-transform duration-300
                 group-hover:scale-[1.03]
-                sm:h-[46px] lg:h-[48px]
+                sm:h-[44px] lg:h-[46px] xl:h-[48px]
               "
             />
 
             <div className="hidden sm:block">
               <div
                 className={`
-                  font-display text-[18px] font-medium tracking-[0.055em]
+                  font-display text-[17px] font-medium tracking-[0.055em]
                   transition-colors duration-300
                   group-hover:text-[#E9A534]
-                  lg:text-[20px]
+                  lg:text-[18px] xl:text-[20px]
                   ${logoTextClass}
                 `}
               >
@@ -252,8 +252,9 @@ function Nav() {
 
               <div
                 className={`
-                  mt-[3px] font-sans text-[7px] font-medium uppercase
-                  tracking-[0.32em] transition-colors duration-300
+                  mt-[2px] font-sans text-[6.5px] font-medium uppercase
+                  tracking-[0.3em] transition-colors duration-300
+                  lg:text-[7px]
                   ${logoSubTextClass}
                 `}
               >
@@ -266,7 +267,7 @@ function Nav() {
               DESKTOP NAVIGATION
           ================================================= */}
 
-          <div className="hidden items-center justify-center gap-1 lg:flex xl:gap-2">
+          <div className="hidden items-center justify-center gap-0.5 lg:flex xl:gap-1.5 2xl:gap-2">
             {navItems.map((item) =>
               item.dropdown && item.label === "Services" ? (
                 <div
@@ -278,10 +279,12 @@ function Nav() {
                     type="button"
                     onClick={() => setDesktopServicesOpen(!desktopServicesOpen)}
                     className={`
-                      group relative flex items-center gap-1.5 whitespace-nowrap
-                      px-3 py-1 font-sans text-[13px] font-medium tracking-[0.01em]
+                      group relative flex items-center gap-1 whitespace-nowrap
+                      px-2 py-1 font-sans text-[12px] font-medium tracking-[0.01em]
                       transition-all duration-300
-                      xl:px-3.5 xl:text-[14px]
+                      lg:px-2.5 lg:text-[12.5px]
+                      xl:px-3 xl:text-[13.5px]
+                      2xl:px-3.5 2xl:text-[14px]
                       ${navTextClass}
                     `}
                   >
@@ -350,21 +353,23 @@ function Nav() {
                   href={item.href}
                   onClick={(e) => handleNavClick(e, item)}
                   className={`
-                    group relative flex items-center gap-1.5 whitespace-nowrap
-                    px-3 py-4 font-sans text-[13px] font-medium tracking-[0.01em]
+                    group relative flex items-center gap-1 whitespace-nowrap
+                    px-2 py-3 font-sans text-[12px] font-medium tracking-[0.01em]
                     transition-all duration-300 cursor-pointer
-                    xl:px-3.5 xl:text-[14px]
+                    lg:px-2.5 lg:text-[12.5px]
+                    xl:px-3 xl:text-[13.5px]
+                    2xl:px-3.5 2xl:text-[14px]
                     ${navTextClass}
                   `}
                 >
                   <span>{item.label}</span>
                   <span
                     className="
-                      absolute bottom-[7px] left-3 right-3 h-px
+                      absolute bottom-[7px] left-2 right-2 h-px
                       origin-right scale-x-0 bg-[#E9A534]
                       transition-transform duration-300
                       group-hover:origin-left group-hover:scale-x-100
-                      xl:left-3.5 xl:right-3.5
+                      xl:left-3 xl:right-3
                     "
                   />
                 </a>
@@ -373,10 +378,12 @@ function Nav() {
                   key={item.label}
                   to={item.href}
                   className={`
-                    group relative flex items-center gap-1.5 whitespace-nowrap
-                    px-3 py-4 font-sans text-[13px] font-medium tracking-[0.01em]
+                    group relative flex items-center gap-1 whitespace-nowrap
+                    px-2 py-3 font-sans text-[12px] font-medium tracking-[0.01em]
                     transition-all duration-300
-                    xl:px-3.5 xl:text-[14px]
+                    lg:px-2.5 lg:text-[12.5px]
+                    xl:px-3 xl:text-[13.5px]
+                    2xl:px-3.5 2xl:text-[14px]
                     ${navTextClass}
                   `}
                 >
@@ -396,11 +403,11 @@ function Nav() {
 
                   <span
                     className="
-                      absolute bottom-[7px] left-3 right-3 h-px
+                      absolute bottom-[7px] left-2 right-2 h-px
                       origin-right scale-x-0 bg-[#E9A534]
                       transition-transform duration-300
                       group-hover:origin-left group-hover:scale-x-100
-                      xl:left-3.5 xl:right-3.5
+                      xl:left-3 xl:right-3
                     "
                   />
                 </Link>
@@ -412,10 +419,10 @@ function Nav() {
               <Link
                 to={userRole === "admin" ? "/admin" : "/dashboard"}
                 className="
-                  ml-2 whitespace-nowrap font-sans text-[13px] font-semibold
+                  ml-1 xl:ml-2 whitespace-nowrap font-sans text-[12px] font-semibold
                   text-[#E9C76D] transition-colors duration-300
                   hover:text-[#FFF4E4]
-                  xl:text-[14px]
+                  lg:text-[12.5px] xl:text-[13.5px]
                 "
               >
                 {userRole === "admin" ? "Admin" : "Dashboard"}
@@ -427,19 +434,19 @@ function Nav() {
               RIGHT ACTIONS
           ================================================= */}
 
-          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2 xl:gap-3">
             {/* Search */}
             <button
               type="button"
               aria-label="Search"
               className="
-                hidden h-9 w-9 items-center justify-center rounded-full
+                hidden h-8 w-8 xl:h-9 xl:w-9 items-center justify-center rounded-full
                 text-[#FFF4E4]/80 transition-all duration-300
                 hover:bg-white/[0.05] hover:text-[#E9C76D]
                 lg:flex
               "
             >
-              <Search size={18} strokeWidth={1.45} />
+              <Search size={17} strokeWidth={1.45} />
             </button>
             
             {/* Cart */}
@@ -454,12 +461,12 @@ function Nav() {
               }}
               aria-label="Shopping Cart"
               className="
-                relative flex h-9 w-9 items-center justify-center rounded-full
+                relative flex h-8 w-8 xl:h-9 xl:w-9 items-center justify-center rounded-full
                 text-[#FFF4E4]/80 transition-all duration-300
                 hover:bg-white/[0.05] hover:text-[#E9C76D]
               "
             >
-              <ShoppingCart size={18} strokeWidth={1.45} />
+              <ShoppingCart size={17} strokeWidth={1.45} />
               {getCartCount() > 0 && (
                 <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#C1272D] font-sans text-[10px] font-bold text-white shadow-sm">
                   {getCartCount()}
@@ -471,41 +478,41 @@ function Nav() {
                 PITRA DOSH CALCULATOR (NEW) + USER
             ================================================= */}
 
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <Link
                 to="/pitra-dosh-calculator"
                 className="
-                  group flex items-center gap-2 rounded-[8px]
+                  group flex items-center gap-1.5 rounded-[8px]
                   border border-white/85 bg-transparent
-                  px-3 py-1.5 font-sans
+                  px-2.5 py-1 font-sans
                   text-white transition-all duration-300
                   hover:bg-white/10 hover:border-white hover:shadow-[0_0_15px_rgba(255,255,255,0.2)]
-                  sm:px-3.5 sm:py-1.5
+                  sm:px-3 sm:py-1.5 xl:px-3.5
                 "
               >
-                <span className="text-[12.5px] sm:text-[13.5px] font-semibold text-white tracking-wide whitespace-nowrap">
+                <span className="text-[11.5px] sm:text-[12.5px] xl:text-[13px] font-semibold text-white tracking-wide whitespace-nowrap">
                   Pitra Dosh Calculator
                 </span>
-                <span className="rounded-[4px] bg-[#7EA326] px-1.5 py-0.5 text-[9.5px] sm:text-[10px] font-bold uppercase tracking-wider text-white shadow-sm leading-none">
+                <span className="rounded-[4px] bg-[#7EA326] px-1 py-0.5 text-[8.5px] sm:text-[9px] xl:text-[9.5px] font-bold uppercase tracking-wider text-white shadow-sm leading-none">
                   NEW
                 </span>
               </Link>
 
               {isLoggedIn ? (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
                   <Link
                     to={userRole === "admin" ? "/admin" : "/dashboard"}
                     aria-label="Dashboard"
                     className="
-                      flex h-9 w-9 items-center justify-center rounded-full
+                      flex h-8 w-8 xl:h-9 xl:w-9 items-center justify-center rounded-full
                       text-white/90 transition-all duration-300
                       hover:bg-white/10 hover:text-white
                     "
                   >
                     {userRole === "admin" ? (
-                      <Shield size={19} strokeWidth={1.75} />
+                      <Shield size={18} strokeWidth={1.75} />
                     ) : (
-                      <User size={19} strokeWidth={1.75} />
+                      <User size={18} strokeWidth={1.75} />
                     )}
                   </Link>
 
@@ -513,7 +520,7 @@ function Nav() {
                     type="button"
                     onClick={handleLogout}
                     className="
-                      hidden xl:inline font-sans text-[12px] font-medium text-white/70
+                      hidden 2xl:inline font-sans text-[12px] font-medium text-white/70
                       transition-colors duration-300
                       hover:text-[#E9C76D]
                     "
@@ -526,12 +533,12 @@ function Nav() {
                   to="/auth"
                   aria-label="Account Login"
                   className="
-                    flex h-9 w-9 items-center justify-center rounded-full
+                    flex h-8 w-8 xl:h-9 xl:w-9 items-center justify-center rounded-full
                     text-white/90 transition-all duration-300
                     hover:bg-white/10 hover:text-white
                   "
                 >
-                  <User size={19} strokeWidth={1.75} />
+                  <User size={18} strokeWidth={1.75} />
                 </Link>
               )}
             </div>
@@ -543,28 +550,28 @@ function Nav() {
             <a
               href="tel:9560437360"
               className="
-                group hidden h-[45px] items-center gap-3 rounded-[8px]
+                group hidden h-[38px] xl:h-[42px] 2xl:h-[45px] items-center gap-2 xl:gap-2.5 rounded-[8px]
                 border border-[#D8A948]/75
                 bg-gradient-to-r from-[#EBCB88] via-[#F3D99D] to-[#E4BD6D]
-                px-[18px] font-sans text-[12px] font-bold text-[#3C080D]
+                px-3 xl:px-4 2xl:px-[18px] font-sans text-[11px] xl:text-[12px] font-bold text-[#3C080D]
                 shadow-[0_8px_24px_rgba(0,0,0,0.15)]
                 transition-all duration-300
                 hover:-translate-y-[1px]
-                hover:shadow-[0_12px_30px_rgba(0,0,0,0.22)]
-                lg:inline-flex xl:h-[46px] xl:px-5 xl:text-[13px]
+                hover:shadow-[0_12px_30px_rgba(233,165,52,0.22)]
+                xl:inline-flex shrink-0 whitespace-nowrap
               "
             >
               <span className="whitespace-nowrap">Book a Reading</span>
 
               <span
                 className="
-                  flex h-7 w-7 items-center justify-center rounded-full
+                  flex h-6 w-6 xl:h-6.5 xl:w-6.5 items-center justify-center rounded-full
                   border border-[#5A0E14]/25 transition-all duration-300
                   group-hover:bg-[#5A0E14]/5
                 "
               >
                 <ArrowRight
-                  size={14}
+                  size={13}
                   strokeWidth={1.8}
                   className="transition-transform duration-300 group-hover:translate-x-0.5"
                 />

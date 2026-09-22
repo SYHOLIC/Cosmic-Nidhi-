@@ -107,6 +107,19 @@ export default function Contact() {
             <div className="border-t border-[#E9A534]/15 pt-5 mt-1">
               <h3 className="font-bold text-sm text-[#E9C76D] mb-3 uppercase tracking-wider">Connect With Nidhi Asthana</h3>
               <div className="flex flex-wrap gap-3">
+                {/* Facebook */}
+                <a
+                  href="https://www.facebook.com/share/1GeMYtoBf1/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 rounded-full border border-[#E9A534]/25 bg-white/5 px-3.5 py-1.5 text-xs text-[#FFF8EC] transition-all hover:border-[#E9A534] hover:bg-[#E9A534]/10 hover:text-[#E9A534]"
+                >
+                  <svg className="h-3.5 w-3.5 fill-current text-[#1877F2]" viewBox="0 0 24 24">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                  </svg>
+                  Facebook
+                </a>
+
                 {/* Instagram */}
                 <a
                   href="https://www.instagram.com/cosmicnidhi.astrology/"
@@ -122,7 +135,7 @@ export default function Contact() {
 
                 {/* YouTube */}
                 <a
-                  href="https://www.youtube.com/@nidhiasthana3699"
+                  href="https://youtube.com/@cosmicnidhi?si=eAu8TIl29r1V2tTO"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 rounded-full border border-[#E9A534]/25 bg-white/5 px-3.5 py-1.5 text-xs text-[#FFF8EC] transition-all hover:border-[#E9A534] hover:bg-[#E9A534]/10 hover:text-[#E9A534]"
@@ -135,7 +148,7 @@ export default function Contact() {
 
                 {/* LinkedIn */}
                 <a
-                  href="https://www.linkedin.com/in/nidhi-asthana"
+                  href="https://www.linkedin.com/in/nidhi-asthana-2826b4389?utm_source=share_via&utm_content=profile&utm_medium=member_android"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 rounded-full border border-[#E9A534]/25 bg-white/5 px-3.5 py-1.5 text-xs text-[#FFF8EC] transition-all hover:border-[#E9A534] hover:bg-[#E9A534]/10 hover:text-[#E9A534]"

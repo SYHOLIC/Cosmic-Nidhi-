@@ -25,9 +25,11 @@ export default function FloatingSocialConnect() {
   );
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
+  const facebookUrl = "https://www.facebook.com/share/1GeMYtoBf1/";
   const instagramUrl = "https://www.instagram.com/cosmicnidhi.astrology/";
-  const youtubeUrl = "https://www.youtube.com/@nidhiasthana3699";
-  const linkedinUrl = "https://www.linkedin.com/in/nidhi-asthana";
+  const youtubeUrl = "https://youtube.com/@cosmicnidhi?si=eAu8TIl29r1V2tTO";
+  const linkedinUrl =
+    "https://www.linkedin.com/in/nidhi-asthana-2826b4389?utm_source=share_via&utm_content=profile&utm_medium=member_android";
   const emailAddress = "cosmicnidhi.astro@gmail.com";
   const websiteUrl = "https://www.cosmicnidhi.in";
   const officeAddress = "A-56/1, 4th Floor, A Block, Sector 50, Noida, Uttar Pradesh 201301";
@@ -82,12 +84,54 @@ export default function FloatingSocialConnect() {
         </motion.div>
 
         {/* ==============================================================
-            2. LINKEDIN FLOATING BUTTON
+            2. FACEBOOK FLOATING BUTTON
         ============================================================== */}
         <motion.div
           initial={{ opacity: 0, scale: 0.7, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.05, ease: "easeOut" }}
+          transition={{ duration: 0.4, delay: 0.04, ease: "easeOut" }}
+          className="relative flex items-center group"
+          onMouseEnter={() => setHoveredIcon("facebook")}
+          onMouseLeave={() => setHoveredIcon(null)}
+        >
+          <AnimatePresence>
+            {hoveredIcon === "facebook" && (
+              <motion.span
+                initial={{ opacity: 0, x: 10, scale: 0.9 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, x: 10, scale: 0.9 }}
+                transition={{ duration: 0.18 }}
+                className="hidden sm:inline-flex items-center gap-1.5 absolute right-full mr-3 whitespace-nowrap rounded-full bg-[#1A0307]/95 px-3.5 py-1.5 text-[12px] font-medium tracking-wide text-[#FFF8EC] border border-[#1877F2]/40 shadow-[0_8px_20px_rgba(0,0,0,0.45)] backdrop-blur-md"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-[#1877F2] animate-pulse"></span>
+                Facebook: Cosmic Nidhi
+              </motion.span>
+            )}
+          </AnimatePresence>
+
+          <a
+            href={facebookUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Visit Cosmic Nidhi on Facebook"
+            className="relative flex h-10 w-10 sm:h-[42px] sm:w-[42px] items-center justify-center rounded-full text-white shadow-[0_6px_20px_rgba(24,119,242,0.35)] transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:shadow-[0_10px_26px_rgba(24,119,242,0.55)] focus:outline-none"
+            style={{
+              background: "linear-gradient(145deg, #1877F2 0%, #166FE5 60%, #0F52B5 100%)",
+            }}
+          >
+            <svg className="h-4 w-4 fill-current drop-shadow-sm" viewBox="0 0 24 24">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+            </svg>
+          </a>
+        </motion.div>
+
+        {/* ==============================================================
+            3. LINKEDIN FLOATING BUTTON
+        ============================================================== */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.7, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.06, ease: "easeOut" }}
           className="relative flex items-center group"
           onMouseEnter={() => setHoveredIcon("linkedin")}
           onMouseLeave={() => setHoveredIcon(null)}
@@ -102,7 +146,7 @@ export default function FloatingSocialConnect() {
                 className="hidden sm:inline-flex items-center gap-1.5 absolute right-full mr-3 whitespace-nowrap rounded-full bg-[#1A0307]/95 px-3.5 py-1.5 text-[12px] font-medium tracking-wide text-[#FFF8EC] border border-[#0A66C2]/40 shadow-[0_8px_20px_rgba(0,0,0,0.45)] backdrop-blur-md"
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-[#0A66C2] animate-pulse"></span>
-                LinkedIn: nidhi-asthana
+                LinkedIn: Nidhi Asthana
               </motion.span>
             )}
           </AnimatePresence>
@@ -124,7 +168,7 @@ export default function FloatingSocialConnect() {
         </motion.div>
 
         {/* ==============================================================
-            3. YOUTUBE FLOATING BUTTON
+            4. YOUTUBE FLOATING BUTTON
         ============================================================== */}
         <motion.div
           initial={{ opacity: 0, scale: 0.7, y: 20 }}
@@ -144,7 +188,7 @@ export default function FloatingSocialConnect() {
                 className="hidden sm:inline-flex items-center gap-1.5 absolute right-full mr-3 whitespace-nowrap rounded-full bg-[#1A0307]/95 px-3.5 py-1.5 text-[12px] font-medium tracking-wide text-[#FFF8EC] border border-[#FF0000]/40 shadow-[0_8px_20px_rgba(0,0,0,0.45)] backdrop-blur-md"
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-[#FF0000] animate-pulse"></span>
-                YouTube: @nidhiasthana3699
+                YouTube: @cosmicnidhi
               </motion.span>
             )}
           </AnimatePresence>
@@ -401,7 +445,22 @@ export default function FloatingSocialConnect() {
                 <span className="text-[11px] font-semibold uppercase tracking-wider text-[#E9A534]/70 block mb-2.5 text-center">
                   Direct Social Profiles
                 </span>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {/* Facebook */}
+                  <a
+                    href={facebookUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-col items-center justify-center gap-1 rounded-xl bg-[#1877F2]/10 hover:bg-[#1877F2]/20 border border-[#1877F2]/25 p-2 text-center transition-all group"
+                  >
+                    <span className="text-xs font-semibold text-[#FFF8EC] group-hover:text-[#1877F2]">
+                      Facebook
+                    </span>
+                    <span className="text-[10px] text-[#FFF8EC]/60 truncate w-full">
+                      Cosmic Nidhi
+                    </span>
+                  </a>
+
                   {/* Instagram */}
                   <a
                     href={instagramUrl}
@@ -428,7 +487,7 @@ export default function FloatingSocialConnect() {
                       YouTube
                     </span>
                     <span className="text-[10px] text-[#FFF8EC]/60 truncate w-full">
-                      nidhiasthana3699
+                      @cosmicnidhi
                     </span>
                   </a>
 
@@ -443,7 +502,7 @@ export default function FloatingSocialConnect() {
                       LinkedIn
                     </span>
                     <span className="text-[10px] text-[#FFF8EC]/60 truncate w-full">
-                      nidhi-asthana
+                      Nidhi Asthana
                     </span>
                   </a>
                 </div>

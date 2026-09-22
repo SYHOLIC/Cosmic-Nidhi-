@@ -464,15 +464,18 @@ export default function ProductsPage() {
       const res = await axios.get(url);
       setProducts(res.data.products.map(p => ({
         id: p._id,
-        slug: p.slug,
+        _id: p._id,
+        slug: p.slug || p._id,
         name: p.name,
-        price: `₹${p.price}`,
-        originalPrice: p.originalPrice ? `₹${p.originalPrice}` : null,
-        image: p.images && p.images.length > 0 ? p.images[0] : "",
-        category: p.category ? p.category.name : "",
-        rating: 5,
-        reviews: 0,
-        inStock: p.stock > 0,
+        price: p.price,
+        originalPrice: p.originalPrice || null,
+        image: (p.images && p.images.length > 0 ? p.images[0] : "") || p.image || "",
+        images: Array.isArray(p.images) && p.images.length > 0 ? p.images : (p.image ? [p.image] : []),
+        category: p.category ? (typeof p.category === 'object' ? p.category.name : p.category) : "",
+        rating: p.rating || 5,
+        reviews: Array.isArray(p.reviews) ? p.reviews.length : (p.reviews || 0),
+        inStock: p.stock !== undefined ? p.stock > 0 : true,
+        stock: p.stock !== undefined ? p.stock : 10,
         badge: p.badge || ""
       })));
     } catch (err) {

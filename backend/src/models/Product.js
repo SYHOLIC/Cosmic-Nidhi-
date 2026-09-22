@@ -81,13 +81,23 @@ const productSchema = new mongoose.Schema({
   features: [{
     type: String,
   }],
+  sku: {
+    type: String,
+    trim: true,
+    sparse: true,
+  },
+  SKU: {
+    type: String,
+    trim: true,
+    sparse: true,
+  },
 }, {
   timestamps: true,
 });
 
-// Auto-generate slug from name — runs BEFORE validation
+// Auto-generate slug and sku from name — runs BEFORE validation
 productSchema.pre('validate', function(next) {
-  if (this.isNew || this.isModified('name')) {
+  if (!this.slug || this.isNew || this.isModified('name')) {
     const base = this.name
       ? this.name
           .toLowerCase()
@@ -95,8 +105,15 @@ productSchema.pre('validate', function(next) {
           .replace(/[^a-z0-9]+/g, '-')
           .replace(/^-+|-+$/g, '')
       : 'product';
-    this.slug = `${base}-${Date.now()}`;
+    this.slug = `${base}-${Date.now().toString(36)}`;
   }
+
+  if (!this.sku) {
+    const rand = Math.floor(1000 + Math.random() * 9000);
+    this.sku = `CN-${Date.now().toString(36).toUpperCase()}-${rand}`;
+  }
+  this.SKU = this.sku;
+
   next();
 });
 

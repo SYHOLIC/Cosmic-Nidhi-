@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Trash2, Plus, Minus, ArrowRight, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +7,13 @@ import { useCart } from "../context/CartContext";
 export default function CartPage() {
   const { cartItems, updateQuantity, removeFromCart, getCartTotal } = useCart();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/auth?redirect=/cart");
+    }
+  }, [navigate]);
 
   const handleCheckout = () => {
     navigate("/checkout");

@@ -114,10 +114,18 @@ function Nav() {
      NAVIGATION ITEMS
   ========================================================= */
 
+  const SERVICES_DROPDOWN_ITEMS = [
+    { label: "Birth Chart / Janam Kundli", href: "/services#birth-chart", desc: "Detailed planetary life map & remedies" },
+    { label: "Numerology Consultation", href: "/services#numerology", desc: "Destiny, name & lifepath guidance" },
+    { label: "Applied Vastu Consultation", href: "/services#vastu", desc: "Harmonize energy flows for home & work" },
+    { label: "Kundli Matching / Guidance", href: "/services#kundli-matching", desc: "Guna Milan & compatibility analysis" },
+    { label: "View All Services", href: "/services", desc: "Explore all consultation offerings" },
+  ];
+
   const navItems = [
     { label: "About", href: "/about" },
     { label: "Services", href: "/services", dropdown: true },
-    { label: "Zodiac", href: "#signs", isHash: true, dropdown: true },
+    { label: "Zodiac", href: "#signs", isHash: true },
     { label: "Store", href: "/products" },
     { label: "Forecast", href: "/services" },
     { label: "Pricing", href: "#pricing", isHash: true },
@@ -256,7 +264,71 @@ function Nav() {
 
           <div className="hidden items-center justify-center gap-1 lg:flex xl:gap-2">
             {navItems.map((item) =>
-              item.isHash ? (
+              item.dropdown && item.label === "Services" ? (
+                <div key={item.label} className="relative group/svc py-3">
+                  <Link
+                    to={item.href}
+                    className={`
+                      group relative flex items-center gap-1.5 whitespace-nowrap
+                      px-3 py-1 font-sans text-[13px] font-medium tracking-[0.01em]
+                      transition-all duration-300
+                      xl:px-3.5 xl:text-[14px]
+                      ${navTextClass}
+                    `}
+                  >
+                    <span>{item.label}</span>
+                    <ChevronDown
+                      size={11}
+                      strokeWidth={1.5}
+                      className="
+                        text-[#E9A534]/70
+                        transition-transform duration-300
+                        group-hover/svc:rotate-180
+                      "
+                    />
+                    <span
+                      className="
+                        absolute bottom-0 left-3 right-3 h-px
+                        origin-right scale-x-0 bg-[#E9A534]
+                        transition-transform duration-300
+                        group-hover/svc:origin-left group-hover/svc:scale-x-100
+                        xl:left-3.5 xl:right-3.5
+                      "
+                    />
+                  </Link>
+
+                  {/* Dropdown Menu */}
+                  <div
+                    className="
+                      pointer-events-none absolute left-0 top-full z-50 min-w-[270px]
+                      translate-y-2 rounded-[10px] border border-[#E9A534]/30
+                      bg-[#240307]/98 p-2 opacity-0 shadow-[0_12px_32px_rgba(0,0,0,0.5)]
+                      backdrop-blur-xl transition-all duration-300
+                      group-hover/svc:pointer-events-auto group-hover/svc:translate-y-0 group-hover/svc:opacity-100
+                    "
+                  >
+                    <div className="py-1">
+                      {SERVICES_DROPDOWN_ITEMS.map((svc) => (
+                        <Link
+                          key={svc.label}
+                          to={svc.href}
+                          className="
+                            group/sub block rounded-[7px] px-3.5 py-2 transition-colors
+                            hover:bg-white/[0.08]
+                          "
+                        >
+                          <p className="font-sans text-[13px] font-medium text-[#FFF4E4] transition-colors group-hover/sub:text-[#E9C76D]">
+                            {svc.label}
+                          </p>
+                          <p className="font-sans text-[11px] text-[#E9C76D]/60 line-clamp-1">
+                            {svc.desc}
+                          </p>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : item.isHash ? (
                 <a
                   key={item.label}
                   href={item.href}
@@ -355,8 +427,15 @@ function Nav() {
             </button>
             
             {/* Cart */}
-            <Link
-              to="/cart"
+            <button
+              type="button"
+              onClick={() => {
+                if (!isLoggedIn) {
+                  navigate("/auth?redirect=/cart");
+                } else {
+                  navigate("/cart");
+                }
+              }}
               aria-label="Shopping Cart"
               className="
                 relative flex h-9 w-9 items-center justify-center rounded-full
@@ -370,7 +449,7 @@ function Nav() {
                   {getCartCount()}
                 </span>
               )}
-            </Link>
+            </button>
 
             {/* =================================================
                 PITRA DOSH CALCULATOR (NEW) + USER

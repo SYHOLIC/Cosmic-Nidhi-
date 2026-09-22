@@ -1,5 +1,7 @@
+const mongoose = require('mongoose');
 const Order = require('../models/Order');
 const Product = require('../models/Product');
+const Category = require('../models/Category');
 
 // @desc    Create order
 // @route   POST /api/orders
@@ -30,15 +32,73 @@ const createOrder = async (req, res) => {
       quantity: parseInt(item.quantity, 10) || 1,
     }));
 
-    // Validate items and check stock
+    // Validate items, resolve product IDs, and check stock
     for (const item of sanitizedItems) {
-      const product = await Product.findById(item.product);
+      let product = null;
+
+      // Check if item.product is already a valid 24-char ObjectId
+      if (
+        item.product &&
+        mongoose.Types.ObjectId.isValid(item.product) &&
+        String(new mongoose.Types.ObjectId(item.product)) === String(item.product)
+      ) {
+        product = await Product.findById(item.product);
+      }
+
+      // If not found by ObjectId, try searching by slug or name
       if (!product) {
-        return res.status(404).json({
-          success: false,
-          message: `Product ${item.product} not found`,
+        const queryTerm = String(item.product || item.name || '').trim();
+        if (queryTerm) {
+          product = await Product.findOne({
+            $or: [
+              { slug: queryTerm.toLowerCase() },
+              { name: new RegExp(`^${queryTerm}$`, 'i') },
+              { slug: (item.name || '').toLowerCase() }
+            ]
+          });
+        }
+      }
+
+      // If still not found in MongoDB (e.g. curated zodiac stone from static list), auto-create a product record
+      if (!product) {
+        let defaultCat = await Category.findOne({ name: /crystal|gemstone|zodiac/i });
+        if (!defaultCat) {
+          defaultCat = await Category.findOne({});
+        }
+        if (!defaultCat) {
+          defaultCat = await Category.create({
+            name: 'Crystals & Gemstones',
+            slug: 'crystals-gemstones',
+            description: 'Natural healing crystals and stones',
+          });
+        }
+
+        const itemName = item.name || item.product || 'Astrology Product';
+        const cleanBase = itemName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        const autoSku = `CN-${Date.now().toString(36).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
+
+        product = await Product.create({
+          name: itemName,
+          slug: `${cleanBase}-${Date.now().toString(36)}`,
+          description: `Authentic ${itemName} curated for astrological harmony and spiritual balance.`,
+          price: item.price || 449,
+          originalPrice: Math.round((item.price || 449) * 1.3),
+          category: defaultCat._id,
+          images: item.image ? [item.image] : [],
+          stock: 999,
+          isActive: true,
+          badge: 'Popular',
+          sku: autoSku,
+          SKU: autoSku,
         });
       }
+
+      // Guarantee item.product is a valid MongoDB ObjectId
+      item.product = product._id;
+      item.name = item.name || product.name;
+      item.price = item.price || product.price;
+      item.image = item.image || (product.images && product.images[0]) || '';
+
       if (product.stock < item.quantity) {
         return res.status(400).json({
           success: false,
@@ -65,10 +125,12 @@ const createOrder = async (req, res) => {
     });
 
     // Update stock
-    for (const item of items) {
-      await Product.findByIdAndUpdate(item.product, {
-        $inc: { stock: -item.quantity },
-      });
+    for (const item of sanitizedItems) {
+      if (item.product) {
+        await Product.findByIdAndUpdate(item.product, {
+          $inc: { stock: -item.quantity },
+        }).catch(() => {});
+      }
     }
 
     // Populate order

@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Category = require('../models/Category');
 const Product = require('../models/Product');
 
@@ -116,19 +117,29 @@ const createProduct = async (req, res) => {
       });
     }
 
+    // Sync image and images array
+    let productImages = images || [];
+    if (req.body.image && (!productImages || productImages.length === 0)) {
+      productImages = [req.body.image];
+    }
+
+    const generatedSku = req.body.sku || req.body.SKU || `CN-${Date.now().toString(36).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
+
     const product = await Product.create({
       name,
       description,
       shortDescription,
-      price,
-      originalPrice,
+      price: Number(price),
+      originalPrice: originalPrice ? Number(originalPrice) : undefined,
       category,
-      images: images || [],
-      stock: stock || 0,
+      images: productImages,
+      stock: stock !== undefined ? Number(stock) : 0,
       features: features || [],
       isActive: isActive !== undefined ? isActive : true,
       isFeatured: isFeatured || false,
       badge: badge || '',
+      sku: generatedSku,
+      SKU: generatedSku,
     });
 
     res.status(201).json({
@@ -189,6 +200,14 @@ const updateProduct = async (req, res) => {
       req.body.stock = Number(req.body.stock);
     }
 
+    if (!product.sku && !req.body.sku) {
+      const genSku = `CN-${Date.now().toString(36).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
+      req.body.sku = genSku;
+      req.body.SKU = genSku;
+    } else if (req.body.sku && !req.body.SKU) {
+      req.body.SKU = req.body.sku;
+    }
+
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -237,7 +256,10 @@ const deleteProduct = async (req, res) => {
 
 const getProductBySlug = async (req, res) => {
   try {
-    const product = await Product.findOne({ slug: req.params.slug }).populate('category', 'name slug');
+    let product = await Product.findOne({ slug: req.params.slug }).populate('category', 'name slug');
+    if (!product && mongoose.Types.ObjectId.isValid(req.params.slug)) {
+      product = await Product.findById(req.params.slug).populate('category', 'name slug');
+    }
     if (!product) {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }

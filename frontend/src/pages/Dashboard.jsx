@@ -25,8 +25,11 @@ import {
   X,
   MapPin,
   Loader2,
+  CreditCard,
 } from "lucide-react";
 import Reveal from "../components/Reveal";
+import BookingModal from "../components/BookingModal";
+import { loadRazorpay } from "../utils/loadRazorpay";
 
 /* Zodiac chakra backdrop */
 import heroZodiac from "../assets/hero-zodiac3.png";
@@ -532,53 +535,100 @@ function OverviewTab({ user }) {
    TAB: BOOKINGS
 ================================================================ */
 
-function BookingsTab({ bookings = [] }) {
+function BookingsTab({ bookings = [], onOpenBooking, onPayBooking, payingBookingId }) {
   if (!bookings || bookings.length === 0) {
     return (
       <div className="rounded-[7px] border border-dashed border-[#5A0E14]/20 p-8 text-center">
         <Calendar className="mx-auto mb-2 h-6 w-6 text-[#5A0E14]/30" strokeWidth={1.5} />
         <p className="font-sans text-[12px] text-[#5A0E14]/60">You have no scheduled readings yet.</p>
-        <Link
-          to="/services"
+        <button
+          type="button"
+          onClick={onOpenBooking}
           className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#5A0E14] px-6 py-2.5 font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-[#FFF8EC] transition-colors hover:bg-[#3C080D]"
         >
           Book a Reading
-        </Link>
+        </button>
       </div>
     );
   }
 
   return (
     <div className="space-y-4">
-      {bookings.map((booking, i) => (
-        <div
-          key={booking._id || i}
-          className="rounded-[7px] border border-[#5A0E14]/12 bg-[#FDECC8]/35 p-6 transition-all duration-300 hover:border-[#E9A534]/50 hover:shadow-[0_12px_28px_rgba(60,8,13,0.08)]"
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between pb-2">
+        <p className="font-sans text-[12px] font-medium text-[#6B3A2A]/80">
+          Scheduled consultations with Astrologer Nidhi Asthana
+        </p>
+        <button
+          type="button"
+          onClick={onOpenBooking}
+          className="inline-flex items-center gap-1.5 rounded-full border border-[#F2C66D] bg-gradient-to-r from-[#F3D49B] to-[#DDB56D] px-4 py-2 font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-[#3C080D] shadow-sm transition-all hover:-translate-y-0.5"
         >
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-            <div className="min-w-0">
-              <p className="font-display text-[20px] font-semibold text-[#3C080D]">
-                {booking.serviceName || booking.service}
-              </p>
-              <p className="mt-2 font-sans text-[13px] text-[#6B3A2A]/80">
-                {booking.date ? new Date(booking.date).toLocaleDateString() : ""} · {booking.time}
-              </p>
-              <div className="mt-4 flex flex-wrap items-center gap-5">
-                <span className="flex items-center gap-2 font-sans text-[12px] font-medium uppercase tracking-[0.10em] text-[#6B3A2A]/70">
-                  <Clock className="h-3.5 w-3.5" strokeWidth={1.7} />
-                  {booking.duration || "60 mins"}
-                </span>
-                {booking.amount > 0 && (
-                  <span className="flex items-center gap-2 font-sans text-[12px] font-semibold text-[#8B2F2B]">
-                    ₹{booking.amount}
+          <Plus size={13} strokeWidth={2.5} />
+          Book Consultation
+        </button>
+      </div>
+
+      {bookings.map((booking, i) => {
+        const isPendingPayment = booking.paymentStatus === "pending" || booking.status === "pending";
+        return (
+          <div
+            key={booking._id || i}
+            className="rounded-[7px] border border-[#5A0E14]/12 bg-[#FDECC8]/35 p-6 transition-all duration-300 hover:border-[#E9A534]/50 hover:shadow-[0_12px_28px_rgba(60,8,13,0.08)]"
+          >
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0">
+                <p className="font-display text-[20px] font-semibold text-[#3C080D]">
+                  {booking.serviceName || booking.service}
+                </p>
+                <p className="mt-2 font-sans text-[13px] text-[#6B3A2A]/80">
+                  {booking.date ? new Date(booking.date).toLocaleDateString() : ""} · {booking.time}
+                </p>
+                <div className="mt-4 flex flex-wrap items-center gap-5">
+                  <span className="flex items-center gap-2 font-sans text-[12px] font-medium uppercase tracking-[0.10em] text-[#6B3A2A]/70">
+                    <Clock className="h-3.5 w-3.5" strokeWidth={1.7} />
+                    {booking.duration || "60 mins"}
                   </span>
+                  {booking.amount > 0 && (
+                    <span className="flex items-center gap-2 font-sans text-[12px] font-semibold text-[#8B2F2B]">
+                      ₹{booking.amount}
+                    </span>
+                  )}
+                  {booking.paymentStatus && (
+                    <span className={`rounded-full px-2.5 py-0.5 font-sans text-[10px] font-bold uppercase tracking-wider ${
+                      booking.paymentStatus === "paid"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-amber-100 text-amber-800"
+                    }`}>
+                      Payment: {booking.paymentStatus}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex flex-col items-end gap-3 shrink-0">
+                <StatusPill status={booking.status || "pending"} />
+                {isPendingPayment && (
+                  <button
+                    type="button"
+                    disabled={payingBookingId === booking._id}
+                    onClick={() => onPayBooking(booking)}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-[#C1272D] px-4 py-2 font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-white shadow-sm transition-all hover:bg-[#A01D22] hover:-translate-y-0.5 disabled:opacity-50"
+                  >
+                    {payingBookingId === booking._id ? (
+                      <>
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>Pay Online (₹{booking.amount || 2100})</>
+                    )}
+                  </button>
                 )}
               </div>
             </div>
-            <StatusPill status={booking.status || "pending"} />
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -1122,6 +1172,75 @@ export default function Dashboard() {
     { label: "Wishlist", value: wishlist.length, icon: Heart },
   ];
 
+  const [bookingModalOpen, setBookingModalOpen] = useState(false);
+  const [payingBookingId, setPayingBookingId] = useState(null);
+
+  const handlePayBooking = async (booking) => {
+    setPayingBookingId(booking._id);
+    try {
+      const token = localStorage.getItem("token");
+      const loaded = await loadRazorpay();
+      if (!loaded || !window.Razorpay) {
+        alert("Payment gateway failed to load. Please check your internet connection.");
+        return;
+      }
+
+      const amount = booking.amount || 2100;
+      const rzpRes = await axios.post(
+        `${API_URL}/payment/create-order`,
+        { amount },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const rzpOrder = rzpRes.data.order;
+      const keyId = rzpRes.data.keyId || "rzp_test_TeAqFB25uZz5vD";
+
+      const options = {
+        key: keyId,
+        amount: rzpOrder.amount,
+        currency: "INR",
+        name: "Cosmic Nidhi",
+        description: `Payment for ${booking.serviceName || "Consultation"}`,
+        order_id: rzpOrder.id,
+        handler: async function (response) {
+          try {
+            await axios.post(
+              `${API_URL}/payment/verify`,
+              {
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                booking_id: booking._id,
+              },
+              { headers: { Authorization: `Bearer ${token}` } }
+            );
+            alert("Payment successful! Your reading is confirmed.");
+            fetchUserData(token);
+          } catch (err) {
+            console.error("Payment verification failed", err);
+            alert("Payment verification error: " + (err.response?.data?.message || err.message));
+          }
+        },
+        prefill: {
+          name: user.name || "",
+          email: user.email || "",
+          contact: user.phone || "",
+        },
+        theme: {
+          color: "#E9A534",
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to initiate payment: " + (err.response?.data?.message || err.message));
+    } finally {
+      setPayingBookingId(null);
+    }
+  };
+
   const TAB_LABELS = {
     overview: "Overview",
     zodiac: "My Zodiac",
@@ -1134,7 +1253,14 @@ export default function Dashboard() {
   const TABS = {
     overview: <OverviewTab user={user} />,
     zodiac: <ZodiacTab user={user} />,
-    bookings: <BookingsTab bookings={bookings} />,
+    bookings: (
+      <BookingsTab
+        bookings={bookings}
+        onOpenBooking={() => setBookingModalOpen(true)}
+        onPayBooking={handlePayBooking}
+        payingBookingId={payingBookingId}
+      />
+    ),
     orders: <OrdersTab orders={orders} onCancelOrder={handleCancelOrder} />,
     wishlist: <WishlistTab wishlist={wishlist} onRemove={handleRemoveWishlist} />,
     profile: <ProfileTab user={user} onUpdate={() => fetchUserData(localStorage.getItem("token"))} />,
@@ -1256,16 +1382,15 @@ export default function Dashboard() {
         </div>
       </footer>
 
-      {/* Chakra rotation */}
-      <style>{`
-        @keyframes zodiacRotate {
-          from { transform: rotate(0deg); }
-          to   { transform: rotate(360deg); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          @keyframes zodiacRotate { from, to { transform: none; } }
-        }
-      `}</style>
+      {/* Booking Modal */}
+      <BookingModal
+        isOpen={bookingModalOpen}
+        onClose={() => {
+          setBookingModalOpen(false);
+          const token = localStorage.getItem("token");
+          if (token) fetchUserData(token);
+        }}
+      />
     </>
   );
 }

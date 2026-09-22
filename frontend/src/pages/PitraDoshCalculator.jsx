@@ -472,20 +472,20 @@ export default function PitraDoshCalculator() {
                   </label>
                   <div className="flex items-center rounded-xl border border-gray-200 bg-white px-3 py-1.5 focus-within:border-[#B8380D] focus-within:ring-2 focus-within:ring-[#B8380D]/15 relative">
                     {/* Interactive Country Code Dropdown */}
-                    <div className="relative" ref={countryDropdownRef}>
+                    <div className="relative shrink-0" ref={countryDropdownRef}>
                       <button
                         type="button"
                         onClick={() => setShowCountryDropdown(!showCountryDropdown)}
-                        className="flex items-center gap-1.5 border-r border-gray-200 pr-3 mr-3 text-xs font-semibold text-gray-700 hover:text-black focus:outline-none transition-colors cursor-pointer"
+                        className="flex shrink-0 items-center gap-1.5 border-r border-gray-200 pr-3 mr-3 text-xs font-semibold text-gray-700 hover:text-black focus:outline-none transition-colors cursor-pointer whitespace-nowrap"
                         title="Change Country Code"
                       >
-                        <span className="text-base">{selectedCountry.flag}</span>
-                        <span>
+                        <span className="text-base shrink-0">{selectedCountry.flag}</span>
+                        <span className="whitespace-nowrap font-medium">
                           {selectedCountry.short} {selectedCountry.code}
                         </span>
                         <ChevronDown
                           size={12}
-                          className={`text-gray-400 transition-transform ${
+                          className={`shrink-0 text-gray-400 transition-transform ${
                             showCountryDropdown ? "rotate-180" : ""
                           }`}
                         />

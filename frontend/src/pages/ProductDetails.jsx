@@ -129,20 +129,20 @@ export default function ProductDetails() {
 
         {/* Product Section */}
         <div className="grid gap-10 md:grid-cols-2 mb-16">
-          <div className="rounded-[16px] overflow-hidden border border-[#E9A534]/30 bg-white p-4">
+          <div className="rounded-[16px] overflow-hidden border border-[#E9A534]/30 bg-white p-4 flex items-center justify-center min-h-[360px] max-h-[520px]">
             <img 
-              src={product.images?.[0] || "https://placehold.co/600x600?text=No+Image"} 
+              src={product.images?.[0] || product.image || "https://placehold.co/600x600?text=No+Image"} 
               alt={product.name} 
-              className="w-full h-auto object-cover rounded-[8px]"
+              className="max-h-[480px] w-auto max-w-full object-contain rounded-[8px]"
             />
           </div>
           
           <div className="flex flex-col justify-center">
-            <h1 className="font-display text-[32px] md:text-[42px] font-bold text-[#3C080D] leading-tight">
+            <h1 className="font-display text-[32px] md:text-[42px] font-bold text-[#3C080D] leading-tight break-words">
               {product.name}
             </h1>
             <div className="mt-2 text-lg text-[#5A0E14] opacity-80 capitalize">
-              {product.category?.name || "Uncategorized"}
+              {product.category?.name || (typeof product.category === "string" ? product.category : "Sacred Treasures")}
             </div>
 
             <div className="mt-4 flex items-baseline gap-4">

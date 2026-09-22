@@ -459,7 +459,7 @@ function Hero() {
                         ${
                           index === 0
                             ? "pr-[30px]"
-                            : index === trustItems.length - 1
+                            : index === TRUST_ITEMS.length - 1
                             ? "pl-[30px]"
                             : "px-[30px]"
                         }

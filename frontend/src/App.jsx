@@ -1,10 +1,65 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
-import { useEffect, lazy, Suspense } from "react";
+import React, { Component, useEffect, lazy, Suspense } from "react";
 import Home from "./pages/Home";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 import FloatingSocialConnect from "./components/FloatingSocialConnect";
 import { CartProvider } from "./context/CartContext";
+
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error("ErrorBoundary caught an error:", error, errorInfo);
+  }
+
+  handleReload = () => {
+    this.setState({ hasError: false, error: null });
+    window.location.href = "/";
+  };
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-[70vh] flex flex-col items-center justify-center bg-[#FFF7E9] px-6 text-center">
+          <div className="max-w-md rounded-2xl border border-[#E9A534]/20 bg-white/60 p-8 shadow-xl backdrop-blur-sm">
+            <span className="text-4xl">✨</span>
+            <h2 className="mt-4 font-serif text-2xl font-bold text-[#3C080D]">
+              Something went wrong
+            </h2>
+            <p className="mt-2 text-sm text-[#6B3A2A]/80">
+              An unexpected display issue occurred. Please refresh or return to the homepage.
+            </p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <button
+                type="button"
+                onClick={this.handleReload}
+                className="cursor-pointer rounded-full bg-[#E9A534] px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-[#3C080D] shadow transition hover:bg-[#DDA520]"
+              >
+                Return to Home
+              </button>
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+                className="cursor-pointer rounded-full border border-[#3C080D]/20 px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-[#3C080D] transition hover:bg-black/5"
+              >
+                Refresh Page
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 // Lazy-loaded secondary pages for instant landing page load & lightweight bundle
 const About = lazy(() => import("./pages/About"));
@@ -61,8 +116,9 @@ function AppRoutes() {
   return (
     <>
       <Nav />
-      <Suspense fallback={<PageLoader />}>
-        <Routes>
+      <ErrorBoundary>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/services" element={<ServicesPage />} />
@@ -81,6 +137,7 @@ function AppRoutes() {
           <Route path="/page/:slug" element={<StaticPage />} />
         </Routes>
       </Suspense>
+      </ErrorBoundary>
       {!hideFooter && <Footer />}
       <FloatingSocialConnect />
     </>

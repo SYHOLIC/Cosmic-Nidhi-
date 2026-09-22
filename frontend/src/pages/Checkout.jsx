@@ -102,6 +102,14 @@ export default function CheckoutPage() {
 
   const handleAddAddress = async (e) => {
     e.preventDefault();
+    if (!/^\d{10}$/.test(addressForm.phone.trim())) {
+      alert("Please enter a valid 10-digit phone number.");
+      return;
+    }
+    if (!/^\d{6}$/.test(addressForm.pincode.trim())) {
+      alert("Please enter a valid 6-digit pincode.");
+      return;
+    }
     setSavingAddress(true);
     try {
       const token = localStorage.getItem("token");
@@ -428,8 +436,18 @@ export default function CheckoutPage() {
                       <input type="text" required value={addressForm.name} onChange={e => setAddressForm({...addressForm, name: e.target.value})} className="w-full rounded-[6px] border border-[#5A0E14]/20 p-2.5 text-[13px] focus:border-[#E9A534] focus:outline-none" />
                     </div>
                     <div className="col-span-2 sm:col-span-1">
-                      <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#5A0E14]/70">Phone</label>
-                      <input type="tel" required value={addressForm.phone} onChange={e => setAddressForm({...addressForm, phone: e.target.value})} className="w-full rounded-[6px] border border-[#5A0E14]/20 p-2.5 text-[13px] focus:border-[#E9A534] focus:outline-none" />
+                      <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#5A0E14]/70">Phone (10 digits)</label>
+                      <input 
+                        type="tel" 
+                        required 
+                        inputMode="numeric"
+                        pattern="[0-9]{10}"
+                        maxLength={10}
+                        placeholder="10-digit mobile number"
+                        value={addressForm.phone} 
+                        onChange={e => setAddressForm({...addressForm, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})} 
+                        className="w-full rounded-[6px] border border-[#5A0E14]/20 p-2.5 text-[13px] focus:border-[#E9A534] focus:outline-none" 
+                      />
                     </div>
                     <div className="col-span-2">
                       <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#5A0E14]/70">Address (House No, Street)</label>
@@ -444,8 +462,18 @@ export default function CheckoutPage() {
                       <input type="text" required value={addressForm.state} onChange={e => setAddressForm({...addressForm, state: e.target.value})} className="w-full rounded-[6px] border border-[#5A0E14]/20 p-2.5 text-[13px] focus:border-[#E9A534] focus:outline-none" />
                     </div>
                     <div className="col-span-2 sm:col-span-1">
-                      <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#5A0E14]/70">Pincode</label>
-                      <input type="text" required value={addressForm.pincode} onChange={e => setAddressForm({...addressForm, pincode: e.target.value})} className="w-full rounded-[6px] border border-[#5A0E14]/20 p-2.5 text-[13px] focus:border-[#E9A534] focus:outline-none" />
+                      <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#5A0E14]/70">Pincode (6 digits)</label>
+                      <input 
+                        type="text" 
+                        required 
+                        inputMode="numeric"
+                        pattern="[0-9]{6}"
+                        maxLength={6}
+                        placeholder="6-digit pincode"
+                        value={addressForm.pincode} 
+                        onChange={e => setAddressForm({...addressForm, pincode: e.target.value.replace(/\D/g, '').slice(0, 6)})} 
+                        className="w-full rounded-[6px] border border-[#5A0E14]/20 p-2.5 text-[13px] focus:border-[#E9A534] focus:outline-none" 
+                      />
                     </div>
                     <div className="col-span-2 mt-2 flex items-center gap-2">
                       <input type="checkbox" checked={addressForm.isDefault} onChange={e => setAddressForm({...addressForm, isDefault: e.target.checked})} className="rounded text-[#E9A534] focus:ring-[#E9A534]" />

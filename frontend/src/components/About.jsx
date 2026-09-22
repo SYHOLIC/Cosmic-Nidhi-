@@ -71,8 +71,9 @@ export default function About() {
   ];
 
   return (
-    <section
-      id="about"
+    <>
+      <section
+        id="about"
       ref={sectionRef}
       className="relative overflow-hidden py-28 md:py-40 bg-[#FFF7E9]"
     >
@@ -264,5 +265,6 @@ export default function About() {
         type: "consultancy",
       }}
     />
+    </>
   );
 }

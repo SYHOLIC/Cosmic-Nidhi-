@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {
+  getBookedSlots,
   createBooking,
   getBookings,
   getBookingById,
@@ -9,6 +10,9 @@ const {
   getUserBookings,
 } = require('../controllers/bookingController');
 const { protect, optionalProtect, admin } = require('../middleware/auth');
+
+// Public availability check
+router.get('/booked-slots', getBookedSlots);
 
 // User routes
 router.post('/', optionalProtect, createBooking);

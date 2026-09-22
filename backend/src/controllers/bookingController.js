@@ -1,5 +1,41 @@
 const Booking = require('../models/Booking');
 
+// @desc    Get booked time slots for a given date
+// @route   GET /api/bookings/booked-slots
+// @access  Public
+const getBookedSlots = async (req, res) => {
+  try {
+    const { date } = req.query;
+    if (!date) {
+      return res.status(400).json({ success: false, message: 'Date query param is required' });
+    }
+
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const bookings = await Booking.find({
+      date: { $gte: startOfDay, $lte: endOfDay },
+      status: { $ne: 'cancelled' },
+    }).select('time');
+
+    const bookedSlots = bookings.map((b) => b.time);
+
+    res.status(200).json({
+      success: true,
+      date,
+      bookedSlots,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 // @desc    Create booking
 // @route   POST /api/bookings
 // @access  Private
@@ -16,11 +52,32 @@ const createBooking = async (req, res) => {
       amount,
     } = req.body;
 
+    // Check if slot on given date is already booked by another user
+    const bookingDate = date ? new Date(date) : new Date();
+    const startOfDay = new Date(bookingDate);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(bookingDate);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const existingBooking = await Booking.findOne({
+      date: { $gte: startOfDay, $lte: endOfDay },
+      time: time || '10:00 AM',
+      status: { $ne: 'cancelled' },
+    });
+
+    if (existingBooking) {
+      return res.status(400).json({
+        success: false,
+        message: `The ${time || 'selected'} time slot on this date is already booked. Please choose another time slot.`,
+      });
+    }
+
     const booking = await Booking.create({
       user: req.user ? req.user._id : undefined,
       serviceType: serviceType || 'birth-chart',
       serviceName: serviceName || 'Astrology Consultation',
-      date: date ? new Date(date) : new Date(),
+      date: bookingDate,
       time: time || '10:00 AM',
       duration: duration || '60 mins',
       clientDetails: {
@@ -233,6 +290,7 @@ const getUserBookings = async (req, res) => {
 };
 
 module.exports = {
+  getBookedSlots,
   createBooking,
   getBookings,
   getBookingById,

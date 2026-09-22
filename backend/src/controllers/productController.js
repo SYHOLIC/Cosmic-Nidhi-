@@ -272,7 +272,7 @@ const getProductBySlug = async (req, res) => {
 const getProductReviews = async (req, res) => {
   try {
     const Review = require('../models/Review');
-    const reviews = await Review.find({ product: req.params.id }).populate('user', 'name');
+    const reviews = await Review.find({ product: req.params.id }).populate('user', 'name').sort('-createdAt');
     res.json({ success: true, reviews });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

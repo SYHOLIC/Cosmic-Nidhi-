@@ -674,6 +674,14 @@ function ProfileTab({ user, onUpdate }) {
 
   const handleAddressSubmit = async (e) => {
     e.preventDefault();
+    if (!/^\d{10}$/.test(String(addressForm.phone || "").trim())) {
+      alert("Please enter a valid 10-digit phone number.");
+      return;
+    }
+    if (!/^\d{6}$/.test(String(addressForm.pincode || "").trim())) {
+      alert("Please enter a valid 6-digit pincode.");
+      return;
+    }
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
@@ -878,8 +886,18 @@ function ProfileTab({ user, onUpdate }) {
                   <input required type="text" value={addressForm.name} onChange={e => setAddressForm({...addressForm, name: e.target.value})} className="w-full rounded-[7px] border border-[#5A0E14]/15 px-3 py-2 text-[13px] focus:border-[#E9A534]/60 focus:outline-none" />
                 </div>
                 <div>
-                  <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/80">Phone</label>
-                  <input required type="tel" value={addressForm.phone} onChange={e => setAddressForm({...addressForm, phone: e.target.value})} className="w-full rounded-[7px] border border-[#5A0E14]/15 px-3 py-2 text-[13px] focus:border-[#E9A534]/60 focus:outline-none" />
+                  <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/80">Phone (10 digits)</label>
+                  <input 
+                    required 
+                    type="tel" 
+                    inputMode="numeric"
+                    pattern="[0-9]{10}"
+                    maxLength={10}
+                    placeholder="10-digit mobile number"
+                    value={addressForm.phone} 
+                    onChange={e => setAddressForm({...addressForm, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})} 
+                    className="w-full rounded-[7px] border border-[#5A0E14]/15 px-3 py-2 text-[13px] focus:border-[#E9A534]/60 focus:outline-none" 
+                  />
                 </div>
               </div>
               <div>
@@ -897,8 +915,18 @@ function ProfileTab({ user, onUpdate }) {
                 </div>
               </div>
               <div>
-                <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/80">Pincode</label>
-                <input required type="text" value={addressForm.pincode} onChange={e => setAddressForm({...addressForm, pincode: e.target.value})} className="w-full rounded-[7px] border border-[#5A0E14]/15 px-3 py-2 text-[13px] focus:border-[#E9A534]/60 focus:outline-none" />
+                <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/80">Pincode (6 digits)</label>
+                <input 
+                  required 
+                  type="text" 
+                  inputMode="numeric"
+                  pattern="[0-9]{6}"
+                  maxLength={6}
+                  placeholder="6-digit pincode"
+                  value={addressForm.pincode} 
+                  onChange={e => setAddressForm({...addressForm, pincode: e.target.value.replace(/\D/g, '').slice(0, 6)})} 
+                  className="w-full rounded-[7px] border border-[#5A0E14]/15 px-3 py-2 text-[13px] focus:border-[#E9A534]/60 focus:outline-none" 
+                />
               </div>
               <div className="flex items-center gap-2 pt-2">
                 <input type="checkbox" id="isDefault" checked={addressForm.isDefault} onChange={e => setAddressForm({...addressForm, isDefault: e.target.checked})} className="h-4 w-4 rounded border-[#5A0E14]/25 accent-[#E9A534]" />

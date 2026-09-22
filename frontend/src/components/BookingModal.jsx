@@ -89,11 +89,34 @@ const TIME_SLOTS = [
   "07:30 PM",
 ];
 
+const isSlotPassed = (slotStr, dateStr) => {
+  if (!dateStr || !slotStr) return false;
+  const now = new Date();
+  
+  // Format local today as YYYY-MM-DD
+  const localYear = now.getFullYear();
+  const localMonth = String(now.getMonth() + 1).padStart(2, '0');
+  const localDay = String(now.getDate()).padStart(2, '0');
+  const todayStr = `${localYear}-${localMonth}-${localDay}`;
+  
+  if (dateStr !== todayStr) return false;
+
+  const [timePart, modifier] = slotStr.split(" ");
+  if (!timePart || !modifier) return false;
+  let [hours, minutes] = timePart.split(":").map(Number);
+  if (modifier === "PM" && hours < 12) hours += 12;
+  if (modifier === "AM" && hours === 12) hours = 0;
+
+  const slotTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
+  return slotTime <= now;
+};
+
 export default function BookingModal({ isOpen, onClose, initialService }) {
   const [selectedServiceType, setSelectedServiceType] = useState("birth-chart");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState(TIME_SLOTS[0]);
   const [paymentMode, setPaymentMode] = useState("advance_online");
+  const [bookedSlots, setBookedSlots] = useState([]);
 
   const [clientDetails, setClientDetails] = useState({
     name: "",
@@ -141,7 +164,7 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
           ...prev,
           name: u.name || prev.name,
           email: u.email || prev.email,
-          phone: u.phone || prev.phone,
+          phone: (u.phone || "").replace(/\D/g, "").slice(0, 10),
         }));
       }
     } catch {}
@@ -149,6 +172,38 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
     setSuccessBooking(null);
     setErrorMsg("");
   }, [initialService, isOpen]);
+
+  // Fetch booked slots whenever selectedDate changes
+  useEffect(() => {
+    if (selectedDate) {
+      axios
+        .get(`${API_URL}/bookings/booked-slots?date=${selectedDate}`)
+        .then((res) => {
+          if (res.data.success && Array.isArray(res.data.bookedSlots)) {
+            setBookedSlots(res.data.bookedSlots);
+          } else {
+            setBookedSlots([]);
+          }
+        })
+        .catch(() => setBookedSlots([]));
+    }
+  }, [selectedDate]);
+
+  // If currently selected slot is passed or booked, automatically switch to first available slot
+  useEffect(() => {
+    const isCurrentUnavailable =
+      isSlotPassed(selectedTime, selectedDate) ||
+      bookedSlots.includes(selectedTime);
+
+    if (isCurrentUnavailable) {
+      const firstAvailable = TIME_SLOTS.find(
+        (slot) => !isSlotPassed(slot, selectedDate) && !bookedSlots.includes(slot)
+      );
+      if (firstAvailable) {
+        setSelectedTime(firstAvailable);
+      }
+    }
+  }, [selectedDate, bookedSlots, selectedTime]);
 
   // Lock body scroll
   useEffect(() => {
@@ -170,6 +225,28 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
     e.preventDefault();
     setLoading(true);
     setErrorMsg("");
+
+    // Validate phone number: strictly 10 digits
+    const cleanedPhone = String(clientDetails.phone || "").trim();
+    if (!/^\d{10}$/.test(cleanedPhone)) {
+      setErrorMsg("Please enter a valid 10-digit phone number.");
+      setLoading(false);
+      return;
+    }
+
+    // Validate time slot: must not have already passed
+    if (isSlotPassed(selectedTime, selectedDate)) {
+      setErrorMsg("The selected time slot has already passed today. Please choose a future slot.");
+      setLoading(false);
+      return;
+    }
+
+    // Validate time slot: must not be booked by another user
+    if (bookedSlots.includes(selectedTime)) {
+      setErrorMsg("This time slot is already booked by another user. Please choose another slot.");
+      setLoading(false);
+      return;
+    }
 
     const isMatching = activeService.type === "kundli-matching";
 
@@ -547,11 +624,17 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
                       onChange={(e) => setSelectedTime(e.target.value)}
                       className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2.5 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
                     >
-                      {TIME_SLOTS.map((slot) => (
-                        <option key={slot} value={slot}>
-                          {slot}
-                        </option>
-                      ))}
+                      {TIME_SLOTS.map((slot) => {
+                        const passed = isSlotPassed(slot, selectedDate);
+                        const booked = bookedSlots.includes(slot);
+                        const disabled = passed || booked;
+                        return (
+                          <option key={slot} value={slot} disabled={disabled}>
+                            {slot}
+                            {passed ? " (Passed)" : booked ? " (Already Booked)" : ""}
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
                 </div>
@@ -704,15 +787,18 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
                       <div className="grid gap-3 sm:grid-cols-2">
                         <div>
                           <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-[#6B3A2A]/80">
-                            Phone / WhatsApp *
+                            Phone / WhatsApp (10 digits) *
                           </label>
                           <input
                             type="tel"
                             required
+                            inputMode="numeric"
+                            pattern="[0-9]{10}"
+                            maxLength={10}
                             placeholder="e.g. 9876543210"
                             value={clientDetails.phone}
                             onChange={(e) =>
-                              setClientDetails({ ...clientDetails, phone: e.target.value })
+                              setClientDetails({ ...clientDetails, phone: e.target.value.replace(/\D/g, "").slice(0, 10) })
                             }
                             className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
                           />
@@ -763,15 +849,18 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
 
                         <div>
                           <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-[#6B3A2A]/80">
-                            Phone / WhatsApp *
+                            Phone / WhatsApp (10 digits) *
                           </label>
                           <input
                             type="tel"
                             required
+                            inputMode="numeric"
+                            pattern="[0-9]{10}"
+                            maxLength={10}
                             placeholder="e.g. 9876543210"
                             value={clientDetails.phone}
                             onChange={(e) =>
-                              setClientDetails({ ...clientDetails, phone: e.target.value })
+                              setClientDetails({ ...clientDetails, phone: e.target.value.replace(/\D/g, "").slice(0, 10) })
                             }
                             className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
                           />

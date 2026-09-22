@@ -107,6 +107,19 @@ const addAddress = async (req, res) => {
       });
     }
 
+    if (req.body.phone && !/^\d{10}$/.test(String(req.body.phone).trim())) {
+      return res.status(400).json({
+        success: false,
+        message: 'Phone number must be exactly 10 digits',
+      });
+    }
+    if (req.body.pincode && !/^\d{6}$/.test(String(req.body.pincode).trim())) {
+      return res.status(400).json({
+        success: false,
+        message: 'Pincode must be exactly 6 digits',
+      });
+    }
+
     const newAddress = {
       name: req.body.name,
       phone: req.body.phone,
@@ -148,6 +161,19 @@ const addAddress = async (req, res) => {
 // @access  Private
 const updateAddress = async (req, res) => {
   try {
+    if (req.body.phone && !/^\d{10}$/.test(String(req.body.phone).trim())) {
+      return res.status(400).json({
+        success: false,
+        message: 'Phone number must be exactly 10 digits',
+      });
+    }
+    if (req.body.pincode && !/^\d{6}$/.test(String(req.body.pincode).trim())) {
+      return res.status(400).json({
+        success: false,
+        message: 'Pincode must be exactly 6 digits',
+      });
+    }
+
     const user = await User.findById(req.user._id);
 
     if (!user) {

@@ -24,6 +24,8 @@ function Nav() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState("user");
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+  const [desktopServicesOpen, setDesktopServicesOpen] = useState(false);
 
   /* =========================================================
      PAGE TYPE
@@ -60,6 +62,8 @@ function Nav() {
 
   useEffect(() => {
     setMobileMenuOpen(false);
+    setMobileServicesOpen(false);
+    setDesktopServicesOpen(false);
   }, [location.pathname]);
 
   /* =========================================================
@@ -265,9 +269,14 @@ function Nav() {
           <div className="hidden items-center justify-center gap-1 lg:flex xl:gap-2">
             {navItems.map((item) =>
               item.dropdown && item.label === "Services" ? (
-                <div key={item.label} className="relative group/svc py-3">
-                  <Link
-                    to={item.href}
+                <div
+                  key={item.label}
+                  className="relative group/svc py-3"
+                  onMouseLeave={() => setDesktopServicesOpen(false)}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setDesktopServicesOpen(!desktopServicesOpen)}
                     className={`
                       group relative flex items-center gap-1.5 whitespace-nowrap
                       px-3 py-1 font-sans text-[13px] font-medium tracking-[0.01em]
@@ -280,11 +289,12 @@ function Nav() {
                     <ChevronDown
                       size={11}
                       strokeWidth={1.5}
-                      className="
+                      className={`
                         text-[#E9A534]/70
                         transition-transform duration-300
                         group-hover/svc:rotate-180
-                      "
+                        ${desktopServicesOpen ? "rotate-180" : ""}
+                      `}
                     />
                     <span
                       className="
@@ -295,23 +305,29 @@ function Nav() {
                         xl:left-3.5 xl:right-3.5
                       "
                     />
-                  </Link>
+                  </button>
 
                   {/* Dropdown Menu */}
                   <div
-                    className="
-                      pointer-events-none absolute left-0 top-full z-50 min-w-[270px]
+                    className={`
+                      absolute left-0 top-full z-50 min-w-[270px]
                       translate-y-2 rounded-[10px] border border-[#E9A534]/30
-                      bg-[#240307]/98 p-2 opacity-0 shadow-[0_12px_32px_rgba(0,0,0,0.5)]
+                      bg-[#240307]/98 p-2 shadow-[0_12px_32px_rgba(0,0,0,0.5)]
                       backdrop-blur-xl transition-all duration-300
                       group-hover/svc:pointer-events-auto group-hover/svc:translate-y-0 group-hover/svc:opacity-100
-                    "
+                      ${
+                        desktopServicesOpen
+                          ? "pointer-events-auto translate-y-0 opacity-100"
+                          : "pointer-events-none opacity-0"
+                      }
+                    `}
                   >
                     <div className="py-1">
                       {SERVICES_DROPDOWN_ITEMS.map((svc) => (
                         <Link
                           key={svc.label}
                           to={svc.href}
+                          onClick={() => setDesktopServicesOpen(false)}
                           className="
                             group/sub block rounded-[7px] px-3.5 py-2 transition-colors
                             hover:bg-white/[0.08]
@@ -625,7 +641,49 @@ function Nav() {
           <div className="mx-auto max-w-[1450px] px-5 pb-6 pt-2 sm:px-7">
             <div className="flex flex-col">
               {navItems.map((item, index) =>
-                item.isHash ? (
+                item.dropdown && item.label === "Services" ? (
+                  <div key={item.label} className="border-b border-[#E9A534]/[0.08] py-2">
+                    <button
+                      type="button"
+                      onClick={() => setMobileServicesOpen(!mobileServicesOpen)}
+                      className="
+                        group flex w-full items-center justify-between
+                        py-[10px] font-sans text-[14px] font-medium
+                        text-[#F5E5C7]/95 transition-colors duration-300
+                        hover:text-[#E9C76D]
+                      "
+                    >
+                      <span className="flex items-center">
+                        <span className="mr-3 w-5 text-[8px] tracking-[0.12em] text-[#E9A534]/45">
+                          0{index + 1}
+                        </span>
+                        {item.label}
+                      </span>
+                      <ChevronDown
+                        size={15}
+                        className={`text-[#E9A534]/70 transition-transform duration-300 ${
+                          mobileServicesOpen ? "rotate-180 text-[#E9C76D]" : ""
+                        }`}
+                      />
+                    </button>
+
+                    {mobileServicesOpen && (
+                      <div className="ml-8 mb-2 flex flex-col gap-1 border-l border-[#E9A534]/20 pl-4 py-1">
+                        {SERVICES_DROPDOWN_ITEMS.map((svc) => (
+                          <Link
+                            key={svc.label}
+                            to={svc.href}
+                            onClick={closeMobileMenu}
+                            className="py-2 font-sans text-[13px] text-[#F5E5C7]/80 hover:text-[#E9C76D] transition-colors"
+                          >
+                            <p className="font-medium text-[#FFF4E4]">{svc.label}</p>
+                            <p className="text-[11px] text-[#E9C76D]/60">{svc.desc}</p>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : item.isHash ? (
                   <a
                     key={item.label}
                     href={item.href}
@@ -673,23 +731,14 @@ function Nav() {
                       {item.label}
                     </span>
 
-                    <div className="flex items-center gap-2">
-                      {item.dropdown && (
-                        <ChevronDown
-                          size={14}
-                          className="text-[#E9A534]/70"
-                        />
-                      )}
-
-                      <ArrowRight
-                        size={15}
-                        strokeWidth={1.5}
-                        className="
-                          opacity-30 transition-all duration-300
-                          group-hover:translate-x-1 group-hover:opacity-100
-                        "
-                      />
-                    </div>
+                    <ArrowRight
+                      size={15}
+                      strokeWidth={1.5}
+                      className="
+                        opacity-30 transition-all duration-300
+                        group-hover:translate-x-1 group-hover:opacity-100
+                      "
+                    />
                   </Link>
                 )
               )}

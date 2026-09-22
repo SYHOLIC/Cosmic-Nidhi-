@@ -476,12 +476,21 @@ export default function PitraDoshCalculator() {
                       <button
                         type="button"
                         onClick={() => setShowCountryDropdown(!showCountryDropdown)}
-                        className="flex shrink-0 items-center gap-1.5 border-r border-gray-200 pr-3 mr-3 text-xs font-semibold text-gray-700 hover:text-black focus:outline-none transition-colors cursor-pointer whitespace-nowrap"
+                        className="flex shrink-0 items-center gap-2 border-r border-gray-200 pr-3 mr-3 text-xs font-semibold text-gray-700 hover:text-black focus:outline-none transition-colors cursor-pointer whitespace-nowrap"
                         title="Change Country Code"
                       >
-                        <span className="text-base shrink-0">{selectedCountry.flag}</span>
-                        <span className="whitespace-nowrap font-medium">
-                          {selectedCountry.short} {selectedCountry.code}
+                        <img
+                          src={`https://flagcdn.com/w40/${selectedCountry.short.toLowerCase()}.png`}
+                          alt={selectedCountry.country}
+                          className="w-5 h-3.5 object-cover rounded-[2px] shadow-xs border border-gray-100 shrink-0"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            if (e.target.nextElementSibling) e.target.nextElementSibling.style.display = 'inline-block';
+                          }}
+                        />
+                        <span className="hidden text-sm leading-none shrink-0">{selectedCountry.flag}</span>
+                        <span className="whitespace-nowrap font-medium text-gray-800">
+                          {selectedCountry.code}
                         </span>
                         <ChevronDown
                           size={12}
@@ -512,7 +521,16 @@ export default function PitraDoshCalculator() {
                               }`}
                             >
                               <span className="flex items-center gap-2">
-                                <span>{item.flag}</span>
+                                <img
+                                  src={`https://flagcdn.com/w40/${item.short.toLowerCase()}.png`}
+                                  alt={item.country}
+                                  className="w-4 h-3 object-cover rounded-[2px] shadow-xs border border-gray-100 shrink-0"
+                                  onError={(e) => {
+                                    e.target.style.display = 'none';
+                                    if (e.target.nextElementSibling) e.target.nextElementSibling.style.display = 'inline-block';
+                                  }}
+                                />
+                                <span className="hidden text-xs shrink-0">{item.flag}</span>
                                 <span>{item.country}</span>
                               </span>
                               <span className="text-gray-500 font-mono text-[11px]">

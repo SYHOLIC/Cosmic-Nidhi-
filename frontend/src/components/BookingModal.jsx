@@ -130,6 +130,7 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
     partnerTimeOfBirth: "",
     partnerPlaceOfBirth: "",
     questions: "",
+    address: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -221,6 +222,10 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
   const activeService =
     SERVICES_LIST.find((s) => s.type === selectedServiceType) || SERVICES_LIST[0];
 
+  const availableSlotsCount = TIME_SLOTS.filter(
+    (slot) => !isSlotPassed(slot, selectedDate) && !bookedSlots.includes(slot)
+  ).length;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -249,6 +254,7 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
     }
 
     const isMatching = activeService.type === "kundli-matching";
+    const isVastu = activeService.type.startsWith("vastu");
 
     if (isMatching) {
       if (!clientDetails.name?.trim()) {
@@ -271,6 +277,12 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
         setLoading(false);
         return;
       }
+    }
+
+    if (isVastu && !clientDetails.address?.trim()) {
+      setErrorMsg("Property / Site Address is required for Vastu consultation (NCR location only).");
+      setLoading(false);
+      return;
     }
 
     try {
@@ -297,9 +309,12 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
           partnerTimeOfBirth: clientDetails.partnerTimeOfBirth,
           partnerPlaceOfBirth: clientDetails.partnerPlaceOfBirth,
           questions: clientDetails.questions,
+          address: clientDetails.address,
         },
         notes: isMatching
           ? `[Kundli Matching] Bride: ${clientDetails.name} (DOB: ${clientDetails.dateOfBirth}) | Groom: ${clientDetails.partnerName} (DOB: ${clientDetails.partnerDateOfBirth}) | Notes: ${clientDetails.questions || "None"}`
+          : isVastu
+          ? `[Vastu Consultation - NCR Location Only] Site Address: ${clientDetails.address} | Notes: ${clientDetails.questions || "None"}`
           : clientDetails.questions,
       };
 
@@ -616,9 +631,22 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
                   </div>
 
                   <div>
-                    <label className="mb-1.5 block font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-[#8A5A1F]">
-                      Preferred Time Slot
-                    </label>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="block font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-[#8A5A1F]">
+                        Preferred Time Slot
+                      </label>
+                      <span
+                        className={`font-sans text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                          availableSlotsCount > 0
+                            ? "border border-green-700/25 bg-green-700/[0.08] text-green-800"
+                            : "border border-red-700/25 bg-red-700/[0.08] text-red-800"
+                        }`}
+                      >
+                        {availableSlotsCount > 0
+                          ? `${availableSlotsCount} of ${TIME_SLOTS.length} slots left`
+                          : "No slots left today"}
+                      </span>
+                    </div>
                     <select
                       value={selectedTime}
                       onChange={(e) => setSelectedTime(e.target.value)}
@@ -638,6 +666,38 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
                     </select>
                   </div>
                 </div>
+
+                {/* Vastu Specific NCR Note and Explicit Address Field */}
+                {activeService.type.startsWith("vastu") && (
+                  <div className="rounded-[8px] border border-[#E9A534]/50 bg-[#FDECC8]/30 p-4 space-y-3">
+                    <div className="flex items-start gap-2.5">
+                      <MapPin className="h-4 w-4 text-[#8A5A1F] shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#8A5A1F]">
+                          NCR Location Only
+                        </p>
+                        <p className="font-sans text-[12px] text-[#5A0E14] leading-[1.5] mt-0.5">
+                          On-site space inspection, physical visits, and Vastu consultations are available for <strong>NCR location only</strong> (Delhi, Noida, Greater Noida, Gurgaon, Ghaziabad, and Faridabad).
+                        </p>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-[#6B3A2A]/80">
+                        Property / Site Address (NCR Location Only) *
+                      </label>
+                      <textarea
+                        rows={2}
+                        required
+                        placeholder="House/Plot No., Building/Apartment, Sector/Area, City (Delhi NCR), Pincode"
+                        value={clientDetails.address || ""}
+                        onChange={(e) =>
+                          setClientDetails({ ...clientDetails, address: e.target.value })
+                        }
+                        className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                )}
 
                 {/* Notice for Kundli Matching */}
                 {activeService.type === "kundli-matching" ? (

@@ -30,7 +30,7 @@ const SERVICES = [
     slug: "numerology",
     title: "Numerology Consultation",
     subtitle: "Decode Your Numbers. Understand Your Patterns. Discover Your Possibilities.",
-    desc: "Numbers are more than just digits. In traditional numerology, numbers associated with your name and date of birth are interpreted to understand recurring patterns, tendencies and life themes.\n\nAt Cosmic Nidhi, we bring a modern and personalized approach to Vedic Numerology, combining traditional principles with detailed analysis and practical interpretation.\n\nBeyond Traditional Number Reading:\nOur approach goes beyond simply calculating numbers. We study the relationship between different numerical influences, look for recurring patterns and place them in the context of your individual circumstances. The objective is not simply to predict events, but to help you understand patterns, explore possibilities and gain a different perspective on your journey.\n\nYour Numbers. Your Patterns. Your Journey:\nEvery individual has a unique numerical profile. Discover what your numbers traditionally represent and explore your journey with a personalized Numerology consultation.",
+    desc: "In traditional Vedic and Chaldean numerology, numbers associated with your name and birth date reveal recurring life themes, core strengths, and pivotal cycles.\n\nAt Cosmic Nidhi, we combine traditional principles with practical interpretation to help you discover what your numbers represent and gain clarity for career, relationships, and personal growth.",
     image:
       "https://cosmicnidhi.in/wp-content/uploads/2024/04/img_5-700x800.jpg",
     accent: "#E9A534",
@@ -42,16 +42,10 @@ const SERVICES = [
     icon: Calendar,
     whatTitle: "What We Explore",
     whatToExpect: [
-      "Birth & Life Path Numbers — Understand the traditional significance of your core numbers.",
-      "Name Analysis — Explore the numerological relationship between your name and birth details.",
-      "Name Correction — Traditional numerological guidance for selecting or modifying names.",
-      "Business & Brand Name Analysis — Evaluate names from a numerological perspective.",
-      "Mobile Number Analysis — Understand the traditional interpretation of your mobile number.",
-      "Corporate Numerology — Align Your Business Identity with the Power of Numbers.",
-      "Bank Account Number Analysis — Decode Your Bank Account Number. Understand Its Numerological Influence.",
-      "Signature Analysis — Explore the numerological perspective of your signature.",
-      "Personal Year & Cycles — Understand recurring numerical cycles and their traditional interpretations.",
-      "Compatibility Analysis — Explore relationship dynamics through numerological patterns.",
+      "Birth & Life Path Numbers — Core strengths and life timing",
+      "Name & Signature Analysis — Alignment for clarity and success",
+      "Business & Career Numerology — Optimal brand and professional vibration",
+      "Personal Year Cycles & Compatibility — Understanding key transitions",
     ],
     whoItsFor:
       "Anyone curious about the symbolic relationship between their name, birth date, and personal themes.",
@@ -86,7 +80,7 @@ const SERVICES = [
     slug: "vastu",
     title: "Applied Vastu Consultation",
     subtitle: "Align Your Space. Transform Your Experience.",
-    desc: "Every space has its own character, layout and flow. Our Advanced Vastu Consultation brings together traditional Vastu principles with a structured and practical approach to understanding your home, office or commercial environment.\n\nWe study directions, zones, entrances, room placement, spatial relationships and elemental balance to identify areas that may benefit from thoughtful changes or traditional Vastu remedies.\n\nUnderstand your space. Create greater harmony. Make your environment work for you.",
+    desc: "Every space has its own energy, layout and elemental flow. Our Advanced Vastu Consultation brings together traditional Vedic Vastu principles with a practical, structural approach to harmonize your living or working environment.\n\nWe study directions, zones, entrances, and spatial balance to provide practical recommendations and non-demolition remedies.",
     image: "https://www.grahai.com/images/doshas/mangal-dosha.png",
     accent: "#5A0E14",
     type: "Vastu",
@@ -109,7 +103,7 @@ const SERVICES = [
     slug: "kundli-matching",
     title: "Kundli Matching / Relationship Guidance",
     subtitle: "Understand the Connection. Explore the Compatibility. Strengthen the Journey.",
-    desc: "Every relationship has its own unique dynamics. Through a comparative reading of two birth kundlis, we explore planetary influences, compatibility indicators, communication patterns, strengths and areas that may require greater understanding.\n\nOur approach goes beyond simply looking at traditional matching scores. It brings together relevant astrological perspectives to help you understand the patterns, possibilities and dynamics within a relationship.\n\nThe consultation is designed to encourage awareness, meaningful conversation and thoughtful reflection, helping you approach your relationship journey with greater clarity and understanding.",
+    desc: "Every relationship has its own unique dynamics. Through a comparative reading of two birth kundlis, we explore planetary alignments, compatibility indicators, and communication patterns.\n\nOur approach goes beyond traditional Guna Milan scores, helping both partners foster mutual understanding and make confident life decisions together.",
     image:
       "https://www.hiastro.in/_next/image?url=https:%2F%2Fsteadfast-cows-9445c3a50f.media.strapiapp.com%2FUnlock_Zodiac_Love_Compatibility_Your_Cosmic_Guide_2bfc1451f0.jpg&w=1920&q=75",
     accent: "#C1272D",
@@ -124,7 +118,6 @@ const SERVICES = [
       "Side-by-side birth kundli comparison",
       "Communication pattern insights",
       "Relationship reflection and conversation",
-      "Support for major life decisions",
     ],
     whoItsFor:
       "Couples, engaged partners, and anyone seeking to understand relationship dynamics.",
@@ -302,7 +295,7 @@ function ServiceCard({ service, index, onBook }) {
           type="button"
           onClick={() => onBook?.(service)}
           className="
-            group/btn mt-5 inline-flex w-full items-center justify-center gap-2.5
+            group/btn mt-auto pt-5 inline-flex w-full items-center justify-center gap-2.5
             rounded-full
             border border-[#F2C66D]
             bg-gradient-to-r from-[#F3D49B] to-[#DDB56D]

@@ -24,7 +24,7 @@ const getStats = async (req, res) => {
       .limit(5);
 
     const revenue = await Order.aggregate([
-      { $match: { paymentStatus: 'paid' } },
+      { $match: { $or: [{ paymentStatus: 'paid' }, { orderStatus: 'delivered' }] } },
       { $group: { _id: null, total: { $sum: '$totalAmount' } } },
     ]);
 

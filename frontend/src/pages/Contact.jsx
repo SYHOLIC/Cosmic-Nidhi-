@@ -1,11 +1,13 @@
 import { useState } from "react";
 import axios from "axios";
-import { Mail, Phone, MapPin, Send } from "lucide-react";
+import { Mail, Phone, MapPin, Send, CheckCircle2, Loader2 } from "lucide-react";
 import SEOHead from "../components/SEOHead";
+import { useToast } from "../context/ToastContext";
 
 import { API_URL } from "../config/api";
 
 export default function Contact() {
+  const toast = useToast();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -14,7 +16,7 @@ export default function Contact() {
   });
   
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState("");
+  const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -24,17 +26,19 @@ export default function Contact() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setSuccess("");
     setError("");
 
     try {
       const res = await axios.post(`${API_URL}/contact`, formData);
       if (res.data.success) {
-        setSuccess("Thank you! Your message has been received.");
+        setSubmitted(true);
+        toast.success("Thank you! Your message has been sent successfully.");
         setFormData({ name: "", email: "", subject: "", message: "" });
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to send message.");
+      const msg = err.response?.data?.message || "Failed to send message. Please try again.";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -146,17 +150,17 @@ export default function Contact() {
                   YouTube
                 </a>
 
-                {/* LinkedIn */}
+                {/* WhatsApp */}
                 <a
-                  href="https://www.linkedin.com/in/nidhi-asthana-2826b4389?utm_source=share_via&utm_content=profile&utm_medium=member_android"
+                  href="https://wa.me/919999710777"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-full border border-[#E9A534]/25 bg-white/5 px-3.5 py-1.5 text-xs text-[#FFF8EC] transition-all hover:border-[#E9A534] hover:bg-[#E9A534]/10 hover:text-[#E9A534]"
+                  className="flex items-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-950/30 px-3.5 py-1.5 text-xs text-[#FFF8EC] transition-all hover:border-emerald-400 hover:bg-emerald-500/20 hover:text-emerald-300"
                 >
-                  <svg className="h-3.5 w-3.5 fill-current text-[#0A66C2]" viewBox="0 0 24 24">
-                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                  <svg className="h-3.5 w-3.5 fill-current text-[#25D366]" viewBox="0 0 24 24">
+                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
                   </svg>
-                  LinkedIn
+                  WhatsApp
                 </a>
 
                 {/* Website */}
@@ -174,84 +178,108 @@ export default function Contact() {
           </div>
 
           {/* Contact Form */}
-          <div className="bg-white p-10 rounded-[20px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-[#5A0E14]/10">
+          <div className="bg-white p-8 sm:p-10 rounded-[20px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-[#5A0E14]/10">
             <h2 className="font-display text-[28px] font-semibold text-[#3C080D] mb-6">Send a Message</h2>
             
-            {success && (
-              <div className="mb-6 p-4 bg-green-50 text-green-700 rounded-lg border border-green-200">
-                {success}
-              </div>
-            )}
-            
-            {error && (
-              <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg border border-red-200">
-                {error}
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-              <div className="grid gap-5 md:grid-cols-2">
-                <div>
-                  <label className="block text-sm font-bold text-[#3C080D] mb-1.5">Your Name</label>
-                  <input 
-                    type="text" 
-                    name="name"
-                    required
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="w-full rounded-lg border border-[#5A0E14]/20 px-4 py-2.5 focus:outline-none focus:border-[#E9A534] focus:ring-1 focus:ring-[#E9A534]"
-                    placeholder="John Doe"
-                  />
+            {submitted ? (
+              <div className="py-8 text-center flex flex-col items-center">
+                <div className="h-16 w-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4">
+                  <CheckCircle2 size={36} />
                 </div>
-                <div>
-                  <label className="block text-sm font-bold text-[#3C080D] mb-1.5">Your Email</label>
-                  <input 
-                    type="email" 
-                    name="email"
-                    required
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full rounded-lg border border-[#5A0E14]/20 px-4 py-2.5 focus:outline-none focus:border-[#E9A534] focus:ring-1 focus:ring-[#E9A534]"
-                    placeholder="john@example.com"
-                  />
-                </div>
+                <h3 className="font-display text-2xl font-bold text-[#3C080D] mb-2">Message Sent!</h3>
+                <p className="font-sans text-sm text-[#6B3A2A]/80 max-w-sm mb-6 leading-relaxed">
+                  Thank you for reaching out to Cosmic Nidhi. Astrologer Nidhi Asthana and our guides will review your message and reply promptly.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setSubmitted(false)}
+                  className="rounded-full border border-[#5A0E14]/20 px-6 py-2.5 font-sans text-xs font-bold uppercase tracking-wider text-[#5A0E14] hover:bg-[#5A0E14]/5 transition-colors"
+                >
+                  Send Another Message
+                </button>
               </div>
+            ) : (
+              <>
+                {error && (
+                  <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg border border-red-200 text-sm">
+                    {error}
+                  </div>
+                )}
 
-              <div>
-                <label className="block text-sm font-bold text-[#3C080D] mb-1.5">Subject</label>
-                <input 
-                  type="text" 
-                  name="subject"
-                  required
-                  value={formData.subject}
-                  onChange={handleChange}
-                  className="w-full rounded-lg border border-[#5A0E14]/20 px-4 py-2.5 focus:outline-none focus:border-[#E9A534] focus:ring-1 focus:ring-[#E9A534]"
-                  placeholder="Order Inquiry"
-                />
-              </div>
+                <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <div>
+                      <label className="block text-sm font-bold text-[#3C080D] mb-1.5">Your Name *</label>
+                      <input 
+                        type="text" 
+                        name="name"
+                        required
+                        value={formData.name}
+                        onChange={handleChange}
+                        className="w-full rounded-lg border border-[#5A0E14]/20 px-4 py-2.5 text-sm focus:outline-none focus:border-[#E9A534] focus:ring-1 focus:ring-[#E9A534]"
+                        placeholder="John Doe"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-[#3C080D] mb-1.5">Your Email *</label>
+                      <input 
+                        type="email" 
+                        name="email"
+                        required
+                        value={formData.email}
+                        onChange={handleChange}
+                        className="w-full rounded-lg border border-[#5A0E14]/20 px-4 py-2.5 text-sm focus:outline-none focus:border-[#E9A534] focus:ring-1 focus:ring-[#E9A534]"
+                        placeholder="john@example.com"
+                      />
+                    </div>
+                  </div>
 
-              <div>
-                <label className="block text-sm font-bold text-[#3C080D] mb-1.5">Message</label>
-                <textarea 
-                  name="message"
-                  required
-                  rows={5}
-                  value={formData.message}
-                  onChange={handleChange}
-                  className="w-full rounded-lg border border-[#5A0E14]/20 px-4 py-2.5 focus:outline-none focus:border-[#E9A534] focus:ring-1 focus:ring-[#E9A534]"
-                  placeholder="How can we help you?"
-                />
-              </div>
+                  <div>
+                    <label className="block text-sm font-bold text-[#3C080D] mb-1.5">Subject *</label>
+                    <input 
+                      type="text" 
+                      name="subject"
+                      required
+                      value={formData.subject}
+                      onChange={handleChange}
+                      className="w-full rounded-lg border border-[#5A0E14]/20 px-4 py-2.5 text-sm focus:outline-none focus:border-[#E9A534] focus:ring-1 focus:ring-[#E9A534]"
+                      placeholder="Consultation or Order Inquiry"
+                    />
+                  </div>
 
-              <button 
-                type="submit" 
-                disabled={loading}
-                className="mt-4 flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#F3D49B] to-[#DDB56D] border border-[#F2C66D] py-3 text-sm font-bold uppercase tracking-wider text-[#3C080D] transition-transform hover:-translate-y-0.5 shadow-lg disabled:opacity-50"
-              >
-                <Send size={18} />
-                {loading ? "Sending..." : "Send Message"}
-              </button>
-            </form>
+                  <div>
+                    <label className="block text-sm font-bold text-[#3C080D] mb-1.5">Message *</label>
+                    <textarea 
+                      name="message"
+                      required
+                      rows={5}
+                      value={formData.message}
+                      onChange={handleChange}
+                      className="w-full rounded-lg border border-[#5A0E14]/20 px-4 py-2.5 text-sm focus:outline-none focus:border-[#E9A534] focus:ring-1 focus:ring-[#E9A534] resize-none"
+                      placeholder="How can we assist you on your spiritual path?"
+                    />
+                  </div>
+
+                  <button 
+                    type="submit" 
+                    disabled={loading}
+                    className="mt-4 flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#F3D49B] to-[#DDB56D] border border-[#F2C66D] py-3 text-sm font-bold uppercase tracking-wider text-[#3C080D] transition-transform hover:-translate-y-0.5 shadow-lg disabled:opacity-50 cursor-pointer"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 size={18} className="animate-spin" />
+                        <span>Sending Message...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send size={18} />
+                        <span>Send Message</span>
+                      </>
+                    )}
+                  </button>
+                </form>
+              </>
+            )}
           </div>
 
         </div>

@@ -153,7 +153,7 @@ function Nav() {
     { label: "Zodiac", href: "/zodiac", dropdown: "zodiac" },
     { label: "Store", href: "/products" },
     { label: "Forecast", href: "/services" },
-    { label: "Pricing", href: "#pricing", isHash: true },
+    { label: "Pricing", href: "/services#pricing" },
     { label: "Contact", href: "/contact" },
   ];
 

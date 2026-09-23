@@ -64,8 +64,20 @@ const updateProfile = async (req, res) => {
       });
     }
 
-    user.name = req.body.name || user.name;
-    user.phone = req.body.phone || user.phone;
+    if (req.body.phone !== undefined) {
+      const cleanPhone = String(req.body.phone).trim();
+      if (cleanPhone && !/^\d{10}$/.test(cleanPhone)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Phone number must be exactly 10 digits',
+        });
+      }
+      user.phone = cleanPhone;
+    }
+
+    if (req.body.name) {
+      user.name = req.body.name.trim();
+    }
     
     if (req.body.dateOfBirth) {
       user.dateOfBirth = req.body.dateOfBirth;

@@ -249,6 +249,9 @@ const updateOrderStatus = async (req, res) => {
     }
 
     order.orderStatus = status;
+    if (status === 'delivered') {
+      order.paymentStatus = 'paid';
+    }
     await order.save();
 
     res.status(200).json({

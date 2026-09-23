@@ -129,6 +129,26 @@ function StatusPill({ status }) {
   );
 }
 
+function formatRelativeOrderAge(dateString) {
+  if (!dateString) return "";
+  const now = new Date();
+  const past = new Date(dateString);
+  const diffInMs = now.getTime() - past.getTime();
+  if (isNaN(diffInMs)) return "";
+  const diffInSec = Math.max(0, Math.floor(diffInMs / 1000));
+  if (diffInSec < 60) return "just now";
+  const diffInMin = Math.floor(diffInSec / 60);
+  if (diffInMin < 60) return `${diffInMin} min${diffInMin === 1 ? "" : "s"} ago`;
+  const diffInHours = Math.floor(diffInMin / 60);
+  if (diffInHours < 24) return `${diffInHours} hour${diffInHours === 1 ? "" : "s"} ago`;
+  const diffInDays = Math.floor(diffInHours / 24);
+  if (diffInDays < 30) return `${diffInDays} day${diffInDays === 1 ? "" : "s"} ago`;
+  const diffInMonths = Math.floor(diffInDays / 30);
+  if (diffInMonths < 12) return `${diffInMonths} month${diffInMonths === 1 ? "" : "s"} ago`;
+  const diffInYears = Math.floor(diffInMonths / 12);
+  return `${diffInYears} year${diffInYears === 1 ? "" : "s"} ago`;
+}
+
 /* ================================================================
    STAT CARD
 ================================================================ */
@@ -384,24 +404,40 @@ function OverviewTab({ orders, bookings }) {
         </div>
 
         <div className="space-y-2">
-          {orders.slice(0, 5).map((order) => (
-            <div
-              key={order._id}
-              className="flex items-center justify-between gap-3 rounded-[7px] border border-[#5A0E14]/12 bg-[#FDECC8]/30 p-3 transition-all duration-300 hover:border-[#E9A534]/50"
-            >
-              <div className="min-w-0">
-                <p className="font-display text-[13px] font-semibold text-[#3C080D]">
-                  #{order._id?.slice(-6)}
-                </p>
-                <p className="mt-0.5 truncate font-sans text-[11px] text-[#6B3A2A]/70">
-                  {order.user?.name || "Unknown"}
-                </p>
+          {orders.slice(0, 5).map((order) => {
+            const itemNames =
+              order.items
+                ?.map((i) => i.name || i.product?.name)
+                .filter(Boolean)
+                .join(", ") || "1 Item";
+            return (
+              <div
+                key={order._id}
+                className="flex items-center justify-between gap-3 rounded-[7px] border border-[#5A0E14]/12 bg-[#FDECC8]/30 p-3 transition-all duration-300 hover:border-[#E9A534]/50"
+              >
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <p className="font-display text-[13px] font-semibold text-[#3C080D]">
+                      #{order._id?.slice(-6).toUpperCase()}
+                    </p>
+                    <span className="font-sans text-[10px] font-medium text-[#8A5A1F]">
+                      {formatRelativeOrderAge(order.createdAt)}
+                    </span>
+                  </div>
+                  <p className="mt-0.5 truncate font-sans text-[11px] text-[#6B3A2A]/80">
+                    <span className="font-semibold text-[#3C080D]">
+                      {order.shippingAddress?.name || order.user?.name || "Customer"}
+                    </span>
+                    {" · "}
+                    <span className="text-[#8A5A1F]">{itemNames}</span>
+                  </p>
+                </div>
+                <span className="shrink-0 font-display text-[14px] font-semibold text-[#C1272D]">
+                  ₹{order.totalAmount?.toLocaleString("en-IN") || 0}
+                </span>
               </div>
-              <span className="shrink-0 font-display text-[14px] font-semibold text-[#C1272D]">
-                ₹{order.totalAmount}
-              </span>
-            </div>
-          ))}
+            );
+          })}
 
           {orders.length === 0 && (
             <div className="rounded-[7px] border border-dashed border-[#5A0E14]/20 bg-[#FDECC8]/20 py-8 text-center">
@@ -652,7 +688,7 @@ function OrdersTab({ orders, onUpdateStatus }) {
                 Customer
               </th>
               <th className="px-4 py-2.5 text-left font-sans text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/70">
-                Purchased Products
+                Item Name
               </th>
               <th className="px-4 py-2.5 text-left font-sans text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/70">
                 Total
@@ -661,7 +697,7 @@ function OrdersTab({ orders, onUpdateStatus }) {
                 Status
               </th>
               <th className="px-4 py-2.5 text-left font-sans text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/70">
-                Date
+                Order Age / Date
               </th>
               <th className="px-4 py-2.5 text-right font-sans text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/70">
                 Action
@@ -769,12 +805,17 @@ function OrdersTab({ orders, onUpdateStatus }) {
                       </select>
                     </div>
                   </td>
-                  <td className="px-4 py-3 font-sans text-[11px] text-[#6B3A2A]/65">
-                    {new Date(order.createdAt).toLocaleDateString("en-IN", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                    })}
+                  <td className="px-4 py-3 font-sans text-[11px]">
+                    <p className="font-semibold text-[#3C080D]">
+                      {formatRelativeOrderAge(order.createdAt)}
+                    </p>
+                    <p className="text-[10px] text-[#6B3A2A]/70">
+                      {new Date(order.createdAt).toLocaleDateString("en-IN", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </p>
                   </td>
                   <td className="px-4 py-3 text-right">
                     <button
@@ -1049,11 +1090,17 @@ export default function AdminPage() {
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      // Refresh orders
-      const ordersRes = await axios.get(`${API_URL}/admin/orders`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      // Refresh orders and stats so revenue updates immediately
+      const [ordersRes, statsRes] = await Promise.all([
+        axios.get(`${API_URL}/admin/orders`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.get(`${API_URL}/admin/stats`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
       setOrders(ordersRes.data.orders);
+      setStats(statsRes.data.stats);
     } catch (error) {
       console.error("Error updating order status:", error);
       alert(error.response?.data?.message || "Failed to update status");

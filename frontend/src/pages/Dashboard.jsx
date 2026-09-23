@@ -445,9 +445,12 @@ function ZodiacTab({ user }) {
    TAB: OVERVIEW
 ================================================================ */
 
-function OverviewTab({ user }) {
+function OverviewTab({ user, bookings = [], onOpenBooking }) {
   const signName = user.zodiac || getSignFromDate(user.dateOfBirth);
   const signMeta = findSignMeta(signName);
+  const upcomingBookings = bookings.filter(
+    (b) => b.status !== "completed" && b.status !== "cancelled"
+  );
 
   return (
     <div className="space-y-10">
@@ -491,33 +494,66 @@ function OverviewTab({ user }) {
       )}
 
       <section>
-        <Eyebrow>Upcoming Readings</Eyebrow>
-        <div className="space-y-3">
-          {UPCOMING_READINGS.map((reading, i) => (
-            <div
-              key={i}
-              className="group flex flex-col gap-4 rounded-[7px] border border-[#5A0E14]/12 bg-[#FDECC8]/35 p-5 transition-all duration-300 hover:border-[#E9A534]/50 hover:bg-[#FDECC8]/55 sm:flex-row sm:items-center sm:justify-between"
+        <div className="mb-4 flex items-center justify-between">
+          <Eyebrow>Upcoming Readings</Eyebrow>
+          {upcomingBookings.length > 0 && (
+            <button
+              type="button"
+              onClick={onOpenBooking}
+              className="text-[11px] font-bold uppercase tracking-wider text-[#A2691F] hover:text-[#5A0E14] transition-colors"
             >
-              <div className="min-w-0">
-                <p className="font-display text-[19px] font-semibold text-[#3C080D]">
-                  {reading.name}
-                </p>
-                <p className="mt-2 flex flex-wrap items-center gap-2.5 font-sans text-[13px] text-[#6B3A2A]/80">
-                  <span className="flex items-center gap-1.5">
-                    <Calendar className="h-3.5 w-3.5" strokeWidth={1.7} />
-                    {reading.date}
-                  </span>
-                  <span className="text-[#5A0E14]/30">·</span>
-                  <span className="flex items-center gap-1.5">
-                    <Clock className="h-3.5 w-3.5" strokeWidth={1.7} />
-                    {reading.time}
-                  </span>
-                </p>
-              </div>
-              <StatusPill status={reading.status} />
-            </div>
-          ))}
+              + Book Another
+            </button>
+          )}
         </div>
+
+        {upcomingBookings.length > 0 ? (
+          <div className="space-y-3">
+            {upcomingBookings.map((reading, i) => (
+              <div
+                key={reading._id || i}
+                className="group flex flex-col gap-4 rounded-[7px] border border-[#5A0E14]/12 bg-[#FDECC8]/35 p-5 transition-all duration-300 hover:border-[#E9A534]/50 hover:bg-[#FDECC8]/55 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div className="min-w-0">
+                  <p className="font-display text-[19px] font-semibold text-[#3C080D]">
+                    {reading.serviceName || reading.service}
+                  </p>
+                  <p className="mt-2 flex flex-wrap items-center gap-2.5 font-sans text-[13px] text-[#6B3A2A]/80">
+                    <span className="flex items-center gap-1.5">
+                      <Calendar className="h-3.5 w-3.5" strokeWidth={1.7} />
+                      {reading.date ? new Date(reading.date).toLocaleDateString() : "Scheduled"}
+                    </span>
+                    <span className="text-[#5A0E14]/30">·</span>
+                    <span className="flex items-center gap-1.5">
+                      <Clock className="h-3.5 w-3.5" strokeWidth={1.7} />
+                      {reading.time}
+                    </span>
+                    {reading.amount > 0 && (
+                      <>
+                        <span className="text-[#5A0E14]/30">·</span>
+                        <span className="font-semibold text-[#8B2F2B]">₹{reading.amount}</span>
+                      </>
+                    )}
+                  </p>
+                </div>
+                <StatusPill status={reading.status} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-[7px] border border-dashed border-[#5A0E14]/20 p-8 text-center bg-[#FFFDF9]/60">
+            <Calendar className="mx-auto mb-2 h-6 w-6 text-[#5A0E14]/30" strokeWidth={1.5} />
+            <p className="font-sans text-[12px] text-[#5A0E14]/60">You have no upcoming consultations scheduled.</p>
+            <button
+              type="button"
+              onClick={onOpenBooking}
+              className="mt-3.5 inline-flex items-center gap-1.5 rounded-full border border-[#F2C66D] bg-gradient-to-r from-[#F3D49B] to-[#DDB56D] px-5 py-2 font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-[#3C080D] shadow-sm hover:-translate-y-0.5 transition-all"
+            >
+              <Plus size={12} strokeWidth={2.5} />
+              Book a Reading
+            </button>
+          </div>
+        )}
       </section>
 
       <section>
@@ -739,10 +775,15 @@ function ProfileTab({ user, onUpdate }) {
 
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
+    const cleanPhone = String(profileForm.phone || "").trim();
+    if (cleanPhone && !/^\d{10}$/.test(cleanPhone)) {
+      toast.error("Please enter a valid 10-digit mobile number.");
+      return;
+    }
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      await axios.put(`${API_URL}/users/profile`, profileForm, {
+      await axios.put(`${API_URL}/users/profile`, { ...profileForm, phone: cleanPhone }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setEditingProfile(false);
@@ -866,8 +907,17 @@ function ProfileTab({ user, onUpdate }) {
                 <input type="text" required value={profileForm.name} onChange={e => setProfileForm({...profileForm, name: e.target.value})} className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-[#FFFDF9] px-3.5 py-2.5 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534]/60 focus:outline-none" />
               </div>
               <div>
-                <label className="mb-1.5 block font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/80">Phone</label>
-                <input type="tel" value={profileForm.phone} onChange={e => setProfileForm({...profileForm, phone: e.target.value})} className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-[#FFFDF9] px-3.5 py-2.5 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534]/60 focus:outline-none" />
+                <label className="mb-1.5 block font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/80">Phone (10 digits)</label>
+                <input 
+                  type="tel" 
+                  inputMode="numeric"
+                  pattern="[0-9]{10}"
+                  maxLength={10}
+                  placeholder="10-digit mobile number"
+                  value={profileForm.phone} 
+                  onChange={e => setProfileForm({...profileForm, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})} 
+                  className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-[#FFFDF9] px-3.5 py-2.5 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534]/60 focus:outline-none" 
+                />
               </div>
               <div>
                 <label className="mb-1.5 block font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/80">Date of Birth</label>
@@ -1515,7 +1565,13 @@ export default function Dashboard() {
   };
 
   const TABS = {
-    overview: <OverviewTab user={user} />,
+    overview: (
+      <OverviewTab
+        user={user}
+        bookings={bookings}
+        onOpenBooking={() => setBookingModalOpen(true)}
+      />
+    ),
     zodiac: <ZodiacTab user={user} />,
     bookings: (
       <BookingsTab

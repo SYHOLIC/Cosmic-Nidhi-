@@ -63,6 +63,7 @@ const bookingSchema = new mongoose.Schema({
     partnerTimeOfBirth: String,
     partnerPlaceOfBirth: String,
     questions: String,
+    address: String,
   },
   notes: {
     type: String,

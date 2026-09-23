@@ -499,9 +499,9 @@ export default function Pricing({ onSelectPlan }) {
                 md:text-[52px]
               "
             >
-              Choose Your{" "}
+              One-to-One{" "}
               <span className="text-[#8B2F2B]">
-                Plan
+                Consultation
               </span>
             </h2>
           </Reveal>

@@ -49,6 +49,12 @@ exports.createReview = async (req, res) => {
 
     res.status(201).json({ success: true, review });
   } catch (error) {
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: 'You have already submitted a review for this product.',
+      });
+    }
     res.status(500).json({ success: false, message: error.message });
   }
 };

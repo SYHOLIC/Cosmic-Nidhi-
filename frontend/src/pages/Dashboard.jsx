@@ -165,22 +165,33 @@ function Eyebrow({ children }) {
 }
 
 function StatusPill({ status }) {
-  const isConfirmed = status === "Confirmed" || status === "Delivered";
+  const map = {
+    confirmed: { bg: "border-green-700/30 bg-green-700/[0.08]", text: "text-green-800", dot: "bg-green-700", label: "Confirmed" },
+    delivered: { bg: "border-green-700/30 bg-green-700/[0.08]", text: "text-green-800", dot: "bg-green-700", label: "Delivered" },
+    completed: { bg: "border-blue-700/30 bg-blue-700/[0.08]", text: "text-blue-800", dot: "bg-blue-700", label: "Completed" },
+    pending: { bg: "border-[#C1892F]/45 bg-[#E9A534]/[0.12]", text: "text-[#8A5A1F]", dot: "bg-[#C1892F]", label: "Pending" },
+    pending_appointment: { bg: "border-[#C1892F]/45 bg-[#E9A534]/[0.12]", text: "text-[#8A5A1F]", dot: "bg-[#C1892F]", label: "Pending Appointment" },
+    ongoing: { bg: "border-purple-600/35 bg-purple-600/[0.12]", text: "text-purple-800", dot: "bg-purple-600", label: "Ongoing (In-Session)" },
+    follow_up: { bg: "border-sky-600/35 bg-sky-600/[0.10]", text: "text-sky-800", dot: "bg-sky-600", label: "Follow-up" },
+    "follow-up": { bg: "border-sky-600/35 bg-sky-600/[0.10]", text: "text-sky-800", dot: "bg-sky-600", label: "Follow-up" },
+    rescheduled: { bg: "border-amber-600/35 bg-amber-600/[0.12]", text: "text-amber-900", dot: "bg-amber-600", label: "Rescheduled" },
+    cancelled: { bg: "border-[#C1272D]/30 bg-[#C1272D]/[0.08]", text: "text-[#8B2F2B]", dot: "bg-[#C1272D]", label: "Canceled" },
+  };
+
+  const norm = (status || "pending").toLowerCase();
+  const conf = map[norm] || map.pending;
+
   return (
     <span
       className={`
-        inline-flex items-center gap-2 whitespace-nowrap
-        rounded-full border px-3.5 py-1.5
-        font-sans text-[11px] font-bold uppercase tracking-[0.14em]
-        ${
-          isConfirmed
-            ? "border-green-700/30 bg-green-700/[0.08] text-green-800"
-            : "border-[#C1892F]/45 bg-[#E9A534]/[0.12] text-[#8A5A1F]"
-        }
+        inline-flex items-center gap-1.5 whitespace-nowrap
+        rounded-full border px-3 py-1
+        font-sans text-[10px] font-bold uppercase tracking-[0.14em]
+        ${conf.bg} ${conf.text}
       `}
     >
-      <span className={`h-1.5 w-1.5 rounded-full ${isConfirmed ? "bg-green-700" : "bg-[#C1892F]"}`} />
-      {status}
+      <span className={`h-1.5 w-1.5 rounded-full ${conf.dot}`} />
+      {conf.label}
     </span>
   );
 }
@@ -1105,6 +1116,8 @@ export default function Dashboard() {
   const [orders, setOrders] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [wishlist, setWishlist] = useState([]);
+  const [bookingModalOpen, setBookingModalOpen] = useState(false);
+  const [payingBookingId, setPayingBookingId] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -1199,9 +1212,6 @@ export default function Dashboard() {
     { label: "Orders", value: orders.length, icon: Star },
     { label: "Wishlist", value: wishlist.length, icon: Heart },
   ];
-
-  const [bookingModalOpen, setBookingModalOpen] = useState(false);
-  const [payingBookingId, setPayingBookingId] = useState(null);
 
   const handlePayBooking = async (booking) => {
     setPayingBookingId(booking._id);

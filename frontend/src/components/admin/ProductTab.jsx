@@ -15,7 +15,8 @@ import {
   Loader2,
   Tag,
   DollarSign,
-  Layers
+  Layers,
+  Eye
 } from "lucide-react";
 
 import { API_URL } from "../../config/api";
@@ -933,11 +934,19 @@ export default function ProductTab() {
                   <td className="px-4 py-3 text-right">
                     <div className="flex items-center justify-end gap-1.5">
                       <button
+                        type="button"
+                        onClick={() => window.open(`/product/${product.slug || product._id}`, '_blank')}
+                        title="Quick View Product in Store"
+                        className="rounded-full border border-[#5A0E14]/15 p-1.5 text-[#5A0E14]/60 transition-colors hover:border-[#E9A534]/50 hover:text-[#A2691F] cursor-pointer"
+                      >
+                        <Eye className="h-3.5 w-3.5" strokeWidth={1.8} />
+                      </button>
+                      <button
                         onClick={() => {
                           setEditingProduct(product);
                           setFormOpen(true);
                         }}
-                        className="rounded-full border border-[#5A0E14]/15 p-1.5 text-[#5A0E14]/60 transition-colors hover:border-[#E9A534]/50 hover:text-[#A2691F]"
+                        className="rounded-full border border-[#5A0E14]/15 p-1.5 text-[#5A0E14]/60 transition-colors hover:border-[#E9A534]/50 hover:text-[#A2691F] cursor-pointer"
                       >
                         <Edit className="h-3.5 w-3.5" strokeWidth={1.8} />
                       </button>

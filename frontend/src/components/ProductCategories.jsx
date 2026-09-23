@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 import {
   Gem,
   Sparkles,
@@ -13,6 +15,7 @@ import {
   Heart,
   ArrowRight,
   Minus,
+  Check,
 } from "lucide-react";
 import Reveal from "./Reveal";
 
@@ -583,7 +586,10 @@ function CategoryCard({ category, index }) {
 // ============================================================================
 
 function ProductCard({ product, index }) {
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
   const [wishlisted, setWishlisted] = useState(false);
+  const [added, setAdded] = useState(false);
 
   const off = discountPct(
     product.price,
@@ -594,8 +600,29 @@ function ProductCard({ product, index }) {
   const productImage = product.images?.[0] || product.image || "";
   const reviewCount = Array.isArray(product.reviews) ? product.reviews.length : (product.reviews || 0);
 
+  const productTarget = `/product/${product.slug || product._id || product.id}`;
+
+  const handleAddToCart = (e) => {
+    e.stopPropagation();
+    if (!isAvailable) return;
+    addToCart({
+      id: product._id || product.id,
+      name: product.name,
+      price: product.price,
+      image: productImage,
+    });
+    setAdded(true);
+    setTimeout(() => setAdded(false), 2000);
+  };
+
+  const handleQuickView = (e) => {
+    e.stopPropagation();
+    navigate(productTarget);
+  };
+
   return (
     <motion.article
+      onClick={() => navigate(productTarget)}
       initial={{
         opacity: 0,
         x: -35,
@@ -630,6 +657,7 @@ function ProductCard({ product, index }) {
         transition-shadow
         duration-300
         hover:shadow-[0_18px_42px_rgba(60,8,13,0.13)]
+        cursor-pointer
         sm:w-[250px]
         lg:w-[260px]
         xl:w-[270px]
@@ -760,6 +788,7 @@ function ProductCard({ product, index }) {
         >
           <button
             type="button"
+            onClick={handleQuickView}
             className="
               flex
               w-full
@@ -772,6 +801,9 @@ function ProductCard({ product, index }) {
               text-[10px]
               font-medium
               text-[#3C080D]
+              cursor-pointer
+              transition-colors
+              hover:bg-white
             "
           >
             <Eye className="h-3 w-3" />
@@ -898,7 +930,8 @@ function ProductCard({ product, index }) {
         <button
           type="button"
           disabled={!isAvailable}
-          className="
+          onClick={handleAddToCart}
+          className={`
             mt-3
             flex
             w-full
@@ -906,24 +939,35 @@ function ProductCard({ product, index }) {
             justify-center
             gap-1.5
             rounded-[5px]
-            bg-[#5A0E14]
             py-2.5
             text-[10px]
             font-semibold
-            text-[#FFF8EC]
             transition-colors
             duration-200
-            hover:bg-[#3C080D]
+            cursor-pointer
+            ${
+              added
+                ? "bg-green-700 text-white"
+                : "bg-[#5A0E14] text-[#FFF8EC] hover:bg-[#3C080D]"
+            }
             disabled:cursor-not-allowed
             disabled:bg-[#5A0E14]/20
             disabled:text-[#5A0E14]/40
-          "
+          `}
         >
-          <ShoppingBag className="h-3.5 w-3.5" />
-
-          {product.inStock
-            ? "Add to Cart"
-            : "Notify Me"}
+          {added ? (
+            <>
+              <Check className="h-3.5 w-3.5 text-white" />
+              <span>Added to Cart!</span>
+            </>
+          ) : (
+            <>
+              <ShoppingBag className="h-3.5 w-3.5" />
+              <span>
+                {product.inStock !== false ? "Add to Cart" : "Notify Me"}
+              </span>
+            </>
+          )}
         </button>
       </div>
     </motion.article>

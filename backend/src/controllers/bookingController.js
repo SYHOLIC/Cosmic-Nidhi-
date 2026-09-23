@@ -186,7 +186,17 @@ const getBookingById = async (req, res) => {
 const updateBookingStatus = async (req, res) => {
   try {
     const { status } = req.body;
-    const validStatuses = ['pending', 'confirmed', 'completed', 'cancelled', 'rescheduled'];
+    const validStatuses = [
+      'pending',
+      'pending_appointment',
+      'confirmed',
+      'ongoing',
+      'follow-up',
+      'follow_up',
+      'completed',
+      'cancelled',
+      'rescheduled',
+    ];
 
     if (!validStatuses.includes(status)) {
       return res.status(400).json({
@@ -289,6 +299,52 @@ const getUserBookings = async (req, res) => {
   }
 };
 
+// @desc    Reschedule booking
+// @route   PUT /api/bookings/:id/reschedule
+// @access  Private/Admin
+const rescheduleBooking = async (req, res) => {
+  try {
+    const { date, time, notes, status } = req.body;
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) {
+      return res.status(404).json({
+        success: false,
+        message: 'Booking not found',
+      });
+    }
+
+    if (date) {
+      booking.date = new Date(date);
+    }
+    if (time) {
+      booking.time = time;
+    }
+    if (notes !== undefined) {
+      booking.notes = notes;
+    }
+    if (status) {
+      booking.status = status;
+    } else {
+      booking.status = 'rescheduled';
+    }
+
+    await booking.save();
+
+    const updatedBooking = await Booking.findById(booking._id).populate('user', 'name email phone');
+
+    res.status(200).json({
+      success: true,
+      message: 'Booking rescheduled successfully',
+      booking: updatedBooking,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   getBookedSlots,
   createBooking,
@@ -296,5 +352,6 @@ module.exports = {
   getBookingById,
   updateBookingStatus,
   cancelBooking,
+  rescheduleBooking,
   getUserBookings,
 };

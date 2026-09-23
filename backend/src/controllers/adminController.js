@@ -156,8 +156,8 @@ const getOrders = async (req, res) => {
 const getBookings = async (req, res) => {
   try {
     const bookings = await Booking.find()
-      .populate('user', 'name email')
-      .sort('-createdAt');
+      .populate('user', 'name email phone')
+      .sort('-date -createdAt');
     res.status(200).json({
       success: true,
       bookings,

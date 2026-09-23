@@ -42,6 +42,7 @@ import CouponTab from "../components/admin/CouponTab";
 import ReviewTab from "../components/admin/ReviewTab";
 import SeoTab from "../components/admin/SeoTab";
 import PageTab from "../components/admin/PageTab";
+import BookingTab from "../components/admin/BookingTab";
 import AdminNotifications from "../components/admin/AdminNotifications";
 
 import { API_URL } from "../config/api";
@@ -86,11 +87,32 @@ function StatusPill({ status }) {
     delivered: { bg: "border-green-700/30 bg-green-700/[0.08]", text: "text-green-800", dot: "bg-green-700" },
     completed: { bg: "border-blue-700/30 bg-blue-700/[0.08]", text: "text-blue-800", dot: "bg-blue-700" },
     pending: { bg: "border-[#C1892F]/45 bg-[#E9A534]/[0.12]", text: "text-[#8A5A1F]", dot: "bg-[#C1892F]" },
+    pending_appointment: { bg: "border-[#C1892F]/45 bg-[#E9A534]/[0.12]", text: "text-[#8A5A1F]", dot: "bg-[#C1892F]" },
+    "pending appointment": { bg: "border-[#C1892F]/45 bg-[#E9A534]/[0.12]", text: "text-[#8A5A1F]", dot: "bg-[#C1892F]" },
     processing: { bg: "border-[#C1892F]/45 bg-[#E9A534]/[0.12]", text: "text-[#8A5A1F]", dot: "bg-[#C1892F]" },
+    ongoing: { bg: "border-purple-600/30 bg-purple-600/[0.10]", text: "text-purple-800", dot: "bg-purple-600" },
+    follow_up: { bg: "border-sky-600/30 bg-sky-600/[0.10]", text: "text-sky-800", dot: "bg-sky-600" },
+    "follow-up": { bg: "border-sky-600/30 bg-sky-600/[0.10]", text: "text-sky-800", dot: "bg-sky-600" },
+    rescheduled: { bg: "border-amber-600/30 bg-amber-600/[0.10]", text: "text-amber-900", dot: "bg-amber-600" },
     cancelled: { bg: "border-[#C1272D]/30 bg-[#C1272D]/[0.08]", text: "text-[#8B2F2B]", dot: "bg-[#C1272D]" },
+    canceled: { bg: "border-[#C1272D]/30 bg-[#C1272D]/[0.08]", text: "text-[#8B2F2B]", dot: "bg-[#C1272D]" },
   };
 
-  const style = map[status?.toLowerCase()] || map.pending;
+  const normalized = status?.toLowerCase();
+  const style = map[normalized] || map.pending;
+
+  const labelMap = {
+    pending: "Pending",
+    pending_appointment: "Pending Appointment",
+    "pending appointment": "Pending Appointment",
+    ongoing: "Ongoing (In-Session)",
+    follow_up: "Follow-up",
+    "follow-up": "Follow-up",
+    cancelled: "Canceled",
+    canceled: "Canceled",
+  };
+
+  const displayLabel = labelMap[normalized] || status;
 
   return (
     <span
@@ -102,7 +124,7 @@ function StatusPill({ status }) {
       `}
     >
       <span className={`h-1.5 w-1.5 rounded-full ${style.dot}`} />
-      {status}
+      {displayLabel}
     </span>
   );
 }
@@ -664,83 +686,7 @@ function OrdersTab({ orders, onUpdateStatus }) {
   );
 }
 
-/* ================================================================
-   TAB: BOOKINGS
-================================================================ */
 
-function BookingsTab({ bookings }) {
-  return (
-    <div className="rounded-[9px] border border-[#5A0E14]/12 bg-[#FFFDF9]">
-      <div className="border-b border-[#5A0E14]/12 px-4 py-3">
-        <p className="font-sans text-[10px] font-bold uppercase tracking-[0.22em] text-[#8A5A1F]">
-          Bookings ({bookings.length})
-        </p>
-        <p className="mt-1 font-display text-[15px] font-semibold text-[#3C080D]">
-          All Bookings
-        </p>
-      </div>
-
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[700px]">
-          <thead>
-            <tr className="border-b border-[#5A0E14]/12 bg-[#FDECC8]/30">
-              <th className="px-4 py-2.5 text-left font-sans text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/70">
-                Service
-              </th>
-              <th className="px-4 py-2.5 text-left font-sans text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/70">
-                Customer
-              </th>
-              <th className="px-4 py-2.5 text-left font-sans text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/70">
-                Date
-              </th>
-              <th className="px-4 py-2.5 text-left font-sans text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/70">
-                Status
-              </th>
-              <th className="px-4 py-2.5 text-left font-sans text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/70">
-                Amount
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {bookings.map((booking) => (
-              <tr
-                key={booking._id}
-                className="border-b border-[#5A0E14]/[0.06] last:border-0 transition-colors hover:bg-[#FDECC8]/20"
-              >
-                <td className="px-4 py-2.5 font-sans text-[12px] font-semibold text-[#3C080D]">
-                  {booking.serviceName}
-                </td>
-                <td className="px-4 py-2.5 font-sans text-[12px] text-[#6B3A2A]/75">
-                  {booking.user?.name || "Unknown"}
-                </td>
-                <td className="px-4 py-2.5 font-sans text-[11px] text-[#6B3A2A]/65">
-                  {new Date(booking.date).toLocaleDateString()}
-                </td>
-                <td className="px-4 py-2.5">
-                  <StatusPill status={booking.status} />
-                </td>
-                <td className="px-4 py-2.5 font-display text-[13px] font-semibold text-[#C1272D]">
-                  ₹{booking.amount || 0}
-                </td>
-              </tr>
-            ))}
-
-            {bookings.length === 0 && (
-              <tr>
-                <td
-                  colSpan={5}
-                  className="px-4 py-10 text-center font-sans text-[12px] text-[#5A0E14]/50"
-                >
-                  No bookings yet.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
 
 /* ================================================================
    MAIN COMPONENT
@@ -936,7 +882,12 @@ export default function AdminPage() {
             {activeTab === "orders" && (
               <OrdersTab orders={orders} onUpdateStatus={handleUpdateOrderStatus} />
             )}
-            {activeTab === "bookings" && <BookingsTab bookings={bookings} />}
+            {activeTab === "bookings" && (
+              <BookingTab
+                bookings={bookings}
+                onRefreshBookings={fetchAdminData}
+              />
+            )}
             {activeTab === "categories" && <CategoryTab />}
             {activeTab === "products" && <ProductTab />}
             {activeTab === "coupons" && <CouponTab />}

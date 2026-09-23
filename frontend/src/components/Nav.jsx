@@ -549,8 +549,9 @@ function Nav() {
                 BOOK A READING (desktop)
             ================================================= */}
 
-            <a
-              href="tel:9560437360"
+            <button
+              type="button"
+              onClick={() => setIsBookingOpen(true)}
               className="
                 group hidden h-[38px] xl:h-[42px] 2xl:h-[45px] items-center gap-2 xl:gap-2.5 rounded-[8px]
                 border border-[#D8A948]/75
@@ -560,7 +561,7 @@ function Nav() {
                 transition-all duration-300
                 hover:-translate-y-[1px]
                 hover:shadow-[0_12px_30px_rgba(233,165,52,0.22)]
-                xl:inline-flex shrink-0 whitespace-nowrap
+                xl:inline-flex shrink-0 whitespace-nowrap cursor-pointer
               "
             >
               <span className="whitespace-nowrap">Book a Reading</span>
@@ -578,14 +579,15 @@ function Nav() {
                   className="transition-transform duration-300 group-hover:translate-x-0.5"
                 />
               </span>
-            </a>
+            </button>
 
             {/* =================================================
                 MOBILE BOOK
             ================================================= */}
 
-            <a
-              href="tel:9560437360"
+            <button
+              type="button"
+              onClick={() => setIsBookingOpen(true)}
               className="
                 flex h-[39px] items-center gap-1.5 rounded-[7px]
                 border border-[#D8A948]/70
@@ -593,12 +595,12 @@ function Nav() {
                 px-3 font-sans text-[10px] font-bold text-[#3C080D]
                 shadow-[0_5px_18px_rgba(0,0,0,0.16)]
                 sm:px-3.5 sm:text-[11px]
-                lg:hidden
+                lg:hidden cursor-pointer
               "
             >
               <Phone size={12} />
               <span>Book</span>
-            </a>
+            </button>
 
             {/* =================================================
                 MOBILE MENU

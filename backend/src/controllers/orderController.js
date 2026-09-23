@@ -119,8 +119,23 @@ const createOrder = async (req, res) => {
       }
     }
 
-    // Create order
-    const generatedOrderNumber = req.body.orderNumber || ('CN-' + Date.now().toString().slice(-6) + '-' + Math.floor(100 + Math.random() * 900));
+    // Generate sequential order number
+    let generatedOrderNumber = req.body.orderNumber;
+    if (!generatedOrderNumber || !/^CN-\d+$/.test(generatedOrderNumber)) {
+      const lastOrder = await Order.findOne({ orderNumber: /^CN-\d+$/ }).sort({ createdAt: -1 });
+      let nextSeq = 1001;
+      if (lastOrder && lastOrder.orderNumber) {
+        const match = lastOrder.orderNumber.match(/^CN-(\d+)$/);
+        if (match) {
+          nextSeq = parseInt(match[1], 10) + 1;
+        }
+      } else {
+        const count = await Order.countDocuments();
+        nextSeq = 1000 + count + 1;
+      }
+      generatedOrderNumber = `CN-${nextSeq}`;
+    }
+
     const order = await Order.create({
       orderNumber: generatedOrderNumber,
       user: req.user.id,

@@ -78,4 +78,26 @@ const orderSchema = new mongoose.Schema({
   timestamps: true,
 });
 
+orderSchema.pre('validate', async function () {
+  if (!this.orderNumber || !/^CN-\d+$/.test(this.orderNumber)) {
+    try {
+      const OrderModel = this.constructor;
+      const lastOrder = await OrderModel.findOne({ orderNumber: /^CN-\d+$/ }).sort({ createdAt: -1 });
+      let nextSeq = 1001;
+      if (lastOrder && lastOrder.orderNumber) {
+        const match = lastOrder.orderNumber.match(/^CN-(\d+)$/);
+        if (match) {
+          nextSeq = parseInt(match[1], 10) + 1;
+        }
+      } else {
+        const count = await OrderModel.countDocuments();
+        nextSeq = 1000 + count + 1;
+      }
+      this.orderNumber = `CN-${nextSeq}`;
+    } catch (err) {
+      this.orderNumber = `CN-${Date.now().toString().slice(-6)}`;
+    }
+  }
+});
+
 module.exports = mongoose.model('Order', orderSchema);

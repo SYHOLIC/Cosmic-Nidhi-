@@ -196,7 +196,7 @@ const getNotifications = async (req, res) => {
       notifications.push({
         id: `ord_${ord._id}`,
         type: 'order',
-        title: ord.orderStatus === 'pending' ? 'New Pending Order' : `Order #${ord._id.toString().slice(-6).toUpperCase()}`,
+        title: ord.orderStatus === 'pending' ? 'New Pending Order' : `Order ${ord.orderNumber ? (ord.orderNumber.startsWith('#') ? ord.orderNumber : '#' + ord.orderNumber.replace(/^CN-/, '')) : '#' + ord._id.toString().slice(-6).toUpperCase()}`,
         message: `₹${ord.totalAmount?.toLocaleString('en-IN') || 0} by ${customerName} · ${ord.orderStatus.toUpperCase()}`,
         status: ord.orderStatus,
         paymentStatus: ord.paymentStatus,

@@ -417,8 +417,8 @@ function OverviewTab({ orders, bookings }) {
               >
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <p className="font-display text-[13px] font-semibold text-[#3C080D]">
-                      #{order._id?.slice(-6).toUpperCase()}
+                    <p className="font-sans text-[13px] font-bold text-[#3C080D] tracking-wide">
+                      {order.orderNumber ? (order.orderNumber.startsWith('#') ? order.orderNumber : '#' + order.orderNumber.replace(/^CN-/, '')) : '#' + (order._id?.slice(-6).toUpperCase() || '')}
                     </p>
                     <span className="font-sans text-[10px] font-medium text-[#8A5A1F]">
                       {formatRelativeOrderAge(order.createdAt)}
@@ -638,6 +638,7 @@ function OrdersTab({ orders, onUpdateStatus }) {
     const q = orderSearch.toLowerCase().trim();
     const idMatch =
       order._id?.toLowerCase().includes(q) ||
+      (order.orderNumber && order.orderNumber.toLowerCase().includes(q)) ||
       order._id?.slice(-6).toLowerCase().includes(q);
     const userMatch = (
       order.shippingAddress?.name ||
@@ -718,7 +719,7 @@ function OrdersTab({ orders, onUpdateStatus }) {
                   className="border-b border-[#5A0E14]/[0.06] last:border-0 transition-colors hover:bg-[#FDECC8]/20"
                 >
                   <td className="px-4 py-3 font-mono text-[11px] font-semibold text-[#8A5A1F]">
-                    #{order._id?.slice(-6).toUpperCase()}
+                    {order.orderNumber ? (order.orderNumber.startsWith('#') ? order.orderNumber : '#' + order.orderNumber.replace(/^CN-/, '')) : '#' + (order._id?.slice(-6).toUpperCase() || '')}
                   </td>
                   <td className="px-4 py-3 font-sans text-[12px]">
                     <p className="font-semibold text-[#3C080D]">

@@ -78,7 +78,7 @@ export default function AdminNotifications({ onSelectTab, fallbackOrders = [], f
         synth.push({
           id: `ord_${ord._id}`,
           type: "order",
-          title: ord.orderStatus === "pending" ? "New Order" : `Order #${ord._id?.slice(-6)?.toUpperCase()}`,
+          title: ord.orderStatus === "pending" ? "New Order" : `Order ${ord.orderNumber ? (ord.orderNumber.startsWith('#') ? ord.orderNumber : '#' + ord.orderNumber.replace(/^CN-/, '')) : '#' + (ord._id?.slice(-6)?.toUpperCase() || '')}`,
           message: `₹${ord.totalAmount?.toLocaleString("en-IN") || 0} by ${ord.user?.name || "Customer"} · ${ord.orderStatus?.toUpperCase()}`,
           status: ord.orderStatus,
           paymentStatus: ord.paymentStatus,

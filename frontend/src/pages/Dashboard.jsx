@@ -1205,8 +1205,8 @@ function OrdersTab({ orders, onCancelOrder, onReorder }) {
           >
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0">
-                <p className="font-display text-[19px] font-semibold text-[#3C080D]">
-                  #{order._id.slice(-6).toUpperCase()}
+                <p className="font-sans text-[18px] font-bold text-[#3C080D] tracking-wide">
+                  {order.orderNumber ? (order.orderNumber.startsWith('#') ? order.orderNumber : '#' + order.orderNumber.replace(/^CN-/, '')) : '#' + order._id.slice(-6).toUpperCase()}
                 </p>
                 <p className="mt-1.5 font-sans text-[12px] font-medium uppercase tracking-[0.10em] text-[#6B3A2A]/70">
                   {new Date(order.createdAt).toLocaleDateString()}
@@ -1362,7 +1362,8 @@ export default function Dashboard() {
         item.quantity || 1
       );
     });
-    toast.success(`Added ${order.items.length} item(s) from Order #${order._id.slice(-6).toUpperCase()} to cart!`);
+    const orderDisplayId = order.orderNumber ? (order.orderNumber.startsWith('#') ? order.orderNumber : '#' + order.orderNumber.replace(/^CN-/, '')) : '#' + order._id.slice(-6).toUpperCase();
+    toast.success(`Added ${order.items.length} item(s) from Order ${orderDisplayId} to cart!`);
     navigate("/cart");
   };
 

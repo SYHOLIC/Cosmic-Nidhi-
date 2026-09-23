@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import Reveal from "../components/Reveal";
 import BookingModal from "../components/BookingModal";
+import { useToast } from "../context/ToastContext";
 import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import SEOHead from "../components/SEOHead";
@@ -165,6 +166,7 @@ function CategoryChip({ category, onSelect }) {
 
 function ProductCard({ product, index, onQuickView, isWishlisted }) {
   const { addToCart } = useCart();
+  const toast = useToast();
   const navigate = useNavigate();
   const [wishlisted, setWishlisted] = useState(Boolean(isWishlisted));
   const [added, setAdded] = useState(false);
@@ -190,15 +192,18 @@ function ProductCard({ product, index, onQuickView, isWishlisted }) {
         await axios.delete(`${API_URL}/users/wishlist/${pId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
+        toast.info("Removed from your wishlist");
       } else {
         setWishlisted(true);
         await axios.post(`${API_URL}/users/wishlist/${pId}`, {}, {
           headers: { Authorization: `Bearer ${token}` }
         });
+        toast.success("Added to your sacred wishlist!");
       }
     } catch (err) {
       console.error("Wishlist error:", err);
       setWishlisted((w) => !w);
+      toast.error("Failed to update wishlist");
     }
   };
 
@@ -210,6 +215,7 @@ function ProductCard({ product, index, onQuickView, isWishlisted }) {
       image: product.images?.[0] || product.image || "",
     });
     setAdded(true);
+    toast.success(`Added ${product.name} to your sacred cart!`);
     setTimeout(() => setAdded(false), 2000);
   };
 

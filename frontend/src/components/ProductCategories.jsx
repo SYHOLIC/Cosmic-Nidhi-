@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { useToast } from "../context/ToastContext";
 import {
   Gem,
   Sparkles,
@@ -588,6 +589,7 @@ function CategoryCard({ category, index }) {
 function ProductCard({ product, index }) {
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const toast = useToast();
   const [wishlisted, setWishlisted] = useState(false);
   const [added, setAdded] = useState(false);
 
@@ -612,6 +614,7 @@ function ProductCard({ product, index }) {
       image: productImage,
     });
     setAdded(true);
+    toast.success(`Added ${product.name} to your sacred cart!`);
     setTimeout(() => setAdded(false), 2000);
   };
 

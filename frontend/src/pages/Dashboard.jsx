@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { useCart } from "../context/CartContext";
+import { useToast } from "../context/ToastContext";
 import {
   User,
   Mail,
@@ -33,6 +34,15 @@ import { loadRazorpay } from "../utils/loadRazorpay";
 
 /* Zodiac chakra backdrop */
 import heroZodiac from "../assets/hero-zodiac3.png";
+
+const RESCHEDULE_TIME_SLOTS = [
+  "10:00 AM",
+  "11:30 AM",
+  "02:00 PM",
+  "04:00 PM",
+  "06:00 PM",
+  "07:30 PM",
+];
 
 /* ================================================================
    ZODIAC ICONS — actual image assets
@@ -546,7 +556,16 @@ function OverviewTab({ user }) {
    TAB: BOOKINGS
 ================================================================ */
 
-function BookingsTab({ bookings = [], onOpenBooking, onPayBooking, payingBookingId }) {
+function BookingsTab({
+  bookings = [],
+  onOpenBooking,
+  onPayBooking,
+  payingBookingId,
+  onRescheduleBooking,
+  onCancelBooking,
+  onSendReminder,
+  sendingReminderId,
+}) {
   if (!bookings || bookings.length === 0) {
     return (
       <div className="rounded-[7px] border border-dashed border-[#5A0E14]/20 p-8 text-center">
@@ -554,7 +573,7 @@ function BookingsTab({ bookings = [], onOpenBooking, onPayBooking, payingBooking
         <p className="font-sans text-[12px] text-[#5A0E14]/60">You have no scheduled readings yet.</p>
         <button
           type="button"
-          onClick={onOpenBooking}
+          onClick={() => onOpenBooking()}
           className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#5A0E14] px-6 py-2.5 font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-[#FFF8EC] transition-colors hover:bg-[#3C080D]"
         >
           Book a Reading
@@ -571,7 +590,7 @@ function BookingsTab({ bookings = [], onOpenBooking, onPayBooking, payingBooking
         </p>
         <button
           type="button"
-          onClick={onOpenBooking}
+          onClick={() => onOpenBooking()}
           className="inline-flex items-center gap-1.5 rounded-full border border-[#F2C66D] bg-gradient-to-r from-[#F3D49B] to-[#DDB56D] px-4 py-2 font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-[#3C080D] shadow-sm transition-all hover:-translate-y-0.5"
         >
           <Plus size={13} strokeWidth={2.5} />
@@ -581,6 +600,8 @@ function BookingsTab({ bookings = [], onOpenBooking, onPayBooking, payingBooking
 
       {bookings.map((booking, i) => {
         const isPendingPayment = booking.paymentStatus === "pending" || booking.status === "pending";
+        const canSelfService = booking.status !== "cancelled" && booking.status !== "completed";
+
         return (
           <div
             key={booking._id || i}
@@ -616,25 +637,74 @@ function BookingsTab({ bookings = [], onOpenBooking, onPayBooking, payingBooking
                 </div>
               </div>
 
-              <div className="flex flex-col items-end gap-3 shrink-0">
+              <div className="flex flex-col items-start gap-2.5 sm:items-end shrink-0">
                 <StatusPill status={booking.status || "pending"} />
-                {isPendingPayment && (
-                  <button
-                    type="button"
-                    disabled={payingBookingId === booking._id}
-                    onClick={() => onPayBooking(booking)}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-[#C1272D] px-4 py-2 font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-white shadow-sm transition-all hover:bg-[#A01D22] hover:-translate-y-0.5 disabled:opacity-50"
-                  >
-                    {payingBookingId === booking._id ? (
-                      <>
-                        <Loader2 className="h-3 w-3 animate-spin" />
-                        Processing...
-                      </>
-                    ) : (
-                      <>Pay Online (₹{booking.amount || 2100})</>
-                    )}
-                  </button>
-                )}
+
+                <div className="mt-1 flex flex-wrap items-center gap-2">
+                  {isPendingPayment && (
+                    <button
+                      type="button"
+                      disabled={payingBookingId === booking._id}
+                      onClick={() => onPayBooking(booking)}
+                      className="inline-flex items-center gap-1.5 rounded-full bg-[#C1272D] px-3.5 py-1.5 font-sans text-[10.5px] font-bold uppercase tracking-[0.12em] text-white shadow-sm transition-all hover:bg-[#A01D22] hover:-translate-y-0.5 disabled:opacity-50"
+                    >
+                      {payingBookingId === booking._id ? (
+                        <>
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        <>Pay Online (₹{booking.amount || 2100})</>
+                      )}
+                    </button>
+                  )}
+
+                  {canSelfService && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => onRescheduleBooking(booking)}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-[#D8A948]/75 bg-gradient-to-r from-[#F3D49B] to-[#DDB56D] px-3.5 py-1.5 font-sans text-[10.5px] font-bold uppercase tracking-[0.10em] text-[#3C080D] shadow-sm transition-all hover:-translate-y-0.5"
+                      >
+                        <Calendar size={12} strokeWidth={2} />
+                        Reschedule
+                      </button>
+
+                      <button
+                        type="button"
+                        disabled={sendingReminderId === booking._id}
+                        onClick={() => onSendReminder(booking._id)}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-[#5A0E14]/20 bg-white/80 px-3.5 py-1.5 font-sans text-[10.5px] font-semibold uppercase tracking-[0.10em] text-[#5A0E14] transition-all hover:bg-[#5A0E14]/10 disabled:opacity-50"
+                      >
+                        {sendingReminderId === booking._id ? (
+                          <Loader2 size={12} className="animate-spin" />
+                        ) : (
+                          <Mail size={12} strokeWidth={2} />
+                        )}
+                        Email Reminder
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => onCancelBooking(booking._id)}
+                        className="inline-flex items-center gap-1 rounded-full border border-[#C1272D]/30 px-3 py-1.5 font-sans text-[10px] font-bold uppercase tracking-[0.10em] text-[#C1272D] transition-colors hover:bg-[#C1272D]/10"
+                      >
+                        Cancel
+                      </button>
+                    </>
+                  )}
+
+                  {(booking.status === "completed" || booking.status === "cancelled") && (
+                    <button
+                      type="button"
+                      onClick={() => onOpenBooking(booking.serviceName || booking.service)}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-[#5A0E14] bg-[#5A0E14] px-4 py-1.5 font-sans text-[10.5px] font-bold uppercase tracking-[0.12em] text-[#FFF8EC] transition-all hover:bg-[#3C080D] hover:-translate-y-0.5"
+                    >
+                      <Plus size={12} strokeWidth={2.5} />
+                      Book Again
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -649,6 +719,7 @@ function BookingsTab({ bookings = [], onOpenBooking, onPayBooking, payingBooking
 ================================================================ */
 
 function ProfileTab({ user, onUpdate }) {
+  const toast = useToast();
   const [editingProfile, setEditingProfile] = useState(false);
   const [loading, setLoading] = useState(false);
   
@@ -675,9 +746,11 @@ function ProfileTab({ user, onUpdate }) {
         headers: { Authorization: `Bearer ${token}` }
       });
       setEditingProfile(false);
+      toast.success("Profile updated successfully!");
       onUpdate();
     } catch (err) {
       console.error(err);
+      toast.error(err.response?.data?.message || "Failed to update profile");
     } finally {
       setLoading(false);
     }
@@ -686,11 +759,11 @@ function ProfileTab({ user, onUpdate }) {
   const handleAddressSubmit = async (e) => {
     e.preventDefault();
     if (!/^\d{10}$/.test(String(addressForm.phone || "").trim())) {
-      alert("Please enter a valid 10-digit phone number.");
+      toast.error("Please enter a valid 10-digit phone number.");
       return;
     }
     if (!/^\d{6}$/.test(String(addressForm.pincode || "").trim())) {
-      alert("Please enter a valid 6-digit pincode.");
+      toast.error("Please enter a valid 6-digit pincode.");
       return;
     }
     setLoading(true);
@@ -710,16 +783,18 @@ function ProfileTab({ user, onUpdate }) {
         await axios.put(`${API_URL}/users/addresses/${editingAddressId}`, payload, {
           headers: { Authorization: `Bearer ${token}` }
         });
+        toast.success("Address updated successfully!");
       } else {
         await axios.post(`${API_URL}/users/addresses`, payload, {
           headers: { Authorization: `Bearer ${token}` }
         });
+        toast.success("New address added successfully!");
       }
       setAddressModalOpen(false);
       onUpdate();
     } catch (err) {
       console.error(err);
-      alert(err.response?.data?.message || "Failed to save address");
+      toast.error(err.response?.data?.message || "Failed to save address");
     } finally {
       setLoading(false);
     }
@@ -732,10 +807,11 @@ function ProfileTab({ user, onUpdate }) {
       await axios.delete(`${API_URL}/users/addresses/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      toast.success("Address removed successfully");
       onUpdate();
     } catch (err) {
       console.error(err);
-      alert(err.response?.data?.message || "Failed to delete address");
+      toast.error(err.response?.data?.message || "Failed to delete address");
     }
   };
 
@@ -1051,11 +1127,18 @@ function WishlistTab({ wishlist = [], onRemove }) {
    TAB: ORDERS
 ================================================================ */
 
-function OrdersTab({ orders, onCancelOrder }) {
+function OrdersTab({ orders, onCancelOrder, onReorder }) {
   if (!orders || orders.length === 0) {
     return (
       <div className="rounded-[7px] border border-dashed border-[#5A0E14]/20 p-8 text-center">
+        <ShoppingBag className="mx-auto mb-2 h-6 w-6 text-[#5A0E14]/30" strokeWidth={1.5} />
         <p className="font-sans text-[12px] text-[#5A0E14]/60">You have no orders yet.</p>
+        <Link
+          to="/products"
+          className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#5A0E14] px-6 py-2.5 font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-[#FFF8EC] transition-colors hover:bg-[#3C080D]"
+        >
+          Explore Store
+        </Link>
       </div>
     );
   }
@@ -1068,7 +1151,7 @@ function OrdersTab({ orders, onCancelOrder }) {
         return (
           <div
             key={order._id}
-            className="rounded-[7px] border border-[#5A0E14]/12 bg-[#FDECC8]/35 p-6 transition-all duration-300 hover:border-[#E9A534]/50"
+            className="rounded-[7px] border border-[#5A0E14]/12 bg-[#FDECC8]/35 p-6 transition-all duration-300 hover:border-[#E9A534]/50 hover:shadow-[0_12px_28px_rgba(60,8,13,0.08)]"
           >
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0">
@@ -1078,23 +1161,43 @@ function OrdersTab({ orders, onCancelOrder }) {
                 <p className="mt-1.5 font-sans text-[12px] font-medium uppercase tracking-[0.10em] text-[#6B3A2A]/70">
                   {new Date(order.createdAt).toLocaleDateString()}
                 </p>
-                <p className="mt-3 font-sans text-[14px] text-[#2C1210]/85">
-                  {order.items.map(item => `${item.name} (x${item.quantity})`).join(", ")}
-                </p>
+                <div className="mt-3 space-y-1.5">
+                  {order.items.map((item, idx) => (
+                    <div key={idx} className="flex items-center gap-2 text-[13px] text-[#2C1210]/85 font-sans">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#E9A534] shrink-0" />
+                      <span className="font-medium text-[#3C080D]">{item.name}</span>
+                      <span className="text-[#6B3A2A]/70">× {item.quantity}</span>
+                      <span className="text-xs font-semibold text-[#8B2F2B] ml-auto">₹{item.price * item.quantity}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="flex flex-col items-start gap-3 sm:items-end">
+              <div className="flex flex-col items-start gap-2.5 sm:items-end shrink-0">
                 <p className="font-display text-[24px] font-semibold text-[#5A0E14]">
                   ₹{order.totalAmount}
                 </p>
                 <StatusPill status={order.orderStatus} />
-                {canCancel && (
+                
+                <div className="mt-2 flex flex-wrap items-center gap-2">
                   <button
-                    onClick={() => onCancelOrder(order._id)}
-                    className="mt-2 rounded border border-[#C1272D]/30 px-3 py-1 font-sans text-[10px] font-bold uppercase tracking-[0.1em] text-[#C1272D] transition-colors hover:bg-[#C1272D]/10"
+                    type="button"
+                    onClick={() => onReorder(order)}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-[#D8A948]/75 bg-gradient-to-r from-[#F3D49B] to-[#DDB56D] px-3.5 py-1.5 font-sans text-[10.5px] font-bold uppercase tracking-[0.12em] text-[#3C080D] shadow-sm transition-all hover:-translate-y-0.5"
                   >
-                    Cancel Order
+                    <ShoppingBag size={12} strokeWidth={2} />
+                    Re-Order
                   </button>
-                )}
+
+                  {canCancel && (
+                    <button
+                      type="button"
+                      onClick={() => onCancelOrder(order._id)}
+                      className="rounded-full border border-[#C1272D]/30 px-3 py-1.5 font-sans text-[10px] font-bold uppercase tracking-[0.10em] text-[#C1272D] transition-colors hover:bg-[#C1272D]/10"
+                    >
+                      Cancel Order
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -1110,6 +1213,9 @@ function OrdersTab({ orders, onCancelOrder }) {
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const toast = useToast();
+  const { addToCart } = useCart();
+
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
@@ -1118,6 +1224,16 @@ export default function Dashboard() {
   const [wishlist, setWishlist] = useState([]);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [payingBookingId, setPayingBookingId] = useState(null);
+
+  // Reschedule Modal State
+  const [rescheduleModalOpen, setRescheduleModalOpen] = useState(false);
+  const [activeBookingForReschedule, setActiveBookingForReschedule] = useState(null);
+  const [rescheduleDate, setRescheduleDate] = useState("");
+  const [rescheduleTime, setRescheduleTime] = useState("");
+  const [rescheduleNotes, setRescheduleNotes] = useState("");
+  const [bookedSlotsForReschedule, setBookedSlotsForReschedule] = useState([]);
+  const [rescheduleSubmitting, setRescheduleSubmitting] = useState(false);
+  const [sendingReminderId, setSendingReminderId] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -1161,8 +1277,10 @@ export default function Dashboard() {
         headers: { Authorization: `Bearer ${token}` }
       });
       setWishlist(res.data.wishlist || []);
+      toast.info("Removed from your wishlist");
     } catch (err) {
       console.error("Failed to remove from wishlist", err);
+      toast.error("Failed to remove from wishlist");
     }
   };
 
@@ -1173,11 +1291,119 @@ export default function Dashboard() {
       await axios.put(`${API_URL}/orders/${orderId}/cancel`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      // Refresh orders
+      toast.success("Order cancelled successfully");
       fetchUserData(token);
     } catch (err) {
       console.error(err);
-      alert(err.response?.data?.message || "Failed to cancel order");
+      toast.error(err.response?.data?.message || "Failed to cancel order");
+    }
+  };
+
+  const handleReorder = (order) => {
+    if (!order?.items?.length) return;
+    order.items.forEach((item) => {
+      addToCart(
+        {
+          id: item.product || item._id,
+          name: item.name,
+          price: item.price,
+          image: item.image || "",
+        },
+        item.quantity || 1
+      );
+    });
+    toast.success(`Added ${order.items.length} item(s) from Order #${order._id.slice(-6).toUpperCase()} to cart!`);
+    navigate("/cart");
+  };
+
+  const fetchBookedSlotsForDate = async (dateStr) => {
+    if (!dateStr) return;
+    try {
+      const res = await axios.get(`${API_URL}/bookings/booked-slots?date=${dateStr}`);
+      setBookedSlotsForReschedule(res.data.bookedSlots || []);
+    } catch {
+      setBookedSlotsForReschedule([]);
+    }
+  };
+
+  const handleOpenReschedule = (booking) => {
+    setActiveBookingForReschedule(booking);
+    let dateStr = "";
+    if (booking.date) {
+      const d = new Date(booking.date);
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      dateStr = `${yyyy}-${mm}-${dd}`;
+    } else {
+      dateStr = new Date().toISOString().split("T")[0];
+    }
+    setRescheduleDate(dateStr);
+    setRescheduleTime(booking.time || RESCHEDULE_TIME_SLOTS[0]);
+    setRescheduleNotes(booking.notes || "");
+    fetchBookedSlotsForDate(dateStr);
+    setRescheduleModalOpen(true);
+  };
+
+  const handleRescheduleSubmit = async (e) => {
+    e.preventDefault();
+    if (!activeBookingForReschedule || !rescheduleDate || !rescheduleTime) {
+      toast.error("Please pick a valid date and time slot.");
+      return;
+    }
+    setRescheduleSubmitting(true);
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `${API_URL}/bookings/${activeBookingForReschedule._id}/reschedule`,
+        {
+          date: rescheduleDate,
+          time: rescheduleTime,
+          notes: rescheduleNotes,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success("Consultation rescheduled successfully! Email confirmation sent.");
+      setRescheduleModalOpen(false);
+      setActiveBookingForReschedule(null);
+      fetchUserData(token);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to reschedule booking");
+    } finally {
+      setRescheduleSubmitting(false);
+    }
+  };
+
+  const handleCancelBooking = async (bookingId) => {
+    if (!window.confirm("Are you sure you want to cancel this scheduled consultation?")) return;
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `${API_URL}/bookings/${bookingId}/cancel`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success("Consultation cancelled successfully.");
+      fetchUserData(token);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to cancel booking");
+    }
+  };
+
+  const handleSendReminder = async (bookingId) => {
+    setSendingReminderId(bookingId);
+    try {
+      const token = localStorage.getItem("token");
+      await axios.post(
+        `${API_URL}/bookings/${bookingId}/reminder`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success("Reminder email dispatched to your inbox!");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to send reminder email");
+    } finally {
+      setSendingReminderId(null);
     }
   };
 
@@ -1297,9 +1523,19 @@ export default function Dashboard() {
         onOpenBooking={() => setBookingModalOpen(true)}
         onPayBooking={handlePayBooking}
         payingBookingId={payingBookingId}
+        onRescheduleBooking={handleOpenReschedule}
+        onCancelBooking={handleCancelBooking}
+        onSendReminder={handleSendReminder}
+        sendingReminderId={sendingReminderId}
       />
     ),
-    orders: <OrdersTab orders={orders} onCancelOrder={handleCancelOrder} />,
+    orders: (
+      <OrdersTab
+        orders={orders}
+        onCancelOrder={handleCancelOrder}
+        onReorder={handleReorder}
+      />
+    ),
     wishlist: <WishlistTab wishlist={wishlist} onRemove={handleRemoveWishlist} />,
     profile: <ProfileTab user={user} onUpdate={() => fetchUserData(localStorage.getItem("token"))} />,
   };
@@ -1419,6 +1655,121 @@ export default function Dashboard() {
           <a href="/page/return-policy" className="transition-colors duration-300 hover:text-[#A2691F]">Return Policy</a>
         </div>
       </footer>
+
+      {/* Reschedule Modal */}
+      {rescheduleModalOpen && activeBookingForReschedule && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-[#170205]/75 backdrop-blur-sm"
+            onClick={() => setRescheduleModalOpen(false)}
+          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 15 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 15 }}
+            className="relative w-full max-w-lg rounded-[14px] border border-[#E9A534]/30 bg-[#FFFDF9] p-6 shadow-[0_24px_60px_rgba(23,2,5,0.4)]"
+          >
+            <div className="mb-4 flex items-center justify-between border-b border-[#5A0E14]/10 pb-3">
+              <div>
+                <h3 className="font-display text-[19px] font-semibold text-[#3C080D]">
+                  Reschedule Consultation
+                </h3>
+                <p className="text-[12px] text-[#6B3A2A]/80 font-sans">
+                  {activeBookingForReschedule.serviceName || activeBookingForReschedule.service}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setRescheduleModalOpen(false)}
+                className="text-[#5A0E14]/50 hover:text-[#C1272D] transition-colors"
+              >
+                <X size={19} />
+              </button>
+            </div>
+
+            <form onSubmit={handleRescheduleSubmit} className="space-y-4">
+              <div>
+                <label className="mb-1.5 block font-sans text-[10.5px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/80">
+                  Select New Date
+                </label>
+                <input
+                  type="date"
+                  required
+                  min={new Date().toISOString().split("T")[0]}
+                  value={rescheduleDate}
+                  onChange={(e) => {
+                    setRescheduleDate(e.target.value);
+                    fetchBookedSlotsForDate(e.target.value);
+                  }}
+                  className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-[#FFFDF9] px-3.5 py-2.5 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534]/60 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1.5 block font-sans text-[10.5px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/80">
+                  Select New Time Slot
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {RESCHEDULE_TIME_SLOTS.map((slot) => {
+                    const isBooked = bookedSlotsForReschedule.includes(slot) && !(activeBookingForReschedule.time === slot && activeBookingForReschedule.date?.split("T")[0] === rescheduleDate);
+                    const isSelected = rescheduleTime === slot;
+                    return (
+                      <button
+                        key={slot}
+                        type="button"
+                        disabled={isBooked}
+                        onClick={() => setRescheduleTime(slot)}
+                        className={`
+                          rounded-[7px] py-2 px-2 text-center font-sans text-[12px] font-medium transition-all
+                          ${
+                            isBooked
+                              ? "bg-gray-100 text-gray-400 line-through cursor-not-allowed border border-gray-200"
+                              : isSelected
+                              ? "bg-[#5A0E14] text-[#FFF8EC] font-bold shadow"
+                              : "border border-[#5A0E14]/15 bg-white text-[#3C080D] hover:border-[#E9A534]"
+                          }
+                        `}
+                      >
+                        {slot}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div>
+                <label className="mb-1.5 block font-sans text-[10.5px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/80">
+                  Notes / Reason (Optional)
+                </label>
+                <textarea
+                  rows={2}
+                  value={rescheduleNotes}
+                  onChange={(e) => setRescheduleNotes(e.target.value)}
+                  placeholder="Add any specific questions or preferred consultation medium..."
+                  className="w-full resize-none rounded-[7px] border border-[#5A0E14]/15 bg-[#FFFDF9] px-3.5 py-2 font-sans text-[12.5px] text-[#2C1210] focus:border-[#E9A534]/60 focus:outline-none"
+                />
+              </div>
+
+              <div className="mt-5 flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setRescheduleModalOpen(false)}
+                  className="flex-1 rounded-full border border-[#5A0E14]/20 py-2.5 font-sans text-[11px] font-bold uppercase tracking-[0.12em] text-[#5A0E14]/70 transition-colors hover:bg-[#5A0E14]/5"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={rescheduleSubmitting || !rescheduleTime}
+                  className="flex-1 rounded-full bg-[#5A0E14] py-2.5 font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-[#FFF8EC] shadow transition-all hover:bg-[#3C080D] disabled:opacity-50"
+                >
+                  {rescheduleSubmitting ? "Updating..." : "Confirm Reschedule"}
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
 
       {/* Booking Modal */}
       <BookingModal

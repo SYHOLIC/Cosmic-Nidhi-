@@ -5,6 +5,7 @@ import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 import FloatingSocialConnect from "./components/FloatingSocialConnect";
 import { CartProvider } from "./context/CartContext";
+import { ToastProvider } from "./context/ToastContext";
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -69,6 +70,7 @@ const CalculatorsPage = lazy(() => import("./pages/Calculators"));
 const AuthPage = lazy(() => import("./pages/Auth"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const AdminPage = lazy(() => import("./pages/Admin"));
+const ZodiacIndexPage = lazy(() => import("./pages/ZodiacIndexPage"));
 const ZodiacProfilePage = lazy(() => import("./pages/ZodiacProfilePage"));
 const CartPage = lazy(() => import("./pages/Cart"));
 const CheckoutPage = lazy(() => import("./pages/Checkout"));
@@ -129,6 +131,7 @@ function AppRoutes() {
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/admin" element={<AdminPage />} />
+          <Route path="/zodiac" element={<ZodiacIndexPage />} />
           <Route path="/zodiac/:sign" element={<ZodiacProfilePage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
@@ -147,9 +150,11 @@ function AppRoutes() {
 function App() {
   return (
     <CartProvider>
-      <Router>
-        <AppRoutes />
-      </Router>
+      <ToastProvider>
+        <Router>
+          <AppRoutes />
+        </Router>
+      </ToastProvider>
     </CartProvider>
   );
 }

@@ -4,6 +4,7 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import { Star, ShoppingBag, Loader2, ArrowLeft, Send, Heart } from "lucide-react";
 import { useCart } from "../context/CartContext";
+import { useToast } from "../context/ToastContext";
 
 import SEOHead from "../components/SEOHead";
 
@@ -43,6 +44,7 @@ export default function ProductDetails() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { addToCart, cartItems } = useCart();
+  const toast = useToast();
 
   const [product, setProduct] = useState(null);
   const [reviews, setReviews] = useState([]);
@@ -141,6 +143,7 @@ export default function ProductDetails() {
       image: product.images?.[0] || product.image || "",
     }, quantity);
     setJustAdded(true);
+    toast.success(`Added ${quantity > 1 ? `${quantity}x ` : ""}${product.name} to your cart!`);
     setTimeout(() => setJustAdded(false), 2000);
   };
 
@@ -163,10 +166,13 @@ export default function ProductDetails() {
       
       setComment("");
       setRating(5);
+      toast.success("Thank you! Your sacred review has been submitted.");
       await fetchReviews(); // refresh reviews list
       await fetchProduct(); // refresh product with updated rating & reviews count
     } catch (err) {
-      setReviewError(err.response?.data?.message || "Error submitting review");
+      const msg = err.response?.data?.message || "Error submitting review";
+      setReviewError(msg);
+      toast.error(msg);
     } finally {
       setSubmitting(false);
     }

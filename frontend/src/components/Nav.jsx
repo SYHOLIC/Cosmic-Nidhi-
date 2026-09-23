@@ -27,6 +27,8 @@ function Nav() {
   const [userRole, setUserRole] = useState("user");
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const [desktopServicesOpen, setDesktopServicesOpen] = useState(false);
+  const [mobileZodiacOpen, setMobileZodiacOpen] = useState(false);
+  const [desktopZodiacOpen, setDesktopZodiacOpen] = useState(false);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
 
   /* =========================================================
@@ -66,6 +68,8 @@ function Nav() {
     setMobileMenuOpen(false);
     setMobileServicesOpen(false);
     setDesktopServicesOpen(false);
+    setMobileZodiacOpen(false);
+    setDesktopZodiacOpen(false);
   }, [location.pathname]);
 
   /* =========================================================
@@ -128,10 +132,25 @@ function Nav() {
     { label: "View All Services", href: "/services", desc: "Explore all consultation offerings" },
   ];
 
+  const ZODIAC_DROPDOWN_SIGNS = [
+    { name: "Aries", hindi: "मेष", slug: "aries", element: "Fire" },
+    { name: "Taurus", hindi: "वृषभ", slug: "taurus", element: "Earth" },
+    { name: "Gemini", hindi: "मिथुन", slug: "gemini", element: "Air" },
+    { name: "Cancer", hindi: "कर्क", slug: "cancer", element: "Water" },
+    { name: "Leo", hindi: "सिंह", slug: "leo", element: "Fire" },
+    { name: "Virgo", hindi: "कन्या", slug: "virgo", element: "Earth" },
+    { name: "Libra", hindi: "तुला", slug: "libra", element: "Air" },
+    { name: "Scorpio", hindi: "वृश्चिक", slug: "scorpio", element: "Water" },
+    { name: "Sagittarius", hindi: "धनु", slug: "sagittarius", element: "Fire" },
+    { name: "Capricorn", hindi: "मकर", slug: "capricorn", element: "Earth" },
+    { name: "Aquarius", hindi: "कुंभ", slug: "aquarius", element: "Air" },
+    { name: "Pisces", hindi: "मीन", slug: "pisces", element: "Water" },
+  ];
+
   const navItems = [
     { label: "About", href: "/about" },
-    { label: "Services", href: "/services", dropdown: true },
-    { label: "Zodiac", href: "#signs", isHash: true },
+    { label: "Services", href: "/services", dropdown: "services" },
+    { label: "Zodiac", href: "/zodiac", dropdown: "zodiac" },
     { label: "Store", href: "/products" },
     { label: "Forecast", href: "/services" },
     { label: "Pricing", href: "#pricing", isHash: true },
@@ -271,7 +290,7 @@ function Nav() {
 
           <div className="hidden items-center justify-center gap-0.5 lg:flex xl:gap-1.5 2xl:gap-2">
             {navItems.map((item) =>
-              item.dropdown && item.label === "Services" ? (
+              item.dropdown === "services" ? (
                 <div
                   key={item.label}
                   className="relative group/svc py-3"
@@ -346,6 +365,101 @@ function Nav() {
                           </p>
                         </Link>
                       ))}
+                    </div>
+                  </div>
+                </div>
+              ) : item.dropdown === "zodiac" ? (
+                <div
+                  key={item.label}
+                  className="relative group/zodiac py-3"
+                  onMouseLeave={() => setDesktopZodiacOpen(false)}
+                >
+                  <Link
+                    to="/zodiac"
+                    onClick={() => setDesktopZodiacOpen(false)}
+                    className={`
+                      group relative flex items-center gap-1 whitespace-nowrap
+                      px-2 py-1 font-sans text-[12px] font-medium tracking-[0.01em]
+                      transition-all duration-300
+                      lg:px-2.5 lg:text-[12.5px]
+                      xl:px-3 xl:text-[13.5px]
+                      2xl:px-3.5 2xl:text-[14px]
+                      ${navTextClass}
+                    `}
+                  >
+                    <span>{item.label}</span>
+                    <ChevronDown
+                      size={11}
+                      strokeWidth={1.5}
+                      className="text-[#E9A534]/70 transition-transform duration-300 group-hover/zodiac:rotate-180"
+                    />
+                    <span
+                      className="
+                        absolute bottom-0 left-3 right-3 h-px
+                        origin-right scale-x-0 bg-[#E9A534]
+                        transition-transform duration-300
+                        group-hover/zodiac:origin-left group-hover/zodiac:scale-x-100
+                        xl:left-3.5 xl:right-3.5
+                      "
+                    />
+                  </Link>
+
+                  {/* Zodiac 12 Signs Mega-Dropdown Menu */}
+                  <div
+                    className="
+                      absolute left-1/2 -translate-x-1/2 top-full z-50 w-[420px]
+                      translate-y-2 rounded-[12px] border border-[#E9A534]/30
+                      bg-[#240307]/98 p-4 shadow-[0_16px_40px_rgba(0,0,0,0.6)]
+                      backdrop-blur-xl transition-all duration-300
+                      pointer-events-none opacity-0
+                      group-hover/zodiac:pointer-events-auto group-hover/zodiac:translate-y-0 group-hover/zodiac:opacity-100
+                    "
+                  >
+                    <div className="mb-2.5 flex items-center justify-between border-b border-[#E9A534]/15 pb-2">
+                      <span className="font-serif text-[12px] font-bold uppercase tracking-wider text-[#E9C76D]">
+                        The 12 Rashis / Zodiac Signs
+                      </span>
+                      <Link
+                        to="/zodiac"
+                        className="text-[11px] font-medium text-[#E9A534] hover:underline"
+                      >
+                        All Signs &rarr;
+                      </Link>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {ZODIAC_DROPDOWN_SIGNS.map((sign) => (
+                        <Link
+                          key={sign.slug}
+                          to={`/zodiac/${sign.slug}`}
+                          className="
+                            group/sign flex items-center justify-between rounded-[7px] px-2.5 py-1.5 transition-colors
+                            hover:bg-white/[0.08]
+                          "
+                        >
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[12.5px] font-medium text-[#FFF4E4] group-hover/sign:text-[#E9C76D]">
+                              {sign.name}
+                            </span>
+                            <span className="text-[10px] text-[#E9C76D]/60 font-sans">
+                              ({sign.hindi})
+                            </span>
+                          </div>
+                          <span className="text-[9.5px] uppercase tracking-wider text-white/40">
+                            {sign.element}
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+
+                    <div className="mt-3 border-t border-[#E9A534]/15 pt-2 text-center">
+                      <Link
+                        to="/zodiac"
+                        className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#E9C76D] hover:text-[#FFF4E4] transition-colors"
+                      >
+                        <span>Explore Comprehensive Vedic Zodiac Hub</span>
+                        <ArrowRight size={11} />
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -652,7 +766,7 @@ function Nav() {
           <div className="mx-auto max-w-[1450px] px-5 pb-6 pt-2 sm:px-7">
             <div className="flex flex-col">
               {navItems.map((item, index) =>
-                item.dropdown && item.label === "Services" ? (
+                item.dropdown === "services" ? (
                   <div key={item.label} className="border-b border-[#E9A534]/[0.08] py-2">
                     <button
                       type="button"
@@ -691,6 +805,56 @@ function Nav() {
                             <p className="text-[11px] text-[#E9C76D]/60">{svc.desc}</p>
                           </Link>
                         ))}
+                      </div>
+                    )}
+                  </div>
+                ) : item.dropdown === "zodiac" ? (
+                  <div key={item.label} className="border-b border-[#E9A534]/[0.08] py-2">
+                    <button
+                      type="button"
+                      onClick={() => setMobileZodiacOpen(!mobileZodiacOpen)}
+                      className="
+                        group flex w-full items-center justify-between
+                        py-[10px] font-sans text-[14px] font-medium
+                        text-[#F5E5C7]/95 transition-colors duration-300
+                        hover:text-[#E9C76D]
+                      "
+                    >
+                      <span className="flex items-center">
+                        <span className="mr-3 w-5 text-[8px] tracking-[0.12em] text-[#E9A534]/45">
+                          0{index + 1}
+                        </span>
+                        {item.label}
+                      </span>
+                      <ChevronDown
+                        size={15}
+                        className={`text-[#E9A534]/70 transition-transform duration-300 ${
+                          mobileZodiacOpen ? "rotate-180 text-[#E9C76D]" : ""
+                        }`}
+                      />
+                    </button>
+
+                    {mobileZodiacOpen && (
+                      <div className="ml-8 mb-2 border-l border-[#E9A534]/20 pl-4 py-1">
+                        <Link
+                          to="/zodiac"
+                          onClick={closeMobileMenu}
+                          className="block py-1.5 font-sans text-[12px] font-bold uppercase tracking-wider text-[#E9A534] hover:underline"
+                        >
+                          Explore Zodiac Hub &rarr;
+                        </Link>
+                        <div className="grid grid-cols-2 gap-1 mt-1">
+                          {ZODIAC_DROPDOWN_SIGNS.map((sign) => (
+                            <Link
+                              key={sign.slug}
+                              to={`/zodiac/${sign.slug}`}
+                              onClick={closeMobileMenu}
+                              className="py-1 text-[12.5px] text-[#F5E5C7]/80 hover:text-[#E9C76D] transition-colors"
+                            >
+                              {sign.name} <span className="text-[10px] text-[#E9C76D]/60">({sign.hindi})</span>
+                            </Link>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </div>

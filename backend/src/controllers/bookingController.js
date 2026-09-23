@@ -1,4 +1,9 @@
 const Booking = require('../models/Booking');
+const {
+  sendAppointmentConfirmationEmail,
+  sendAppointmentRescheduledEmail,
+  sendAppointmentReminderEmail,
+} = require('../services/emailService');
 
 // @desc    Get booked time slots for a given date
 // @route   GET /api/bookings/booked-slots
@@ -93,6 +98,11 @@ const createBooking = async (req, res) => {
     const populatedBooking = booking.user
       ? await Booking.findById(booking._id).populate('user', 'name email phone')
       : booking;
+
+    // Send confirmation email asynchronously (do not block API response)
+    sendAppointmentConfirmationEmail(populatedBooking).catch((emailErr) => {
+      console.error('Failed to dispatch appointment confirmation email:', emailErr);
+    });
 
     res.status(201).json({
       success: true,
@@ -313,6 +323,40 @@ const rescheduleBooking = async (req, res) => {
       });
     }
 
+    // Check authorization: allow booking owner or admin
+    const isOwner = booking.user && booking.user.toString() === req.user.id;
+    if (!isOwner && req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to reschedule this booking',
+      });
+    }
+
+    // Check slot availability for the newly selected date & time
+    if (date || time) {
+      const targetDate = date ? new Date(date) : booking.date;
+      const targetTime = time || booking.time;
+
+      const startOfDay = new Date(targetDate);
+      startOfDay.setHours(0, 0, 0, 0);
+      const endOfDay = new Date(targetDate);
+      endOfDay.setHours(23, 59, 59, 999);
+
+      const conflict = await Booking.findOne({
+        _id: { $ne: booking._id },
+        date: { $gte: startOfDay, $lte: endOfDay },
+        time: targetTime,
+        status: { $nin: ['cancelled', 'completed'] },
+      });
+
+      if (conflict) {
+        return res.status(400).json({
+          success: false,
+          message: `The ${targetTime} slot on this date is already booked. Please choose another time slot.`,
+        });
+      }
+    }
+
     if (date) {
       booking.date = new Date(date);
     }
@@ -332,10 +376,56 @@ const rescheduleBooking = async (req, res) => {
 
     const updatedBooking = await Booking.findById(booking._id).populate('user', 'name email phone');
 
+    // Trigger rescheduled email notification asynchronously
+    sendAppointmentRescheduledEmail(updatedBooking).catch((emailErr) => {
+      console.error('Failed to dispatch appointment rescheduled email:', emailErr);
+    });
+
     res.status(200).json({
       success: true,
       message: 'Booking rescheduled successfully',
       booking: updatedBooking,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// @desc    Send appointment reminder
+// @route   POST /api/bookings/:id/reminder
+// @access  Private
+const sendBookingReminder = async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id).populate('user', 'name email phone');
+    if (!booking) {
+      return res.status(404).json({
+        success: false,
+        message: 'Booking not found',
+      });
+    }
+
+    const isOwner = booking.user && booking.user._id.toString() === req.user.id;
+    if (!isOwner && req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to send reminder for this booking',
+      });
+    }
+
+    const sent = await sendAppointmentReminderEmail(booking);
+    if (!sent) {
+      return res.status(400).json({
+        success: false,
+        message: 'Failed to send reminder email. Please verify SendGrid configuration.',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Reminder email dispatched successfully',
     });
   } catch (error) {
     res.status(500).json({
@@ -354,4 +444,5 @@ module.exports = {
   cancelBooking,
   rescheduleBooking,
   getUserBookings,
+  sendBookingReminder,
 };

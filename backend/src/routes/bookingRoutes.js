@@ -9,6 +9,7 @@ const {
   cancelBooking,
   rescheduleBooking,
   getUserBookings,
+  sendBookingReminder,
 } = require('../controllers/bookingController');
 const { protect, optionalProtect, admin } = require('../middleware/auth');
 
@@ -23,7 +24,8 @@ router.get('/my-bookings', protect, getUserBookings);
 router.get('/', protect, admin, getBookings);
 router.get('/:id', protect, getBookingById);
 router.put('/:id/status', protect, admin, updateBookingStatus);
-router.put('/:id/reschedule', protect, admin, rescheduleBooking);
+router.put('/:id/reschedule', protect, rescheduleBooking);
 router.put('/:id/cancel', protect, cancelBooking);
+router.post('/:id/reminder', protect, sendBookingReminder);
 
 module.exports = router;

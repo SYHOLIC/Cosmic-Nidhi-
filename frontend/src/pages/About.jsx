@@ -8,62 +8,41 @@ import nidhi1 from "../assets/image.png";
 export default function About() {
   const y = useScrollY();
   const sectionRef = useRef(null);
-  const counterRef = useRef(null);
 
   // Counter state
   const [years, setYears] = useState(0);
-  const [counterStarted, setCounterStarted] = useState(false);
+  const [hasAnimated, setHasAnimated] = useState(false);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
 
-  // Counter animation using IntersectionObserver directly on the badge
+  // Counter animation matching landing page
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !counterStarted) {
-            setCounterStarted(true);
-            startCounter();
-          }
-        });
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated) {
+          setHasAnimated(true);
+          const target = 10;
+          let current = 0;
+          const increment = target / 60;
+          const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+              setYears(target);
+              clearInterval(timer);
+            } else {
+              setYears(Math.floor(current));
+            }
+          }, 50); // 50ms × 60 steps = ~3000ms — smooth and natural
+          return () => clearInterval(timer);
+        }
       },
-      { threshold: 0.1 } // Low threshold to trigger even if partially visible
+      { threshold: 0.3 }
     );
 
-    if (counterRef.current) {
-      observer.observe(counterRef.current);
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
     }
-
     return () => observer.disconnect();
-  }, [counterStarted]);
-
-  const startCounter = () => {
-    const target = 10;
-    let current = 0;
-    const steps = 50;
-    const increment = target / steps;
-    let step = 0;
-
-    const timer = setInterval(() => {
-      step++;
-      current += increment;
-      if (step >= steps) {
-        setYears(target);
-        clearInterval(timer);
-      } else {
-        setYears(Math.floor(current));
-      }
-    }, 50);  // 50ms × 50 steps = ~2500ms total — smooth and satisfying
-
-    const fallbackTimer = setTimeout(() => {
-      setYears(target);
-      clearInterval(timer);
-    }, 3500);
-
-    return () => {
-      clearInterval(timer);
-      clearTimeout(fallbackTimer);
-    };
-  };
+  }, [hasAnimated]);
 
   const coreValues = [
     {
@@ -178,19 +157,18 @@ export default function About() {
                 <div className="absolute inset-0 border-2 border-[#E9A534]/40 rounded-2xl pointer-events-none" />
               </motion.div>
 
-              {/* Years badge – counter with its own observer */}
+              {/* Years badge */}
               <motion.div
-                ref={counterRef}
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.7, delay: 0.5 }}
                 viewport={{ once: true }}
-                className="absolute -top-4 -left-4 bg-[#FFF7E9] border-2 border-[#E9A534] rounded-xl px-8 py-5 shadow-xl will-change-transform"
+                className="absolute -top-4 -left-4 bg-[#FFF7E9] border-2 border-[#E9A534] rounded-xl px-6 py-4 shadow-xl text-center flex flex-col items-center justify-center will-change-transform"
               >
-                <p className="font-display text-5xl bg-gradient-to-r from-[#5A0E14] via-[#C1272D] to-[#E9A534] bg-clip-text text-transparent">
+                <p className="font-display text-4xl bg-gradient-to-r from-[#5A0E14] via-[#C1272D] to-[#E9A534] bg-clip-text text-transparent">
                   {years}+
                 </p>
-                <p className="text-[0.65rem] tracking-[0.2em] uppercase text-[#5A0E14] font-sans font-medium">
+                <p className="text-[0.55rem] tracking-[0.2em] uppercase text-[#5A0E14] font-sans font-semibold">
                   Years of Wisdom
                 </p>
               </motion.div>
@@ -207,7 +185,7 @@ export default function About() {
               <Reveal delay={120}>
                 <div className="prose prose-lg max-w-none">
                   <p className="text-[#2C1210] leading-relaxed font-sans text-lg md:text-xl text-justify">
-                    At <span className="text-[#C1272D] font-semibold">Cosmic Nidhi</span>, Make believe in Spiritual Growth first, then trusted guidance, then Accurate Readings. Our work brings together astrology, numerology and Vastu-inspired perspectives to help people reflect on their patterns, choices, relationships, spaces and next steps.
+                    At <span className="text-[#C1272D] font-semibold">Cosmic Nidhi</span>, we believe in Spiritual Growth first, then trusted guidance, then Accurate Readings. Our work brings together astrology, numerology and Vastu-inspired perspectives to help people reflect on their patterns, choices, relationships, spaces and next steps.
                   </p>
                   <p className="mt-5 text-[#2C1210]/80 leading-relaxed font-sans text-lg md:text-xl text-justify">
                     Every consultation is approached with care, context and confidentiality. Rather than using fear-based predictions or one-size-fits-all answers, Cosmic Nidhi aims to translate traditional systems into clear observations and practical questions for modern life.

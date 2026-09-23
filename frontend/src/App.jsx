@@ -3,6 +3,7 @@ import React, { Component, useEffect, lazy, Suspense } from "react";
 import Home from "./pages/Home";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
+import FloatingWhatsApp from "./components/FloatingWhatsApp";
 import { CartProvider } from "./context/CartContext";
 import { ToastProvider } from "./context/ToastContext";
 
@@ -141,6 +142,7 @@ function AppRoutes() {
       </Suspense>
       </ErrorBoundary>
       {!hideFooter && <Footer />}
+      <FloatingWhatsApp />
     </>
   );
 }

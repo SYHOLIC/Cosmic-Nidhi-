@@ -135,7 +135,6 @@ export default function About() {
 
       {/* Main Content */}
       <section
-        ref={sectionRef}
         className="relative overflow-hidden bg-[#FFF7E9] pt-10 sm:pt-14 md:pt-16 pb-20 md:pb-28"
       >
         <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-[#C1272D]/5 blur-3xl pointer-events-none" />

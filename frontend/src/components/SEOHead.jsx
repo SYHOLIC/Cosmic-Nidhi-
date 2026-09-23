@@ -27,7 +27,7 @@ const getSeoList = async () => {
   return seoPromise;
 };
 
-export default function SEOHead({ pageName, fallbackTitle, fallbackDescription }) {
+export default function SEOHead({ pageName, title, description, fallbackTitle, fallbackDescription }) {
   useEffect(() => {
     let isMounted = true;
 
@@ -36,10 +36,13 @@ export default function SEOHead({ pageName, fallbackTitle, fallbackDescription }
         const seoList = await getSeoList();
         if (!isMounted) return;
 
-        const match = seoList.find((s) => s.pageName.toLowerCase() === pageName.toLowerCase());
+        const pName = String(pageName || "").trim().toLowerCase();
+        const match = pName
+          ? seoList.find((s) => String(s?.pageName || "").trim().toLowerCase() === pName)
+          : null;
 
-        const finalTitle = match?.title || fallbackTitle || "Cosmic Nidhi - Zodiac & Astrology";
-        const finalDesc = match?.description || fallbackDescription || "Discover premium zodiac jewelry, crystals, and astrology services.";
+        const finalTitle = match?.title || fallbackTitle || title || "Cosmic Nidhi - Zodiac & Astrology";
+        const finalDesc = match?.description || fallbackDescription || description || "Discover premium zodiac jewelry, crystals, and astrology services.";
         
         document.title = finalTitle;
         

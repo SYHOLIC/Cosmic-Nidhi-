@@ -136,7 +136,8 @@ const deleteUser = async (req, res) => {
 const getOrders = async (req, res) => {
   try {
     const orders = await Order.find()
-      .populate('user', 'name email')
+      .populate('user', 'name email phone')
+      .populate('items.product', 'name images price slug')
       .sort('-createdAt');
     res.status(200).json({
       success: true,

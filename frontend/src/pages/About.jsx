@@ -132,7 +132,7 @@ export default function About() {
       {/* Main Content */}
       <section
         ref={sectionRef}
-        className="relative overflow-hidden bg-[#FFF7E9] pb-20 md:pb-28"
+        className="relative overflow-hidden bg-[#FFF7E9] pt-10 sm:pt-14 md:pt-16 pb-20 md:pb-28"
       >
         <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-[#C1272D]/5 blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-[#E9A534]/5 blur-3xl pointer-events-none" />
@@ -141,7 +141,7 @@ export default function About() {
           {/* Company Profile & Image */}
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
             {/* Left - Main Image Only */}
-            <div className="relative">
+            <div className="relative pt-2">
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
@@ -163,7 +163,7 @@ export default function About() {
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.7, delay: 0.5 }}
                 viewport={{ once: true }}
-                className="absolute -top-4 -left-4 bg-[#FFF7E9] border-2 border-[#E9A534] rounded-xl px-6 py-4 shadow-xl text-center flex flex-col items-center justify-center will-change-transform"
+                className="absolute -top-3 left-0 sm:-top-4 sm:-left-4 z-20 bg-[#FFF7E9] border-2 border-[#E9A534] rounded-xl px-6 py-4 shadow-xl text-center flex flex-col items-center justify-center will-change-transform"
               >
                 <p className="font-display text-4xl bg-gradient-to-r from-[#5A0E14] via-[#C1272D] to-[#E9A534] bg-clip-text text-transparent">
                   {years}+

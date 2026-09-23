@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useScrollY } from "../hooks/useReveal";
 import Reveal from "../components/Reveal";
 import BookingModal from "../components/BookingModal";
@@ -7,42 +7,46 @@ import nidhi1 from "../assets/image.png";
 
 export default function About() {
   const y = useScrollY();
-  const sectionRef = useRef(null);
+  const counterRef = useRef(null);
+  const isCounterInView = useInView(counterRef, { once: true, margin: "-20px" });
 
   // Counter state
   const [years, setYears] = useState(0);
-  const [hasAnimated, setHasAnimated] = useState(false);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
 
-  // Counter animation matching landing page
+  // Silky smooth 60fps counter animation
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated) {
-          setHasAnimated(true);
-          const target = 10;
-          let current = 0;
-          const increment = target / 60;
-          const timer = setInterval(() => {
-            current += increment;
-            if (current >= target) {
-              setYears(target);
-              clearInterval(timer);
-            } else {
-              setYears(Math.floor(current));
-            }
-          }, 50); // 50ms × 60 steps = ~3000ms — smooth and natural
-          return () => clearInterval(timer);
-        }
-      },
-      { threshold: 0.3 }
-    );
+    if (!isCounterInView) return;
+    let startTimestamp = null;
+    const duration = 2000;
+    const target = 10;
+    let animId;
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-    return () => observer.disconnect();
-  }, [hasAnimated]);
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      setYears(Math.min(Math.floor(easeOut * (target + 0.99)), target));
+      if (progress < 1) {
+        animId = requestAnimationFrame(step);
+      } else {
+        setYears(target);
+      }
+    };
+    animId = requestAnimationFrame(step);
+
+    return () => {
+      if (animId) cancelAnimationFrame(animId);
+    };
+  }, [isCounterInView]);
+
+  // Fallback to guarantee count is never stuck at 0
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setYears(10);
+    }, 2500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const coreValues = [
     {
@@ -141,7 +145,7 @@ export default function About() {
           {/* Company Profile & Image */}
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
             {/* Left - Main Image Only */}
-            <div className="relative pt-2">
+            <div ref={counterRef} className="relative pt-2">
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}

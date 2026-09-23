@@ -25,7 +25,7 @@ import Reveal from "../components/Reveal";
 import BookingModal from "../components/BookingModal";
 import { useToast } from "../context/ToastContext";
 import { useCart } from "../context/CartContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import SEOHead from "../components/SEOHead";
 
 /* Zodiac chakra backdrop */
@@ -384,6 +384,7 @@ function ProductCard({ product, index, onQuickView, isWishlisted }) {
 ================================================================ */
 
 export default function ProductsPage() {
+  const [searchParams] = useSearchParams();
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -397,6 +398,25 @@ export default function ProductsPage() {
   const [maxPrice, setMaxPrice] = useState("");
   const [showMobileFilter, setShowMobileFilter] = useState(false);
   const [showAllProducts, setShowAllProducts] = useState(false);
+
+  useEffect(() => {
+    const cat = searchParams.get("category");
+    if (cat) {
+      setActiveCategory(cat);
+      setShowAllProducts(false);
+      setTimeout(() => {
+        document.getElementById("product-grid")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 200);
+    }
+    const q = searchParams.get("search");
+    if (q) {
+      setSearchQuery(q);
+      setShowAllProducts(false);
+      setTimeout(() => {
+        document.getElementById("product-grid")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 200);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     fetchCategories();

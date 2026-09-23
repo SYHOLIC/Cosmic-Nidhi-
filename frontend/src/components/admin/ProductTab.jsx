@@ -209,17 +209,25 @@ function ProductFormModal({
 
   useEffect(() => {
     if (editingProduct) {
+      const getImgStr = (img) => (typeof img === "string" ? img : img?.url || "");
+      const firstImg = getImgStr(editingProduct.images?.[0]) || getImgStr(editingProduct.image) || "";
+      const catId = editingProduct.category?._id || editingProduct.category || (categories.length > 0 ? categories[0]._id : "");
+      
+      const featuresStr = Array.isArray(editingProduct.features)
+        ? editingProduct.features.map(f => (typeof f === "string" ? f : f?.title || f?.name || "")).filter(Boolean).join("\n")
+        : (editingProduct.features || "");
+
       setFormData({
         name: editingProduct.name || "",
         shortDescription: editingProduct.shortDescription || "",
         description: editingProduct.description || "",
-        price: editingProduct.price || "",
-        originalPrice: editingProduct.originalPrice || "",
-        stock: editingProduct.stock || 0,
-        category: editingProduct.category?._id || editingProduct.category || "",
-        image: editingProduct.images?.[0] || "",
+        price: editingProduct.price !== undefined ? editingProduct.price : "",
+        originalPrice: editingProduct.originalPrice !== undefined ? editingProduct.originalPrice : "",
+        stock: editingProduct.stock !== undefined ? editingProduct.stock : 0,
+        category: catId,
+        image: firstImg,
         badge: editingProduct.badge || "",
-        features: editingProduct.features?.join("\n") || "",
+        features: featuresStr,
         isActive: editingProduct.isActive !== false,
         isFeatured: editingProduct.isFeatured || false,
       });
@@ -277,15 +285,20 @@ function ProductFormModal({
       .map(f => f.trim())
       .filter(f => f.length > 0);
 
-    const finalImage = formData.image || editingProduct?.images?.[0] || editingProduct?.image || "";
-    const finalImages = finalImage
-      ? [finalImage, ...(editingProduct?.images?.filter(img => img !== finalImage) || [])]
-      : (editingProduct?.images || []);
+    const getImgStr = (img) => (typeof img === "string" ? img : img?.url || "");
+    const finalImage = getImgStr(formData.image) || getImgStr(editingProduct?.images?.[0]) || getImgStr(editingProduct?.image) || "";
+    
+    let existingImgs = Array.isArray(editingProduct?.images)
+      ? editingProduct.images.map(getImgStr).filter(Boolean)
+      : [];
+    if (finalImage && !existingImgs.includes(finalImage)) {
+      existingImgs = [finalImage, ...existingImgs];
+    }
 
     onSave({
       ...formData,
       image: finalImage,
-      images: finalImages,
+      images: existingImgs.length > 0 ? existingImgs : (finalImage ? [finalImage] : []),
       features: parsedFeatures,
       price: Number(formData.price),
       originalPrice: formData.originalPrice ? Number(formData.originalPrice) : undefined,

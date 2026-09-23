@@ -130,12 +130,12 @@ export default function About() {
               initial={{ opacity: 0, x: -20 }}
               animate={isInView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.7, delay: 0.5 }}
-              className="absolute -top-4 -left-4 bg-[#FFF7E9] border-2 border-[#E9A534] rounded-xl px-6 py-4 shadow-xl text-center"
+              className="absolute -top-4 -left-4 bg-[#FFF7E9] border-2 border-[#E9A534] rounded-xl px-6 py-4 shadow-xl text-center flex flex-col items-center justify-center"
             >
               <p className="font-display text-4xl bg-gradient-to-r from-[#5A0E14] via-[#C1272D] to-[#E9A534] bg-clip-text text-transparent">
                 {years}+
               </p>
-              <p className="text-[0.55rem] tracking-[0.2em] uppercase text-[#5A0E14] font-sans">
+              <p className="text-[0.55rem] tracking-[0.2em] uppercase text-[#5A0E14] font-sans font-semibold">
                 Years of Wisdom
               </p>
             </motion.div>
@@ -152,7 +152,7 @@ export default function About() {
             <Reveal delay={120}>
               <div className="prose prose-lg max-w-none">
                 <p className="text-[#2C1210]/80 leading-relaxed font-sans text-base md:text-lg text-justify">
-                  At <span className="text-[#C1272D] font-semibold">Cosmic Nidhi</span>, Make believe in Spiritual Growth first, then trusted guidance, then Accurate Readings. Our work brings together astrology, numerology and Vastu-inspired perspectives to help people reflect on their patterns, choices, relationships, spaces and next steps.
+                  At <span className="text-[#C1272D] font-semibold">Cosmic Nidhi</span>, we believe in Spiritual Growth first, then trusted guidance, then Accurate Readings. Our work brings together astrology, numerology and Vastu-inspired perspectives to help people reflect on their patterns, choices, relationships, spaces and next steps.
                 </p>
                 <p className="mt-4 text-[#2C1210]/70 leading-relaxed font-sans text-base md:text-lg text-justify">
                   Every consultation is approached with care, context and confidentiality. Rather than using fear-based predictions or one-size-fits-all answers, Cosmic Nidhi aims to translate traditional systems into clear observations and practical questions for modern life.
@@ -162,18 +162,20 @@ export default function About() {
 
             {/* Features Grid */}
             <Reveal delay={240}>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 items-stretch">
                 {features.map((feature, index) => (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
                     transition={{ duration: 0.5, delay: 0.4 + index * 0.15 }}
-                    className="bg-[#FDECC8]/40 rounded-xl p-4 text-center border border-[#5A0E14]/8 hover:border-[#C1272D]/20 transition-all duration-300 hover:shadow-md"
+                    className="bg-[#FDECC8]/40 rounded-xl p-4 text-center border border-[#5A0E14]/8 hover:border-[#C1272D]/20 transition-all duration-300 hover:shadow-md flex flex-col justify-between h-full"
                   >
-                    <span className="text-[#E9A534] text-xl block mb-1">{feature.icon}</span>
-                    <h4 className="font-display text-[#3C080D] text-lg">{feature.title}</h4>
-                    <p className="text-[#2C1210]/60 text-xs font-sans mt-1">{feature.desc}</p>
+                    <div>
+                      <span className="text-[#E9A534] text-xl block mb-1">{feature.icon}</span>
+                      <h4 className="font-display text-[#3C080D] text-lg">{feature.title}</h4>
+                      <p className="text-[#2C1210]/60 text-xs font-sans mt-1">{feature.desc}</p>
+                    </div>
                   </motion.div>
                 ))}
               </div>
@@ -224,7 +226,7 @@ export default function About() {
 
         {/* Bottom Section - Store & Philosophy */}
         <Reveal delay={350}>
-          <div className="mt-20 pt-12 border-t border-[#5A0E14]/10">
+          <div className="mt-10 pt-8 border-t border-[#5A0E14]/10">
             <div className="grid md:grid-cols-2 gap-8 items-stretch">
               <div className="bg-[#FDECC8]/20 rounded-2xl p-6 border border-[#5A0E14]/8 flex flex-col">
                 <h3 className="font-display text-2xl text-[#3C080D] mb-3">
@@ -238,7 +240,7 @@ export default function About() {
                     href="/products"
                     className="group inline-flex items-center gap-2 font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-[#C1272D] border border-[#C1272D]/40 rounded-full px-5 py-2 hover:bg-[#C1272D] hover:text-[#FFF7E9] transition-all duration-300"
                   >
-                    Visit Store
+                    Go to Store
                     <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
                   </a>
                 </div>

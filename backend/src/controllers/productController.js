@@ -65,9 +65,29 @@ const getProducts = async (req, res) => {
 // @access  Public
 const getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id)
-      .populate('category', 'name slug')
-      .populate('reviews.user', 'name');
+    const idOrSlug = req.params.id;
+    let product = null;
+
+    if (
+      mongoose.Types.ObjectId.isValid(idOrSlug) &&
+      String(new mongoose.Types.ObjectId(idOrSlug)) === String(idOrSlug)
+    ) {
+      product = await Product.findById(idOrSlug)
+        .populate('category', 'name slug')
+        .populate('reviews.user', 'name');
+    }
+
+    if (!product) {
+      product = await Product.findOne({ slug: String(idOrSlug).toLowerCase().trim() })
+        .populate('category', 'name slug')
+        .populate('reviews.user', 'name');
+    }
+
+    if (!product) {
+      product = await Product.findOne({ name: new RegExp(`^${idOrSlug}$`, 'i') })
+        .populate('category', 'name slug')
+        .populate('reviews.user', 'name');
+    }
 
     if (!product) {
       return res.status(404).json({
@@ -109,11 +129,29 @@ const createProduct = async (req, res) => {
     } = req.body;
 
     // Check if category exists
-    const categoryExists = await Category.findById(category);
+    let categoryExists = null;
+    if (category) {
+      if (mongoose.Types.ObjectId.isValid(category) && String(new mongoose.Types.ObjectId(category)) === String(category)) {
+        categoryExists = await Category.findById(category);
+      }
+      if (!categoryExists) {
+        categoryExists = await Category.findOne({
+          $or: [
+            { slug: String(category).toLowerCase() },
+            { name: new RegExp(`^${category}$`, 'i') }
+          ]
+        });
+      }
+    }
+    
     if (!categoryExists) {
-      return res.status(404).json({
+      categoryExists = await Category.findOne({});
+    }
+
+    if (!categoryExists) {
+      return res.status(400).json({
         success: false,
-        message: 'Category not found',
+        message: 'Category is required',
       });
     }
 
@@ -123,24 +161,51 @@ const createProduct = async (req, res) => {
       productImages = [req.body.image];
     }
 
-    const generatedSku = req.body.sku || req.body.SKU || `CN-${Date.now().toString(36).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
+    const uniqueSuffix = `${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
+    const generatedSku = req.body.sku || req.body.SKU || `CN-${uniqueSuffix}`;
 
-    const product = await Product.create({
-      name,
-      description,
-      shortDescription,
-      price: Number(price),
-      originalPrice: originalPrice ? Number(originalPrice) : undefined,
-      category,
-      images: productImages,
-      stock: stock !== undefined ? Number(stock) : 0,
-      features: features || [],
-      isActive: isActive !== undefined ? isActive : true,
-      isFeatured: isFeatured || false,
-      badge: badge || '',
-      sku: generatedSku,
-      SKU: generatedSku,
-    });
+    let product;
+    try {
+      product = await Product.create({
+        name,
+        description,
+        shortDescription,
+        price: Number(price),
+        originalPrice: originalPrice ? Number(originalPrice) : undefined,
+        category: categoryExists._id,
+        images: productImages,
+        stock: stock !== undefined ? Number(stock) : 0,
+        features: features || [],
+        isActive: isActive !== undefined ? isActive : true,
+        isFeatured: isFeatured || false,
+        badge: badge || '',
+        sku: generatedSku,
+        SKU: generatedSku,
+      });
+    } catch (createErr) {
+      // If legacy unique constraint triggers duplicate key on SKU, retry with collision-proof fallback
+      if (createErr.code === 11000) {
+        const fallbackSku = `CN-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+        product = await Product.create({
+          name,
+          description,
+          shortDescription,
+          price: Number(price),
+          originalPrice: originalPrice ? Number(originalPrice) : undefined,
+          category: categoryExists._id,
+          images: productImages,
+          stock: stock !== undefined ? Number(stock) : 0,
+          features: features || [],
+          isActive: isActive !== undefined ? isActive : true,
+          isFeatured: isFeatured || false,
+          badge: badge || '',
+          sku: fallbackSku,
+          SKU: fallbackSku,
+        });
+      } else {
+        throw createErr;
+      }
+    }
 
     res.status(201).json({
       success: true,
@@ -256,10 +321,21 @@ const deleteProduct = async (req, res) => {
 
 const getProductBySlug = async (req, res) => {
   try {
-    let product = await Product.findOne({ slug: req.params.slug }).populate('category', 'name slug');
-    if (!product && mongoose.Types.ObjectId.isValid(req.params.slug)) {
-      product = await Product.findById(req.params.slug).populate('category', 'name slug');
+    const slugOrId = req.params.slug;
+    let product = await Product.findOne({ slug: String(slugOrId).toLowerCase().trim() }).populate('category', 'name slug');
+    
+    if (
+      !product &&
+      mongoose.Types.ObjectId.isValid(slugOrId) &&
+      String(new mongoose.Types.ObjectId(slugOrId)) === String(slugOrId)
+    ) {
+      product = await Product.findById(slugOrId).populate('category', 'name slug');
     }
+
+    if (!product) {
+      product = await Product.findOne({ name: new RegExp(`^${slugOrId}$`, 'i') }).populate('category', 'name slug');
+    }
+
     if (!product) {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }

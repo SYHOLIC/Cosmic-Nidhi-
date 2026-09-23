@@ -3,7 +3,6 @@ import React, { Component, useEffect, lazy, Suspense } from "react";
 import Home from "./pages/Home";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
-import FloatingSocialConnect from "./components/FloatingSocialConnect";
 import { CartProvider } from "./context/CartContext";
 import { ToastProvider } from "./context/ToastContext";
 
@@ -142,7 +141,6 @@ function AppRoutes() {
       </Suspense>
       </ErrorBoundary>
       {!hideFooter && <Footer />}
-      <FloatingSocialConnect />
     </>
   );
 }

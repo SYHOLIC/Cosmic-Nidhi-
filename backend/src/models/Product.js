@@ -48,6 +48,11 @@ const productSchema = new mongoose.Schema({
     min: 0,
     max: 5,
   },
+  numReviews: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
   reviews: [{
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -84,12 +89,10 @@ const productSchema = new mongoose.Schema({
   sku: {
     type: String,
     trim: true,
-    sparse: true,
   },
   SKU: {
     type: String,
     trim: true,
-    sparse: true,
   },
 }, {
   timestamps: true,
@@ -105,14 +108,18 @@ productSchema.pre('validate', function(next) {
           .replace(/[^a-z0-9]+/g, '-')
           .replace(/^-+|-+$/g, '')
       : 'product';
-    this.slug = `${base}-${Date.now().toString(36)}`;
+    this.slug = `${base}-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 6)}`;
   }
 
   if (!this.sku) {
-    const rand = Math.floor(1000 + Math.random() * 9000);
+    const rand = Math.random().toString(36).substring(2, 8).toUpperCase();
     this.sku = `CN-${Date.now().toString(36).toUpperCase()}-${rand}`;
   }
   this.SKU = this.sku;
+
+  if (Array.isArray(this.reviews)) {
+    this.numReviews = this.reviews.length;
+  }
 
   next();
 });

@@ -488,9 +488,21 @@ function CTA() {
                   className="
                     relative
                     z-10
-                    transition-transform
+                    flex
+                    h-7
+                    w-7
+                    items-center
+                    justify-center
+                    rounded-full
+                    border
+                    border-[#E9A534]/70
+                    text-[#8E1B24]
+                    transition-all
                     duration-300
-                    group-hover:translate-x-1
+                    group-hover:border-white
+                    group-hover:text-white
+                    md:h-8
+                    md:w-8
                   "
                 >
                   →
@@ -685,14 +697,18 @@ function CTA() {
               Still have questions?{" "}
 
               <a
-                href="tel:9560437360"
+                href="https://wa.me/919560437360"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="
                   text-[#8E1B24]
+                  font-semibold
                   transition-colors
                   hover:text-[#E9A534]
+                  underline decoration-[#E9A534]/50 underline-offset-4
                 "
               >
-                Call us at +91 95604 37360 / 88260 44955
+                Chat with us on WhatsApp
               </a>
 
               {" "}or{" "}

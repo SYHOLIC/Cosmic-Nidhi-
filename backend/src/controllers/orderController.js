@@ -75,31 +75,43 @@ const createOrder = async (req, res) => {
 
         const itemName = item.name || item.product || 'Astrology Product';
         const cleanBase = itemName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-        const autoSku = `CN-${Date.now().toString(36).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
+        const autoSku = `CN-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
 
-        product = await Product.create({
-          name: itemName,
-          slug: `${cleanBase}-${Date.now().toString(36)}`,
-          description: `Authentic ${itemName} curated for astrological harmony and spiritual balance.`,
-          price: item.price || 449,
-          originalPrice: Math.round((item.price || 449) * 1.3),
-          category: defaultCat._id,
-          images: item.image ? [item.image] : [],
-          stock: 999,
-          isActive: true,
-          badge: 'Popular',
-          sku: autoSku,
-          SKU: autoSku,
-        });
+        try {
+          product = await Product.create({
+            name: itemName,
+            slug: `${cleanBase}-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 6)}`,
+            description: `Authentic ${itemName} curated for astrological harmony and spiritual balance.`,
+            price: item.price || 449,
+            originalPrice: Math.round((item.price || 449) * 1.3),
+            category: defaultCat._id,
+            images: item.image ? [item.image] : [],
+            stock: 999,
+            isActive: true,
+            badge: 'Popular',
+            sku: autoSku,
+            SKU: autoSku,
+          });
+        } catch (_) {
+          // If creation collided, pick any existing product or fallback
+          product = await Product.findOne({});
+        }
       }
 
       // Guarantee item.product is a valid MongoDB ObjectId
-      item.product = product._id;
-      item.name = item.name || product.name;
-      item.price = item.price || product.price;
-      item.image = item.image || (product.images && product.images[0]) || '';
+      if (product) {
+        item.product = product._id;
+        item.name = item.name || product.name;
+        item.price = item.price || product.price;
+        item.image = item.image || (product.images && product.images[0]) || '';
+      } else {
+        return res.status(400).json({
+          success: false,
+          message: `Unable to process product item: ${item.name || item.product}`,
+        });
+      }
 
-      if (product.stock < item.quantity) {
+      if (product.stock !== undefined && product.stock < item.quantity) {
         return res.status(400).json({
           success: false,
           message: `Not enough stock for ${product.name}. Available: ${product.stock}`,

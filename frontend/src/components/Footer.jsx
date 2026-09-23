@@ -418,7 +418,7 @@ function Footer() {
               {/* Location */}
               <li>
                 <a
-                  href="https://maps.google.com/?q=A-56/1,+4th+Floor,+A+Block,+Sector+50,+Noida,+Uttar+Pradesh+201301"
+                  href="https://www.google.com/maps/search/?api=1&query=A-56%2F1%2C+4th+Floor%2C+A+Block%2C+Sector+50%2C+Noida%2C+Uttar+Pradesh+201301"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="

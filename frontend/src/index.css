@@ -301,6 +301,7 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
+    overflow-x: clip;
     max-width: 100%;
     width: 100%;
     position: relative;
@@ -308,6 +309,7 @@
 
   #root {
     overflow-x: hidden;
+    overflow-x: clip;
     max-width: 100%;
     width: 100%;
     position: relative;
@@ -354,12 +356,30 @@
   }
 }
 
+@keyframes chakraRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes zodiacRotate {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
   }
 }
 
@@ -384,15 +404,31 @@
 }
 
 .animate-spin {
+  display: inline-block !important;
+  transform-origin: center center !important;
   animation: spin 1s linear infinite !important;
 }
 
 .animate-spin-slow {
-  animation: spin 120s linear infinite !important;
+  display: inline-block !important;
+  transform-origin: center center !important;
+  animation: spin 45s linear infinite !important;
 }
 
 .animate-spin-slower {
-  animation: spin-reverse 160s linear infinite !important;
+  display: inline-block !important;
+  transform-origin: center center !important;
+  animation: spin-reverse 80s linear infinite !important;
+}
+
+.animate-marquee {
+  display: flex !important;
+  width: max-content !important;
+  animation: marquee 30s linear infinite !important;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
 }
 
 /* Static and Legal Page Structured Content */

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import BookingModal from './BookingModal';
+import vastuConsultationImg from '../assets/vastu-consultation.jpg';
 
 const SERVICES = [
   {
@@ -59,7 +60,7 @@ const SERVICES = [
     title: 'Applied Vastu Consultation',
     subtitle: 'Align Your Space. Transform Your Experience.',
     desc: 'Every space has its own character, layout and flow. Our Advanced Vastu Consultation brings together traditional Vastu principles with a structured and practical approach to understanding your home, office or commercial environment.\n\nWe study directions, zones, entrances, room placement, spatial relationships and elemental balance to identify areas that may benefit from thoughtful changes or traditional Vastu remedies.\n\nUnderstand your space. Create greater harmony. Make your environment work for you.',
-    image: 'https://www.grahai.com/images/doshas/mangal-dosha.png',
+    image: vastuConsultationImg,
     accent: '#5A0E14',
     type: 'Vastu',
     deliverables: 'Annotated plan, recommendations, call · Location Visit: ₹5,100 · Map Gridding: ₹12/sq.ft',
@@ -85,24 +86,7 @@ const SERVICES = [
 
 const silk = [0.16, 1, 0.3, 1];
 
-/* ─── Vertical Ticker ─── */
-function VerticalTicker({ text, color }) {
-  return (
-    <div
-      className="absolute right-0 top-0 bottom-0 w-6 flex items-center justify-center overflow-hidden pointer-events-none"
-      style={{ writingMode: 'vertical-rl' }}
-    >
-      <motion.span
-        animate={{ y: [0, -60, 0] }}
-        transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
-        className="text-[9px] tracking-[0.3em] uppercase whitespace-nowrap select-none"
-        style={{ color, opacity: 0.3 }}
-      >
-        {text} · {text} · {text} · {text} · {text} ·
-      </motion.span>
-    </div>
-  );
-}
+
 
 /* ─── Image Panel ─── */
 function ImagePanel({ image, title, accent, side = 'left' }) {

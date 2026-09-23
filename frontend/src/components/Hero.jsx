@@ -62,6 +62,7 @@ function Hero() {
         h-[740px]
         min-h-[740px]
         overflow-hidden
+        overflow-x-clip
         bg-[#170205]
         text-[#FFF7E8]
         lg:h-[calc(100svh-128px)]
@@ -638,7 +639,7 @@ function Hero() {
                   filter:
                     "drop-shadow(0 22px 40px rgba(0,0,0,0.38))",
                   animation:
-                    "chakraRotate 110s linear infinite",
+                    "chakraRotate 45s linear infinite",
                 }}
               />
             </div>

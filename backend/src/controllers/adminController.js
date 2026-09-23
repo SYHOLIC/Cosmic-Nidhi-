@@ -23,10 +23,17 @@ const getStats = async (req, res) => {
       .sort('-createdAt')
       .limit(5);
 
-    const revenue = await Order.aggregate([
+    const orderRevenue = await Order.aggregate([
       { $match: { $or: [{ paymentStatus: 'paid' }, { orderStatus: 'delivered' }] } },
       { $group: { _id: null, total: { $sum: '$totalAmount' } } },
     ]);
+
+    const bookingRevenue = await Booking.aggregate([
+      { $match: { paymentStatus: 'paid' } },
+      { $group: { _id: null, total: { $sum: '$amount' } } },
+    ]);
+
+    const totalRevenue = (orderRevenue[0]?.total || 0) + (bookingRevenue[0]?.total || 0);
 
     res.status(200).json({
       success: true,
@@ -35,7 +42,7 @@ const getStats = async (req, res) => {
         totalProducts,
         totalOrders,
         totalBookings,
-        totalRevenue: revenue[0]?.total || 0,
+        totalRevenue,
       },
       recentOrders,
       recentBookings,

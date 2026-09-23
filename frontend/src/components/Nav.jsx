@@ -6,7 +6,6 @@ import {
   User,
   Shield,
   Phone,
-  Search,
   ChevronDown,
   ArrowRight,
   ShoppingCart,
@@ -294,6 +293,7 @@ function Nav() {
                 <div
                   key={item.label}
                   className="relative group/svc py-3"
+                  onMouseEnter={() => setDesktopServicesOpen(true)}
                   onMouseLeave={() => setDesktopServicesOpen(false)}
                 >
                   <button
@@ -551,20 +551,6 @@ function Nav() {
           ================================================= */}
 
           <div className="flex shrink-0 items-center gap-1.5 sm:gap-2 xl:gap-3">
-            {/* Search */}
-            <button
-              type="button"
-              aria-label="Search"
-              className="
-                hidden h-8 w-8 xl:h-9 xl:w-9 items-center justify-center rounded-full
-                text-[#FFF4E4]/80 transition-all duration-300
-                hover:bg-white/[0.05] hover:text-[#E9C76D]
-                lg:flex
-              "
-            >
-              <Search size={17} strokeWidth={1.45} />
-            </button>
-            
             {/* Cart */}
             <button
               type="button"
@@ -579,7 +565,7 @@ function Nav() {
               className="
                 relative flex h-8 w-8 xl:h-9 xl:w-9 items-center justify-center rounded-full
                 text-[#FFF4E4]/80 transition-all duration-300
-                hover:bg-white/[0.05] hover:text-[#E9C76D]
+                hover:bg-white/[0.05] hover:text-[#E9C76D] cursor-pointer
               "
             >
               <ShoppingCart size={17} strokeWidth={1.45} />
@@ -649,12 +635,13 @@ function Nav() {
                   to="/auth"
                   aria-label="Account Login"
                   className="
-                    flex h-8 w-8 xl:h-9 xl:w-9 items-center justify-center rounded-full
-                    text-white/90 transition-all duration-300
-                    hover:bg-white/10 hover:text-white
+                    flex items-center gap-1.5 rounded-[7px] border border-[#E9A534]/50 bg-white/5
+                    px-2.5 py-1 text-white/90 transition-all duration-300
+                    hover:border-[#E9A534] hover:bg-[#E9A534]/15 hover:text-white
                   "
                 >
-                  <User size={18} strokeWidth={1.75} />
+                  <User size={15} strokeWidth={1.8} />
+                  <span className="font-sans text-[12px] font-semibold tracking-wide">Login</span>
                 </Link>
               )}
             </div>
@@ -667,28 +654,28 @@ function Nav() {
               type="button"
               onClick={() => setIsBookingOpen(true)}
               className="
-                group hidden h-[38px] xl:h-[42px] 2xl:h-[45px] items-center gap-2 xl:gap-2.5 rounded-[8px]
+                group hidden h-[38px] lg:inline-flex xl:h-[42px] items-center gap-1.5 xl:gap-2.5 rounded-[8px]
                 border border-[#D8A948]/75
                 bg-gradient-to-r from-[#EBCB88] via-[#F3D99D] to-[#E4BD6D]
-                px-3 xl:px-4 2xl:px-[18px] font-sans text-[11px] xl:text-[12px] font-bold text-[#3C080D]
+                px-2.5 xl:px-4 font-sans text-[11px] xl:text-[12px] font-bold text-[#3C080D]
                 shadow-[0_8px_24px_rgba(0,0,0,0.15)]
                 transition-all duration-300
                 hover:-translate-y-[1px]
                 hover:shadow-[0_12px_30px_rgba(233,165,52,0.22)]
-                xl:inline-flex shrink-0 whitespace-nowrap cursor-pointer
+                shrink-0 whitespace-nowrap cursor-pointer
               "
             >
               <span className="whitespace-nowrap">Book a Reading</span>
 
               <span
                 className="
-                  flex h-6 w-6 xl:h-6.5 xl:w-6.5 items-center justify-center rounded-full
+                  flex h-5 w-5 xl:h-6 xl:w-6 items-center justify-center rounded-full
                   border border-[#5A0E14]/25 transition-all duration-300
                   group-hover:bg-[#5A0E14]/5
                 "
               >
                 <ArrowRight
-                  size={13}
+                  size={12}
                   strokeWidth={1.8}
                   className="transition-transform duration-300 group-hover:translate-x-0.5"
                 />

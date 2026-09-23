@@ -470,30 +470,30 @@ export default function PitraDoshCalculator() {
                   <label className="block font-sans text-[11.5px] font-bold uppercase tracking-wider text-[#4A3B37] mb-2">
                     WhatsApp Number
                   </label>
-                  <div className="flex items-center rounded-xl border border-gray-200 bg-white px-3 py-1.5 focus-within:border-[#B8380D] focus-within:ring-2 focus-within:ring-[#B8380D]/15 relative">
+                  <div className="flex flex-nowrap items-center rounded-xl border border-gray-200 bg-white px-3 py-1.5 focus-within:border-[#B8380D] focus-within:ring-2 focus-within:ring-[#B8380D]/15 relative">
                     {/* Interactive Country Code Dropdown */}
-                    <div className="relative shrink-0" ref={countryDropdownRef}>
+                    <div className="relative shrink-0 flex-nowrap" ref={countryDropdownRef}>
                       <button
                         type="button"
                         onClick={() => setShowCountryDropdown(!showCountryDropdown)}
-                        className="flex shrink-0 items-center gap-2 border-r border-gray-200 pr-3 mr-3 text-xs font-semibold text-gray-700 hover:text-black focus:outline-none transition-colors cursor-pointer whitespace-nowrap"
+                        className="flex shrink-0 items-center gap-1.5 border-r border-gray-200 pr-2.5 mr-2.5 text-xs font-semibold text-gray-700 hover:text-black focus:outline-none transition-colors cursor-pointer whitespace-nowrap flex-nowrap"
                         title="Change Country Code"
                       >
                         <img
                           src={`https://flagcdn.com/w40/${selectedCountry.short.toLowerCase()}.png`}
                           alt={selectedCountry.country}
-                          className="w-5 h-3.5 object-cover rounded-[2px] shadow-xs border border-gray-100 shrink-0"
+                          className="w-4 h-3 sm:w-5 sm:h-3.5 object-cover rounded-[2px] shadow-xs border border-gray-100 shrink-0"
                           onError={(e) => {
                             e.target.style.display = 'none';
                             if (e.target.nextElementSibling) e.target.nextElementSibling.style.display = 'inline-block';
                           }}
                         />
                         <span className="hidden text-sm leading-none shrink-0">{selectedCountry.flag}</span>
-                        <span className="whitespace-nowrap font-medium text-gray-800">
+                        <span className="whitespace-nowrap font-medium text-gray-800 shrink-0">
                           {selectedCountry.code}
                         </span>
                         <ChevronDown
-                          size={12}
+                          size={11}
                           className={`shrink-0 text-gray-400 transition-transform ${
                             showCountryDropdown ? "rotate-180" : ""
                           }`}
@@ -544,10 +544,11 @@ export default function PitraDoshCalculator() {
 
                     <input
                       type="tel"
+                      inputMode="numeric"
                       value={whatsappNumber}
-                      onChange={(e) => setWhatsappNumber(e.target.value)}
-                      placeholder="Enter your WhatsApp number (e.g. 98765 43210)"
-                      className="w-full min-w-0 font-sans text-sm text-[#2C1210] placeholder-gray-400 outline-none"
+                      onChange={(e) => setWhatsappNumber(e.target.value.replace(/\D/g, '').slice(0, 15))}
+                      placeholder="WhatsApp number (e.g. 9876543210)"
+                      className="w-full min-w-0 font-sans text-xs sm:text-sm text-[#2C1210] placeholder-gray-400 outline-none truncate"
                     />
                   </div>
                 </div>

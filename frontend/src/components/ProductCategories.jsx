@@ -401,6 +401,7 @@ const discountPct = (price, original) => {
 // ============================================================================
 
 function CategoryCard({ category, index }) {
+  const navigate = useNavigate();
   const Icon = category.icon;
 
   return (
@@ -417,6 +418,7 @@ function CategoryCard({ category, index }) {
         once: true,
         margin: "-70px",
       }}
+      onClick={() => navigate(`/products?category=${encodeURIComponent(category.name)}`)}
       className="
         group
         relative
@@ -428,6 +430,7 @@ function CategoryCard({ category, index }) {
         border
         border-[#E9A534]/20
         bg-[#3C080D]
+        cursor-pointer
         shadow-[0_15px_45px_rgba(60,8,13,0.18)]
         sm:h-[310px]
         sm:w-[245px]

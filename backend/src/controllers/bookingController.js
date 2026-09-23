@@ -78,6 +78,32 @@ const createBooking = async (req, res) => {
       });
     }
 
+    const clientName = String(clientDetails?.name || (req.user ? req.user.name : '')).trim();
+    if (!clientName || !/^[a-zA-Z\s]{2,50}$/.test(clientName)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Client Full Name must contain only alphabets and spaces (2 to 50 characters)',
+      });
+    }
+
+    const clientPhone = String(clientDetails?.phone || (req.user ? req.user.phone : '')).trim();
+    if (!clientPhone || !/^\d{10}$/.test(clientPhone)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Phone number must be exactly 10 digits',
+      });
+    }
+
+    if (clientDetails?.partnerName) {
+      const partnerName = String(clientDetails.partnerName).trim();
+      if (!/^[a-zA-Z\s]{2,50}$/.test(partnerName)) {
+        return res.status(400).json({
+          success: false,
+          message: "Partner's Full Name must contain only alphabets and spaces (2 to 50 characters)",
+        });
+      }
+    }
+
     const booking = await Booking.create({
       user: req.user ? req.user._id : undefined,
       serviceType: serviceType || 'birth-chart',

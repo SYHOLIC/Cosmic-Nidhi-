@@ -75,8 +75,15 @@ const updateProfile = async (req, res) => {
       user.phone = cleanPhone;
     }
 
-    if (req.body.name) {
-      user.name = req.body.name.trim();
+    if (req.body.name !== undefined) {
+      const cleanName = String(req.body.name).trim();
+      if (!cleanName || !/^[a-zA-Z\s]{2,50}$/.test(cleanName)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Name must contain only alphabets and spaces (2 to 50 characters)',
+        });
+      }
+      user.name = cleanName;
     }
     
     if (req.body.dateOfBirth) {
@@ -119,6 +126,14 @@ const addAddress = async (req, res) => {
       });
     }
 
+    const cleanName = String(req.body.name || '').trim();
+    if (!cleanName || !/^[a-zA-Z\s]{2,50}$/.test(cleanName)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Name must contain only alphabets and spaces (2 to 50 characters)',
+      });
+    }
+
     if (req.body.phone && !/^\d{10}$/.test(String(req.body.phone).trim())) {
       return res.status(400).json({
         success: false,
@@ -133,7 +148,7 @@ const addAddress = async (req, res) => {
     }
 
     const newAddress = {
-      name: req.body.name,
+      name: cleanName,
       phone: req.body.phone,
       address: req.body.address,
       city: req.body.city,
@@ -204,7 +219,16 @@ const updateAddress = async (req, res) => {
       });
     }
 
-    address.name = req.body.name || address.name;
+    if (req.body.name !== undefined) {
+      const cleanName = String(req.body.name).trim();
+      if (!cleanName || !/^[a-zA-Z\s]{2,50}$/.test(cleanName)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Name must contain only alphabets and spaces (2 to 50 characters)',
+        });
+      }
+      address.name = cleanName;
+    }
     address.phone = req.body.phone || address.phone;
     address.address = req.body.address || address.address;
     address.city = req.body.city || address.city;

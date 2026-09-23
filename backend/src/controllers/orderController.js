@@ -136,6 +136,27 @@ const createOrder = async (req, res) => {
       generatedOrderNumber = `CN-${nextSeq}`;
     }
 
+    if (shippingAddress) {
+      if (shippingAddress.name && !/^[a-zA-Z\s]{2,50}$/.test(String(shippingAddress.name).trim())) {
+        return res.status(400).json({
+          success: false,
+          message: 'Shipping Full Name must contain only alphabets and spaces',
+        });
+      }
+      if (shippingAddress.phone && !/^\d{10}$/.test(String(shippingAddress.phone).trim())) {
+        return res.status(400).json({
+          success: false,
+          message: 'Shipping phone number must be exactly 10 digits',
+        });
+      }
+      if (shippingAddress.pincode && !/^\d{6}$/.test(String(shippingAddress.pincode).trim())) {
+        return res.status(400).json({
+          success: false,
+          message: 'Shipping pincode must be exactly 6 digits',
+        });
+      }
+    }
+
     const order = await Order.create({
       orderNumber: generatedOrderNumber,
       user: req.user.id,

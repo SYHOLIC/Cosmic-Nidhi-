@@ -16,6 +16,21 @@ const register = async (req, res) => {
       });
     }
 
+    const cleanName = String(name).trim();
+    if (!/^[a-zA-Z\s]{2,50}$/.test(cleanName)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Full Name must contain only alphabets and spaces (2 to 50 characters)',
+      });
+    }
+
+    if (phone && !/^\d{10}$/.test(String(phone).trim())) {
+      return res.status(400).json({
+        success: false,
+        message: 'Phone number must be exactly 10 digits',
+      });
+    }
+
     const normalizedEmail = email.toLowerCase().trim();
 
     // Check if user already exists

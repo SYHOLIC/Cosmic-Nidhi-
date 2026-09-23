@@ -213,10 +213,29 @@ function CalculatorModal({ calculator, isOpen, onClose }) {
   if (!isOpen) return null;
 
   const handleInputChange = (field, value) => {
-    setFormData({ ...formData, [field]: value });
+    let sanitized = value;
+    const lower = field.toLowerCase();
+    if (lower.includes('name')) {
+      sanitized = sanitized.replace(/[^a-zA-Z\s]/g, "");
+    } else if (lower.includes('phone') || lower.includes('mobile')) {
+      sanitized = sanitized.replace(/\D/g, "").slice(0, 10);
+    } else if (lower.includes('pincode') || lower.includes('pin code')) {
+      sanitized = sanitized.replace(/\D/g, "").slice(0, 6);
+    }
+    setFormData({ ...formData, [field]: sanitized });
   };
 
   const handleCalculate = () => {
+    // Validate any name field present
+    for (const field of calculator.fields) {
+      if (field.toLowerCase().includes('name')) {
+        const val = String(formData[field] || '').trim();
+        if (val && !/^[a-zA-Z\s]{2,50}$/.test(val)) {
+          alert(`${field} must contain only alphabets (at least 2 letters).`);
+          return;
+        }
+      }
+    }
     setLoading(true);
     // Simulate calculation
     setTimeout(() => {

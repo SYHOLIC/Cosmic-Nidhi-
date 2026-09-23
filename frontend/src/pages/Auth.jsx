@@ -86,7 +86,13 @@ export default function AuthPage() {
   }, [isVerifyingOTP, otpTimer]);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    let val = e.target.value;
+    if (e.target.name === "name") {
+      val = val.replace(/[^a-zA-Z\s]/g, "");
+    } else if (e.target.name === "phone") {
+      val = val.replace(/\D/g, "").slice(0, 10);
+    }
+    setFormData({ ...formData, [e.target.name]: val });
     if (errors[e.target.name]) {
       setErrors({ ...errors, [e.target.name]: "" });
     }
@@ -95,7 +101,14 @@ export default function AuthPage() {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!isLogin && !formData.name) newErrors.name = "Full name is required";
+    if (!isLogin) {
+      const cleanName = String(formData.name || "").trim();
+      if (!cleanName) newErrors.name = "Full name is required";
+      else if (!/^[a-zA-Z\s]{2,50}$/.test(cleanName))
+        newErrors.name = "Full name must contain only alphabets (minimum 2 letters)";
+      if (formData.phone && !/^\d{10}$/.test(String(formData.phone).trim()))
+        newErrors.phone = "Phone number must be exactly 10 digits";
+    }
     if (!formData.email) newErrors.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Email is invalid";
     if (!formData.password) newErrors.password = "Password is required";

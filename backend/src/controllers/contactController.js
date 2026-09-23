@@ -8,8 +8,16 @@ exports.submitContact = async (req, res) => {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
 
+    const cleanName = String(name).trim();
+    if (!/^[a-zA-Z\s]{2,50}$/.test(cleanName)) {
+      return res.status(400).json({
+        success: false,
+        message: "Name must contain only alphabets and spaces (2 to 50 characters)",
+      });
+    }
+
     const newMessage = await Message.create({
-      name,
+      name: cleanName,
       email,
       subject,
       message

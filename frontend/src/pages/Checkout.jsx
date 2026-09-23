@@ -102,6 +102,10 @@ export default function CheckoutPage() {
 
   const handleAddAddress = async (e) => {
     e.preventDefault();
+    if (!/^[a-zA-Z\s]{2,50}$/.test(addressForm.name.trim())) {
+      alert("Please enter a valid Full Name (letters and spaces only, at least 2 characters).");
+      return;
+    }
     if (!/^\d{10}$/.test(addressForm.phone.trim())) {
       alert("Please enter a valid 10-digit phone number.");
       return;
@@ -433,7 +437,7 @@ export default function CheckoutPage() {
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="col-span-2 sm:col-span-1">
                       <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#5A0E14]/70">Full Name</label>
-                      <input type="text" required value={addressForm.name} onChange={e => setAddressForm({...addressForm, name: e.target.value})} className="w-full rounded-[6px] border border-[#5A0E14]/20 p-2.5 text-[13px] focus:border-[#E9A534] focus:outline-none" />
+                      <input type="text" required value={addressForm.name} onChange={e => setAddressForm({...addressForm, name: e.target.value.replace(/[^a-zA-Z\s]/g, "")})} className="w-full rounded-[6px] border border-[#5A0E14]/20 p-2.5 text-[13px] focus:border-[#E9A534] focus:outline-none" />
                     </div>
                     <div className="col-span-2 sm:col-span-1">
                       <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#5A0E14]/70">Phone (10 digits)</label>
@@ -455,11 +459,11 @@ export default function CheckoutPage() {
                     </div>
                     <div className="col-span-2 sm:col-span-1">
                       <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#5A0E14]/70">City</label>
-                      <input type="text" required value={addressForm.city} onChange={e => setAddressForm({...addressForm, city: e.target.value})} className="w-full rounded-[6px] border border-[#5A0E14]/20 p-2.5 text-[13px] focus:border-[#E9A534] focus:outline-none" />
+                      <input type="text" required value={addressForm.city} onChange={e => setAddressForm({...addressForm, city: e.target.value.replace(/[^a-zA-Z\s]/g, "")})} className="w-full rounded-[6px] border border-[#5A0E14]/20 p-2.5 text-[13px] focus:border-[#E9A534] focus:outline-none" />
                     </div>
                     <div className="col-span-2 sm:col-span-1">
                       <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#5A0E14]/70">State</label>
-                      <input type="text" required value={addressForm.state} onChange={e => setAddressForm({...addressForm, state: e.target.value})} className="w-full rounded-[6px] border border-[#5A0E14]/20 p-2.5 text-[13px] focus:border-[#E9A534] focus:outline-none" />
+                      <input type="text" required value={addressForm.state} onChange={e => setAddressForm({...addressForm, state: e.target.value.replace(/[^a-zA-Z\s]/g, "")})} className="w-full rounded-[6px] border border-[#5A0E14]/20 p-2.5 text-[13px] focus:border-[#E9A534] focus:outline-none" />
                     </div>
                     <div className="col-span-2 sm:col-span-1">
                       <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#5A0E14]/70">Pincode (6 digits)</label>

@@ -20,16 +20,27 @@ export default function Contact() {
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    let val = e.target.value;
+    if (e.target.name === "name") {
+      val = val.replace(/[^a-zA-Z\s]/g, "");
+    }
+    setFormData({ ...formData, [e.target.name]: val });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const cleanName = String(formData.name || "").trim();
+    if (!cleanName || !/^[a-zA-Z\s]{2,50}$/.test(cleanName)) {
+      const msg = "Please enter a valid Name (letters and spaces only, at least 2 characters).";
+      setError(msg);
+      toast.error(msg);
+      return;
+    }
     setLoading(true);
     setError("");
 
     try {
-      const res = await axios.post(`${API_URL}/contact`, formData);
+      const res = await axios.post(`${API_URL}/contact`, { ...formData, name: cleanName });
       if (res.data.success) {
         setSubmitted(true);
         toast.success("Thank you! Your message has been sent successfully.");

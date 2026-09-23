@@ -775,6 +775,11 @@ function ProfileTab({ user, onUpdate }) {
 
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
+    const cleanName = String(profileForm.name || "").trim();
+    if (!cleanName || !/^[a-zA-Z\s]{2,50}$/.test(cleanName)) {
+      toast.error("Please enter a valid Full Name (letters and spaces only, at least 2 characters).");
+      return;
+    }
     const cleanPhone = String(profileForm.phone || "").trim();
     if (cleanPhone && !/^\d{10}$/.test(cleanPhone)) {
       toast.error("Please enter a valid 10-digit mobile number.");
@@ -783,7 +788,7 @@ function ProfileTab({ user, onUpdate }) {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      await axios.put(`${API_URL}/users/profile`, { ...profileForm, phone: cleanPhone }, {
+      await axios.put(`${API_URL}/users/profile`, { ...profileForm, name: cleanName, phone: cleanPhone }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setEditingProfile(false);
@@ -799,6 +804,11 @@ function ProfileTab({ user, onUpdate }) {
 
   const handleAddressSubmit = async (e) => {
     e.preventDefault();
+    const cleanName = String(addressForm.name || "").trim();
+    if (!cleanName || !/^[a-zA-Z\s]{2,50}$/.test(cleanName)) {
+      toast.error("Please enter a valid Name (letters and spaces only, at least 2 characters).");
+      return;
+    }
     if (!/^\d{10}$/.test(String(addressForm.phone || "").trim())) {
       toast.error("Please enter a valid 10-digit phone number.");
       return;
@@ -904,7 +914,7 @@ function ProfileTab({ user, onUpdate }) {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <label className="mb-1.5 block font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/80">Name</label>
-                <input type="text" required value={profileForm.name} onChange={e => setProfileForm({...profileForm, name: e.target.value})} className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-[#FFFDF9] px-3.5 py-2.5 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534]/60 focus:outline-none" />
+                <input type="text" required value={profileForm.name} onChange={e => setProfileForm({...profileForm, name: e.target.value.replace(/[^a-zA-Z\s]/g, "")})} className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-[#FFFDF9] px-3.5 py-2.5 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534]/60 focus:outline-none" />
               </div>
               <div>
                 <label className="mb-1.5 block font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/80">Phone (10 digits)</label>
@@ -1020,7 +1030,7 @@ function ProfileTab({ user, onUpdate }) {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/80">Name</label>
-                  <input required type="text" value={addressForm.name} onChange={e => setAddressForm({...addressForm, name: e.target.value})} className="w-full rounded-[7px] border border-[#5A0E14]/15 px-3 py-2 text-[13px] focus:border-[#E9A534]/60 focus:outline-none" />
+                  <input required type="text" value={addressForm.name} onChange={e => setAddressForm({...addressForm, name: e.target.value.replace(/[^a-zA-Z\s]/g, "")})} className="w-full rounded-[7px] border border-[#5A0E14]/15 px-3 py-2 text-[13px] focus:border-[#E9A534]/60 focus:outline-none" />
                 </div>
                 <div>
                   <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/80">Phone (10 digits)</label>
@@ -1044,11 +1054,11 @@ function ProfileTab({ user, onUpdate }) {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/80">City</label>
-                  <input required type="text" value={addressForm.city} onChange={e => setAddressForm({...addressForm, city: e.target.value})} className="w-full rounded-[7px] border border-[#5A0E14]/15 px-3 py-2 text-[13px] focus:border-[#E9A534]/60 focus:outline-none" />
+                  <input required type="text" value={addressForm.city} onChange={e => setAddressForm({...addressForm, city: e.target.value.replace(/[^a-zA-Z\s]/g, "")})} className="w-full rounded-[7px] border border-[#5A0E14]/15 px-3 py-2 text-[13px] focus:border-[#E9A534]/60 focus:outline-none" />
                 </div>
                 <div>
                   <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/80">State</label>
-                  <input required type="text" value={addressForm.state} onChange={e => setAddressForm({...addressForm, state: e.target.value})} className="w-full rounded-[7px] border border-[#5A0E14]/15 px-3 py-2 text-[13px] focus:border-[#E9A534]/60 focus:outline-none" />
+                  <input required type="text" value={addressForm.state} onChange={e => setAddressForm({...addressForm, state: e.target.value.replace(/[^a-zA-Z\s]/g, "")})} className="w-full rounded-[7px] border border-[#5A0E14]/15 px-3 py-2 text-[13px] focus:border-[#E9A534]/60 focus:outline-none" />
                 </div>
               </div>
               <div>

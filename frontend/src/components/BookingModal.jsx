@@ -239,6 +239,14 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
       return;
     }
 
+    // Validate client name: strictly alphabets and spaces only
+    const cleanedName = String(clientDetails.name || "").trim();
+    if (!cleanedName || !/^[a-zA-Z\s]{2,50}$/.test(cleanedName)) {
+      setErrorMsg("Please enter a valid Full Name (letters and spaces only, at least 2 characters).");
+      setLoading(false);
+      return;
+    }
+
     // Validate time slot: must not have already passed
     if (isSlotPassed(selectedTime, selectedDate)) {
       setErrorMsg("The selected time slot has already passed today. Please choose a future slot.");
@@ -257,8 +265,8 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
     const isVastu = activeService.type.startsWith("vastu");
 
     if (isMatching) {
-      if (!clientDetails.name?.trim()) {
-        setErrorMsg("Bride's Full Name is required for matching.");
+      if (!clientDetails.name?.trim() || !/^[a-zA-Z\s]{2,50}$/.test(clientDetails.name.trim())) {
+        setErrorMsg("Bride's Full Name must contain only alphabets (minimum 2 characters).");
         setLoading(false);
         return;
       }
@@ -267,8 +275,8 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
         setLoading(false);
         return;
       }
-      if (!clientDetails.partnerName?.trim()) {
-        setErrorMsg("Groom's Full Name is required for matching.");
+      if (!clientDetails.partnerName?.trim() || !/^[a-zA-Z\s]{2,50}$/.test(clientDetails.partnerName.trim())) {
+        setErrorMsg("Groom's Full Name must contain only alphabets (minimum 2 characters).");
         setLoading(false);
         return;
       }
@@ -725,7 +733,7 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
                             placeholder="e.g. Priya Sharma"
                             value={clientDetails.name}
                             onChange={(e) =>
-                              setClientDetails({ ...clientDetails, name: e.target.value })
+                              setClientDetails({ ...clientDetails, name: e.target.value.replace(/[^a-zA-Z\s]/g, "") })
                             }
                             className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
                           />
@@ -790,7 +798,7 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
                             placeholder="e.g. Rahul Verma"
                             value={clientDetails.partnerName}
                             onChange={(e) =>
-                              setClientDetails({ ...clientDetails, partnerName: e.target.value })
+                              setClientDetails({ ...clientDetails, partnerName: e.target.value.replace(/[^a-zA-Z\s]/g, "") })
                             }
                             className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
                           />
@@ -900,7 +908,7 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
                               placeholder="e.g. Priya Sharma"
                               value={clientDetails.name}
                               onChange={(e) =>
-                                setClientDetails({ ...clientDetails, name: e.target.value })
+                                setClientDetails({ ...clientDetails, name: e.target.value.replace(/[^a-zA-Z\s]/g, "") })
                               }
                               className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
                             />

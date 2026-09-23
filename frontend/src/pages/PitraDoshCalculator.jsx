@@ -171,8 +171,8 @@ export default function PitraDoshCalculator() {
     e.preventDefault();
     setError(null);
 
-    if (!fullName.trim()) {
-      setError("Please enter your full name.");
+    if (!fullName.trim() || !/^[a-zA-Z\s]{2,50}$/.test(fullName.trim())) {
+      setError("Please enter a valid full name (letters and spaces only, at least 2 characters).");
       return;
     }
     if (!dateOfBirth) {
@@ -326,7 +326,7 @@ export default function PitraDoshCalculator() {
                     type="text"
                     required
                     value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
+                    onChange={(e) => setFullName(e.target.value.replace(/[^a-zA-Z\s]/g, ""))}
                     placeholder="Enter your full name"
                     className="w-full rounded-xl border border-gray-200 bg-white px-3.5 py-3 sm:px-4 sm:py-3.5 font-sans text-sm text-[#2C1210] placeholder-gray-400 outline-none transition-all focus:border-[#B8380D] focus:ring-2 focus:ring-[#B8380D]/15"
                   />

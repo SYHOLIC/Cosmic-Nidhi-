@@ -398,15 +398,27 @@ function TopBar({ activeTab, setActiveTab, onMenuClick, handleLogout, orders, bo
    TAB: OVERVIEW
 ================================================================ */
 
-function OverviewTab({ orders, bookings }) {
+function OverviewTab({ orders, bookings, recentMessages = [], onSelectTab }) {
   return (
-    <div className="grid gap-5 md:grid-cols-2">
-      <section className="rounded-[9px] border border-[#5A0E14]/12 bg-[#FFFDF9] p-5">
-        <div className="mb-4 flex items-center gap-3">
-          <span className="h-px w-6 bg-[#E9A534]" />
-          <p className="font-sans text-[10px] font-bold uppercase tracking-[0.24em] text-[#8A5A1F]">
-            Recent Orders
-          </p>
+    <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {/* 1. Recent Orders */}
+      <section className="rounded-[9px] border border-[#5A0E14]/12 bg-[#FFFDF9] p-5 shadow-[0_4px_16px_rgba(60,8,13,0.03)]">
+        <div className="mb-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="h-px w-6 bg-[#E9A534]" />
+            <p className="font-sans text-[10px] font-bold uppercase tracking-[0.24em] text-[#8A5A1F]">
+              Recent Orders
+            </p>
+          </div>
+          {onSelectTab && (
+            <button
+              type="button"
+              onClick={() => onSelectTab("orders")}
+              className="font-sans text-[10px] font-bold uppercase tracking-wider text-[#A2691F] hover:text-[#5A0E14] flex items-center gap-0.5"
+            >
+              View All <ChevronRight size={10} />
+            </button>
+          )}
         </div>
 
         <div className="space-y-2">
@@ -419,7 +431,8 @@ function OverviewTab({ orders, bookings }) {
             return (
               <div
                 key={order._id}
-                className="flex items-center justify-between gap-3 rounded-[7px] border border-[#5A0E14]/12 bg-[#FDECC8]/30 p-3 transition-all duration-300 hover:border-[#E9A534]/50"
+                onClick={() => onSelectTab?.("orders")}
+                className="cursor-pointer flex items-center justify-between gap-3 rounded-[7px] border border-[#5A0E14]/12 bg-[#FDECC8]/30 p-3 transition-all duration-300 hover:border-[#E9A534]/50 hover:bg-[#FDECC8]/50"
               >
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
@@ -455,26 +468,39 @@ function OverviewTab({ orders, bookings }) {
         </div>
       </section>
 
-      <section className="rounded-[9px] border border-[#5A0E14]/12 bg-[#FFFDF9] p-5">
-        <div className="mb-4 flex items-center gap-3">
-          <span className="h-px w-6 bg-[#E9A534]" />
-          <p className="font-sans text-[10px] font-bold uppercase tracking-[0.24em] text-[#8A5A1F]">
-            Recent Bookings
-          </p>
+      {/* 2. Recent Bookings */}
+      <section className="rounded-[9px] border border-[#5A0E14]/12 bg-[#FFFDF9] p-5 shadow-[0_4px_16px_rgba(60,8,13,0.03)]">
+        <div className="mb-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="h-px w-6 bg-[#E9A534]" />
+            <p className="font-sans text-[10px] font-bold uppercase tracking-[0.24em] text-[#8A5A1F]">
+              Recent Bookings
+            </p>
+          </div>
+          {onSelectTab && (
+            <button
+              type="button"
+              onClick={() => onSelectTab("bookings")}
+              className="font-sans text-[10px] font-bold uppercase tracking-wider text-[#A2691F] hover:text-[#5A0E14] flex items-center gap-0.5"
+            >
+              View All <ChevronRight size={10} />
+            </button>
+          )}
         </div>
 
         <div className="space-y-2">
           {bookings.slice(0, 5).map((booking) => (
             <div
               key={booking._id}
-              className="flex items-center justify-between gap-3 rounded-[7px] border border-[#5A0E14]/12 bg-[#FDECC8]/30 p-3 transition-all duration-300 hover:border-[#E9A534]/50"
+              onClick={() => onSelectTab?.("bookings")}
+              className="cursor-pointer flex items-center justify-between gap-3 rounded-[7px] border border-[#5A0E14]/12 bg-[#FDECC8]/30 p-3 transition-all duration-300 hover:border-[#E9A534]/50 hover:bg-[#FDECC8]/50"
             >
               <div className="min-w-0">
                 <p className="truncate font-display text-[13px] font-semibold text-[#3C080D]">
                   {booking.serviceName}
                 </p>
                 <p className="mt-0.5 truncate font-sans text-[11px] text-[#6B3A2A]/70">
-                  {booking.user?.name || "Unknown"}
+                  {booking.clientDetails?.name || booking.user?.name || "Client"}
                 </p>
               </div>
               <StatusPill status={booking.status} />
@@ -485,6 +511,71 @@ function OverviewTab({ orders, bookings }) {
             <div className="rounded-[7px] border border-dashed border-[#5A0E14]/20 bg-[#FDECC8]/20 py-8 text-center">
               <p className="font-sans text-[11px] text-[#5A0E14]/50">
                 No bookings yet.
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* 3. Recent Contact Inquiries */}
+      <section className="rounded-[9px] border border-[#5A0E14]/12 bg-[#FFFDF9] p-5 shadow-[0_4px_16px_rgba(60,8,13,0.03)] md:col-span-2 lg:col-span-1">
+        <div className="mb-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="h-px w-6 bg-[#E9A534]" />
+            <p className="font-sans text-[10px] font-bold uppercase tracking-[0.24em] text-[#8A5A1F]">
+              Recent Inquiries
+            </p>
+          </div>
+          {onSelectTab && (
+            <button
+              type="button"
+              onClick={() => onSelectTab("messages")}
+              className="font-sans text-[10px] font-bold uppercase tracking-wider text-[#A2691F] hover:text-[#5A0E14] flex items-center gap-0.5"
+            >
+              View All <ChevronRight size={10} />
+            </button>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          {recentMessages.slice(0, 5).map((msg) => (
+            <div
+              key={msg._id}
+              onClick={() => onSelectTab?.("messages")}
+              className="cursor-pointer rounded-[7px] border border-[#5A0E14]/12 bg-[#FDECC8]/30 p-3 transition-all duration-300 hover:border-[#E9A534]/50 hover:bg-[#FDECC8]/50"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <p className="truncate font-display text-[13px] font-semibold text-[#3C080D]">
+                  {msg.name}
+                </p>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <span className="font-sans text-[10px] text-[#8A5A1F]">
+                    {formatRelativeOrderAge(msg.createdAt)}
+                  </span>
+                  {!msg.isRead ? (
+                    <span className="rounded bg-[#C1272D] px-1.5 py-0.2 font-sans text-[8px] font-bold uppercase tracking-wider text-white">
+                      New
+                    </span>
+                  ) : (
+                    <span className="rounded bg-green-100 px-1.5 py-0.2 font-sans text-[8px] font-semibold text-green-700">
+                      Read
+                    </span>
+                  )}
+                </div>
+              </div>
+              <p className="mt-0.5 truncate font-sans text-[11px] font-medium text-[#5A0E14]">
+                {msg.subject || "(No Subject)"}
+              </p>
+              <p className="mt-0.5 line-clamp-1 font-sans text-[11px] text-[#6B3A2A]/70">
+                {msg.message}
+              </p>
+            </div>
+          ))}
+
+          {recentMessages.length === 0 && (
+            <div className="rounded-[7px] border border-dashed border-[#5A0E14]/20 bg-[#FDECC8]/20 py-8 text-center">
+              <p className="font-sans text-[11px] text-[#5A0E14]/50">
+                No inquiries yet.
               </p>
             </div>
           )}
@@ -1002,6 +1093,7 @@ export default function AdminPage() {
   const [users, setUsers] = useState([]);
   const [orders, setOrders] = useState([]);
   const [bookings, setBookings] = useState([]);
+  const [recentMessages, setRecentMessages] = useState([]);
   const [activeTab, setActiveTab] = useState("overview");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -1038,6 +1130,7 @@ export default function AdminPage() {
       setUsers(usersRes.data.users);
       setOrders(ordersRes.data.orders);
       setBookings(bookingsRes.data.bookings);
+      setRecentMessages(statsRes.data.recentMessages || []);
     } catch (error) {
       console.error("Error fetching admin data:", error);
     } finally {
@@ -1184,7 +1277,12 @@ export default function AdminPage() {
 
           <div className="mt-5">
             {activeTab === "overview" && (
-              <OverviewTab orders={orders} bookings={bookings} />
+              <OverviewTab
+                orders={orders}
+                bookings={bookings}
+                recentMessages={recentMessages}
+                onSelectTab={setActiveTab}
+              />
             )}
             {activeTab === "users" && (
               <UsersTab

@@ -26,6 +26,10 @@ const getStats = async (req, res) => {
       .sort('-createdAt')
       .limit(5);
 
+    const recentMessages = await Message.find()
+      .sort('-createdAt')
+      .limit(5);
+
     const orderRevenue = await Order.aggregate([
       { $match: { $or: [{ paymentStatus: 'paid' }, { orderStatus: 'delivered' }] } },
       { $group: { _id: null, total: { $sum: '$totalAmount' } } },
@@ -51,6 +55,7 @@ const getStats = async (req, res) => {
       },
       recentOrders,
       recentBookings,
+      recentMessages,
     });
   } catch (error) {
     res.status(500).json({

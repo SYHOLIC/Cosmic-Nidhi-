@@ -353,6 +353,16 @@ export default function AdminNotifications({ onSelectTab, fallbackOrders = [], f
               >
                 <Calendar size={11} /> Bookings
               </button>
+              <button
+                type="button"
+                onClick={() => {
+                  onSelectTab?.("messages");
+                  setIsOpen(false);
+                }}
+                className="font-sans text-[10px] font-bold uppercase tracking-[0.12em] text-[#8A5A1F] hover:text-[#5A0E14] transition-colors flex items-center gap-1"
+              >
+                <Mail size={11} /> Messages
+              </button>
             </div>
           </motion.div>
         )}

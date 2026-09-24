@@ -9,6 +9,7 @@ import {
   ChevronDown,
   ArrowRight,
   ShoppingCart,
+  Sparkles,
 } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import BookingModal from "./BookingModal";
@@ -584,7 +585,7 @@ function Nav() {
               <Link
                 to="/pitra-dosh-calculator"
                 className="
-                  group flex items-center gap-1.5 rounded-[8px]
+                  group hidden lg:flex items-center gap-1.5 rounded-[8px]
                   border border-white/85 bg-transparent
                   px-2.5 py-1 font-sans
                   text-white transition-all duration-300
@@ -713,18 +714,18 @@ function Nav() {
               aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={mobileMenuOpen}
               className="
-                flex h-[39px] w-[39px] items-center justify-center rounded-full
-                border border-white/10 bg-white/[0.04] text-[#FFF4E4]
+                flex h-[39px] w-[39px] shrink-0 items-center justify-center rounded-full
+                border border-[#E9A534]/40 bg-white/[0.08] text-[#FFF4E4]
                 transition-all duration-300
-                hover:border-[#E9A534]/40
+                hover:border-[#E9A534]
                 hover:text-[#E9C76D]
-                lg:hidden
+                lg:hidden cursor-pointer
               "
             >
               {mobileMenuOpen ? (
-                <X size={19} strokeWidth={1.5} />
+                <X size={19} strokeWidth={1.8} />
               ) : (
-                <Menu size={19} strokeWidth={1.5} />
+                <Menu size={19} strokeWidth={1.8} />
               )}
             </button>
           </div>
@@ -752,6 +753,37 @@ function Nav() {
         >
           <div className="mx-auto max-w-[1450px] px-5 pb-6 pt-2 sm:px-7">
             <div className="flex flex-col">
+              {/* Featured: Pitra Dosh Calculator (Mobile Menu Card) */}
+              <Link
+                to="/pitra-dosh-calculator"
+                onClick={closeMobileMenu}
+                className="
+                  mb-3 mt-1 flex items-center justify-between rounded-[10px]
+                  border border-[#E9A534]/50 bg-gradient-to-r from-[#5A0E14] via-[#3C080D] to-[#210307]
+                  p-3 text-white shadow-lg transition-all
+                  hover:border-[#E9A534] hover:bg-[#5A0E14]
+                "
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#E9A534]/20 text-[#E9C76D] ring-1 ring-[#E9A534]/40">
+                    <Sparkles size={15} />
+                  </span>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-sans text-[13.5px] font-bold text-[#FFF8EC] truncate">
+                        Pitra Dosh Calculator
+                      </span>
+                      <span className="rounded-[4px] bg-[#7EA326] px-1.5 py-0.2 text-[8.5px] font-bold uppercase tracking-wider text-white shadow-sm leading-none shrink-0">
+                        NEW
+                      </span>
+                    </div>
+                    <p className="font-sans text-[11px] text-[#E9C76D]/80 truncate">
+                      Check ancestral karmic afflictions in Kundali
+                    </p>
+                  </div>
+                </div>
+                <ArrowRight size={15} className="text-[#E9A534] shrink-0 ml-2" />
+              </Link>
               {navItems.map((item, index) =>
                 item.dropdown === "services" ? (
                   <div key={item.label} className="border-b border-[#E9A534]/[0.08] py-2">

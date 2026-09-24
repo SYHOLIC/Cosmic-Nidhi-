@@ -12,6 +12,7 @@ import {
   Sparkles,
   Clock,
   Package,
+  Mail,
 } from "lucide-react";
 import { API_URL } from "../../config/api";
 
@@ -220,6 +221,7 @@ export default function AdminNotifications({ onSelectTab, fallbackOrders = [], f
                 { id: "all", label: "All" },
                 { id: "order", label: "Orders" },
                 { id: "booking", label: "Bookings" },
+                { id: "message", label: "Messages" },
                 { id: "alert", label: "Alerts" },
               ].map((t) => (
                 <button
@@ -269,6 +271,10 @@ export default function AdminNotifications({ onSelectTab, fallbackOrders = [], f
                     Icon = Calendar;
                     iconBg = "bg-[#E9A534]/15 text-[#8A5A1F]";
                     badgeBg = n.status === "confirmed" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800";
+                  } else if (n.type === "message") {
+                    Icon = Mail;
+                    iconBg = "bg-[#8A5A1F]/15 text-[#8A5A1F]";
+                    badgeBg = n.status === "unread" ? "bg-amber-100 text-amber-800" : "bg-green-100 text-green-800";
                   } else if (n.type === "alert") {
                     Icon = AlertTriangle;
                     iconBg = "bg-[#C1272D]/10 text-[#C1272D]";

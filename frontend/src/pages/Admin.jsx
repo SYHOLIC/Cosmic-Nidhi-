@@ -43,6 +43,7 @@ import ReviewTab from "../components/admin/ReviewTab";
 import SeoTab from "../components/admin/SeoTab";
 import PageTab from "../components/admin/PageTab";
 import BookingTab from "../components/admin/BookingTab";
+import MessageTab from "../components/admin/MessageTab";
 import AdminNotifications from "../components/admin/AdminNotifications";
 
 import { API_URL } from "../config/api";
@@ -56,6 +57,7 @@ const NAV_ITEMS = [
   { id: "users", label: "Users", icon: Users },
   { id: "orders", label: "Orders", icon: ShoppingBag },
   { id: "bookings", label: "Bookings", icon: Calendar },
+  { id: "messages", label: "Messages", icon: Mail },
   { id: "categories", label: "Categories", icon: FolderTree },
   { id: "products", label: "Products", icon: Package },
   { id: "coupons", label: "Coupons", icon: DollarSign },
@@ -69,6 +71,7 @@ const TAB_LABELS = {
   users: "Users",
   orders: "Orders",
   bookings: "Bookings",
+  messages: "Messages",
   categories: "Categories",
   products: "Products",
   coupons: "Coupons",
@@ -153,13 +156,14 @@ function formatRelativeOrderAge(dateString) {
    STAT CARD
 ================================================================ */
 
-function StatCard({ label, value, icon: Icon }) {
+function StatCard({ label, value, icon: Icon, onClick, highlight }) {
   return (
     <motion.div
+      onClick={onClick}
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      className="
+      className={`
         group relative overflow-hidden
         rounded-[7px] border border-[#5A0E14]/12
         bg-[#FFFDF9] p-4
@@ -168,7 +172,9 @@ function StatCard({ label, value, icon: Icon }) {
         hover:-translate-y-0.5
         hover:border-[#E9A534]/45
         hover:shadow-[0_14px_32px_rgba(60,8,13,0.10)]
-      "
+        ${onClick ? "cursor-pointer" : ""}
+        ${highlight ? "border-[#E9A534]/60 ring-1 ring-[#E9A534]/40" : ""}
+      `}
     >
       <span className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-[#E9A534]/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
@@ -1122,13 +1128,23 @@ export default function AdminPage() {
   }
 
   const statItems = [
-    { label: "Total Users", value: stats.totalUsers, icon: Users },
-    { label: "Products", value: stats.totalProducts, icon: Package },
-    { label: "Orders", value: stats.totalOrders, icon: ShoppingBag },
-    { label: "Bookings", value: stats.totalBookings, icon: Calendar },
+    { label: "Total Users", value: stats.totalUsers ?? 0, icon: Users, tab: "users" },
+    { label: "Products", value: stats.totalProducts ?? 0, icon: Package, tab: "products" },
+    { label: "Orders", value: stats.totalOrders ?? 0, icon: ShoppingBag, tab: "orders" },
+    { label: "Bookings", value: stats.totalBookings ?? 0, icon: Calendar, tab: "bookings" },
+    {
+      label: "Messages",
+      value:
+        stats.unreadMessages > 0
+          ? `${stats.unreadMessages} New`
+          : stats.totalMessages ?? 0,
+      icon: Mail,
+      tab: "messages",
+      highlight: stats.unreadMessages > 0,
+    },
     {
       label: "Revenue",
-      value: `₹${stats.totalRevenue.toLocaleString()}`,
+      value: `₹${(stats.totalRevenue || 0).toLocaleString()}`,
       icon: DollarSign,
     },
   ];
@@ -1156,9 +1172,13 @@ export default function AdminPage() {
         />
 
         <main className="px-4 py-5 sm:px-6 sm:py-6">
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
             {statItems.map((stat) => (
-              <StatCard key={stat.label} {...stat} />
+              <StatCard
+                key={stat.label}
+                {...stat}
+                onClick={stat.tab ? () => setActiveTab(stat.tab) : undefined}
+              />
             ))}
           </div>
 
@@ -1184,6 +1204,7 @@ export default function AdminPage() {
                 onRefreshBookings={fetchAdminData}
               />
             )}
+            {activeTab === "messages" && <MessageTab />}
             {activeTab === "categories" && <CategoryTab />}
             {activeTab === "products" && <ProductTab />}
             {activeTab === "coupons" && <CouponTab />}

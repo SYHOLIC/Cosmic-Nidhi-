@@ -2,6 +2,7 @@ const User = require('../models/User');
 const Product = require('../models/Product');
 const Order = require('../models/Order');
 const Booking = require('../models/Booking');
+const Message = require('../models/Message');
 
 // @desc    Get admin dashboard stats
 // @route   GET /api/admin/stats
@@ -12,6 +13,8 @@ const getStats = async (req, res) => {
     const totalProducts = await Product.countDocuments();
     const totalOrders = await Order.countDocuments();
     const totalBookings = await Booking.countDocuments();
+    const totalMessages = await Message.countDocuments();
+    const unreadMessages = await Message.countDocuments({ isRead: false });
 
     const recentOrders = await Order.find()
       .populate('user', 'name email')
@@ -42,6 +45,8 @@ const getStats = async (req, res) => {
         totalProducts,
         totalOrders,
         totalBookings,
+        totalMessages,
+        unreadMessages,
         totalRevenue,
       },
       recentOrders,
@@ -225,7 +230,24 @@ const getNotifications = async (req, res) => {
       });
     }
 
-    // 3. Low stock products (stock <= 5)
+    // 3. Recent Inquiries / Contact Messages (last 10)
+    const recentMessages = await Message.find()
+      .sort('-createdAt')
+      .limit(10);
+
+    for (const msg of recentMessages) {
+      notifications.push({
+        id: `msg_${msg._id}`,
+        type: 'message',
+        title: `Inquiry: ${msg.subject || 'Contact Us'}`,
+        message: `${msg.name} (${msg.email}): ${msg.message?.length > 90 ? msg.message.slice(0, 90) + '...' : msg.message}`,
+        status: msg.isRead ? 'read' : 'unread',
+        createdAt: msg.createdAt,
+        linkTab: 'messages',
+      });
+    }
+
+    // 4. Low stock products (stock <= 5)
     const lowStockProducts = await Product.find({ stock: { $lte: 5 }, isActive: true })
       .select('name stock price')
       .limit(10);
@@ -247,8 +269,10 @@ const getNotifications = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      notifications: notifications.slice(0, 25),
-      unreadCount: notifications.filter(n => n.status === 'pending' || n.status === 'out_of_stock' || n.status === 'low_stock').length,
+      notifications: notifications.slice(0, 30),
+      unreadCount: notifications.filter(
+        (n) => n.status === 'pending' || n.status === 'unread' || n.status === 'out_of_stock' || n.status === 'low_stock'
+      ).length,
     });
   } catch (error) {
     res.status(500).json({

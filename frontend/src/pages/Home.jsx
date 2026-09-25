@@ -14,10 +14,10 @@ function Home() {
     <main className="relative">
       <SEOHead 
         pageName="home" 
-        fallbackTitle="Cosmic Nidhi - Birth Chart Reading, Vastu Consultation & Explore Zodiac Astrology" 
-        fallbackDescription="Explore Cosmic Nidhi for authentic Vedic birth chart reading, personalized consultation, expert vastu guidance, and certified gemstone spiritual jewelry."
-        fallbackKeywords="reading, vastu, birth, consultation, explore, birth chart reading, vastu consultation, astrology consultation, cosmic nidhi, vedic astrology"
-        canonicalUrl="https://cosmicnidhi.com"
+        fallbackTitle="Cosmic Nidhi - Vedic Astrology & Vastu Consultation" 
+        fallbackDescription="Explore Cosmic Nidhi for authentic Vedic astrology, personalized birth chart readings, expert vastu consultation, and certified gemstones."
+        fallbackKeywords="cosmic nidhi, vedic astrology, vastu consultation, birth chart, astrology, consultation"
+        canonicalUrl="https://cosmic-nidhi.onrender.com"
       />
       <Hero />
       <Marquee />

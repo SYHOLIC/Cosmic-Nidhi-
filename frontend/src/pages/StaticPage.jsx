@@ -135,7 +135,11 @@ export default function StaticPage() {
               [&_a]:underline
               hover:[&_a]:text-[#7A4B0E]
             "
-            dangerouslySetInnerHTML={{ __html: page.content }}
+            dangerouslySetInnerHTML={{
+              __html: (page.content || "")
+                .replace(/<h1\b/gi, "<h2")
+                .replace(/<\/h1>/gi, "</h2>")
+            }}
           />
         </div>
       </main>

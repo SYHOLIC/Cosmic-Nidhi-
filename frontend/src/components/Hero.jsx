@@ -291,6 +291,9 @@ function Hero() {
                   text-[#FFF8EC]
                 "
               >
+                <span className="block text-xs sm:text-sm font-sans tracking-[0.25em] uppercase text-[#E9A534] font-semibold mb-2">
+                  Cosmic Nidhi • Vedic Astrology & Vastu Consultation
+                </span>
                 <span className="block">
                   Understand Your Past.
                 </span>
@@ -628,6 +631,8 @@ function Hero() {
               <img
                 src={heroZodiac}
                 alt="Cosmic Nidhi zodiac chart"
+                width={705}
+                height={705}
                 fetchPriority="high"
                 decoding="async"
                 className="
@@ -672,6 +677,8 @@ function Hero() {
               <img
                 src={astrologerPortrait}
                 alt="Glowing Astrology Crystals"
+                width={580}
+                height={650}
                 fetchPriority="high"
                 decoding="async"
                 className="

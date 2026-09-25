@@ -120,6 +120,8 @@ export default function About() {
               <img
                 src={nidhi1}
                 alt="Nidhi Asthana - Cosmic Nidhi Founder"
+                width={600}
+                height={750}
                 loading="lazy"
                 decoding="async"
                 className="w-full h-auto object-cover"

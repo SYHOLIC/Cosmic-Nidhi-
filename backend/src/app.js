@@ -68,6 +68,12 @@ app.get('/ads.txt', (req, res) => {
   res.set('Cache-Control', 'public, max-age=86400');
   res.send('# Cosmic Nidhi Ads.txt\n');
 });
+app.get('/llms.txt', (req, res) => {
+  res.type('text/plain');
+  res.set('Cache-Control', 'public, max-age=86400');
+  const baseUrl = process.env.FRONTEND_URL || 'https://cosmic-nidhi.onrender.com';
+  res.send(`# Cosmic Nidhi - Vedic Astrology & Vastu Consultation\n> Authentic Vedic astrology, personalized birth chart readings, applied Vastu consultations, and certified spiritual gemstones.\n\n## Overview\nCosmic Nidhi is a premier platform dedicated to authentic Vedic wisdom, personalized astrological analysis, and spatial energy alignment.\n\n## Key URLs\n- Homepage: ${baseUrl}/\n- Services: ${baseUrl}/services\n- Products: ${baseUrl}/products\n- Pitra Dosh Calculator: ${baseUrl}/pitra-dosh-calculator\n- Zodiac Index: ${baseUrl}/zodiac\n- About: ${baseUrl}/about\n- Contact: ${baseUrl}/contact\n`);
+});
 
 // Health check
 app.get('/api/health', (req, res) => {

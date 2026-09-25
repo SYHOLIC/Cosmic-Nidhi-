@@ -7,6 +7,10 @@
   Cache-Control: public, max-age=86400
 /robots.txt
   Cache-Control: public, max-age=86400
+/llms.txt
+  Cache-Control: public, max-age=86400
+/ads.txt
+  Cache-Control: public, max-age=86400
 
 # Security and SEO crawler headers
 /*

@@ -502,8 +502,9 @@ function Footer() {
 
             <span className="text-[#E9A534]/40 select-none">|</span>
 
-            <a
-              href="https://www.cosmicnidhi.in"
+            <Link
+              to="/"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               className="
                 transition-colors
                 duration-300
@@ -511,12 +512,12 @@ function Footer() {
               "
             >
               www.cosmicnidhi.in
-            </a>
+            </Link>
 
             <span className="text-[#E9A534]/40 select-none">|</span>
 
             <Link
-              to="/page/privacy-policy"
+              to="/privacy-policy"
               className="
                 transition-colors
                 duration-300
@@ -529,7 +530,7 @@ function Footer() {
             <span className="text-[#E9A534]/40 select-none">|</span>
 
             <Link
-              to="/page/terms-and-conditions"
+              to="/terms-and-conditions"
               className="
                 transition-colors
                 duration-300
@@ -542,7 +543,7 @@ function Footer() {
             <span className="text-[#E9A534]/40 select-none">|</span>
 
             <Link
-              to="/page/return-policy"
+              to="/return-policy"
               className="
                 transition-colors
                 duration-300

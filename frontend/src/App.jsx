@@ -138,6 +138,11 @@ function AppRoutes() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/product/:slug" element={<ProductDetails />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/privacy-policy" element={<StaticPage defaultSlug="privacy-policy" />} />
+          <Route path="/terms" element={<StaticPage defaultSlug="terms-and-conditions" />} />
+          <Route path="/terms-and-conditions" element={<StaticPage defaultSlug="terms-and-conditions" />} />
+          <Route path="/return-policy" element={<StaticPage defaultSlug="return-policy" />} />
+          <Route path="/refund-policy" element={<StaticPage defaultSlug="return-policy" />} />
           <Route path="/page/:slug" element={<StaticPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

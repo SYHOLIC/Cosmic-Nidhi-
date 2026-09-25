@@ -1,43 +1,87 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import SEOHead from "../components/SEOHead";
 
 import { API_URL } from "../config/api";
+import { staticPagesFallback } from "../data/staticPagesFallback";
 
-export default function StaticPage() {
-  const { slug } = useParams();
-  const navigate = useNavigate();
-  const [page, setPage] = useState(null);
-  const [loading, setLoading] = useState(true);
+export default function StaticPage({ defaultSlug }) {
+  const { slug: paramSlug } = useParams();
+  const slug = defaultSlug || paramSlug;
+  const fallback = staticPagesFallback[slug] || null;
+  const [page, setPage] = useState(fallback);
+  const [loading, setLoading] = useState(!fallback);
 
   useEffect(() => {
+    let isMounted = true;
+    window.scrollTo({ top: 0, behavior: "instant" });
+
+    // If fallback is available, initialize with it immediately
+    if (fallback) {
+      setPage(fallback);
+      document.title = `${fallback.title} | Cosmic Nidhi`;
+    }
+
     const fetchPage = async () => {
       try {
-        setLoading(true);
+        if (!slug) return;
+        if (!fallback) setLoading(true);
         const res = await axios.get(`${API_URL}/pages/${slug}`);
-        setPage(res.data.page);
-        document.title = `${res.data.page.title} | Cosmic Nidhi`;
+        if (isMounted && res.data && res.data.page) {
+          setPage(res.data.page);
+          document.title = `${res.data.page.title} | Cosmic Nidhi`;
+        }
       } catch (err) {
-        console.error(err);
-        navigate('/'); // Redirect home if page not found
+        console.warn(`[StaticPage] API load for "${slug}" failed. Using fallback if available.`, err?.message);
+        if (isMounted && fallback) {
+          setPage(fallback);
+          document.title = `${fallback.title} | Cosmic Nidhi`;
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
+
     fetchPage();
-  }, [slug, navigate]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [slug]);
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#FFFDF9]">
+      <div className="flex min-h-[70vh] items-center justify-center bg-[#FFFDF9]">
         <Loader2 className="h-8 w-8 animate-spin text-[#A2691F]" />
       </div>
     );
   }
 
-  if (!page) return null;
+  if (!page) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center bg-[#FFFDF9] px-6 text-center pt-32 pb-20">
+        <div className="max-w-md rounded-2xl border border-[#E9A534]/20 bg-white/70 p-8 shadow-xl backdrop-blur-sm">
+          <span className="text-4xl">📜</span>
+          <h2 className="mt-4 font-serif text-2xl font-bold text-[#3C080D]">
+            Page Not Found
+          </h2>
+          <p className="mt-2 text-sm text-[#6B3A2A]/80">
+            The page you are looking for is currently being updated or does not exist.
+          </p>
+          <div className="mt-6 flex justify-center gap-3">
+            <Link
+              to="/"
+              className="cursor-pointer rounded-full bg-[#E9A534] px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-[#3C080D] shadow transition hover:bg-[#DDA520]"
+            >
+              Return to Home
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#FFFDF9]">

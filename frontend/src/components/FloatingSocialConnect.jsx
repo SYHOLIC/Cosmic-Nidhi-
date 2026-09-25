@@ -472,10 +472,14 @@ export default function FloatingSocialConnect() {
                       Email Address
                     </span>
                     <a
-                      href={`mailto:${emailAddress}`}
+                      href="#contact"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        window.location.href = ["mail", "to:", "cosmicnidhi.astro", "@", "gmail.com"].join("");
+                      }}
                       className="font-medium text-[#FFF8EC] hover:text-[#E9A534] transition-colors mt-0.5 block"
                     >
-                      {emailAddress}
+                      <span>cosmicnidhi.astro&#64;gmail.com</span>
                     </a>
                   </div>
                 </div>

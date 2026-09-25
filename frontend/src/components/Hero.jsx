@@ -628,6 +628,8 @@ function Hero() {
               <img
                 src={heroZodiac}
                 alt="Cosmic Nidhi zodiac chart"
+                fetchPriority="high"
+                decoding="async"
                 className="
                   relative
                   z-10
@@ -670,6 +672,8 @@ function Hero() {
               <img
                 src={astrologerPortrait}
                 alt="Glowing Astrology Crystals"
+                fetchPriority="high"
+                decoding="async"
                 className="
                   relative
                   z-30

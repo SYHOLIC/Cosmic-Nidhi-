@@ -302,7 +302,7 @@ export default function AuthPage() {
       >
         <img
           src={heroZodiac}
-          alt=""
+          alt="Cosmic Nidhi Astrological Wheel"
           className="h-full w-full object-contain"
           style={{ animation: "zodiacRotate 90s linear infinite" }}
         />

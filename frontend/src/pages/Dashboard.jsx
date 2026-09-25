@@ -1634,7 +1634,7 @@ export default function Dashboard() {
         >
           <img
             src={heroZodiac}
-            alt=""
+            alt="Cosmic Nidhi Sacred Zodiac Chakra Wheel"
             className="h-full w-full object-contain"
             style={{ animation: "zodiacRotate 90s linear infinite" }}
           />

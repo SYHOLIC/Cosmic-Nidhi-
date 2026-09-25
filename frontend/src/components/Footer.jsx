@@ -376,7 +376,11 @@ function Footer() {
               {/* Email */}
               <li>
                 <a
-                  href="mailto:cosmicnidhi.astro@gmail.com"
+                  href="#contact"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.location.href = ["mail", "to:", "cosmicnidhi.astro", "@", "gmail.com"].join("");
+                  }}
                   className="
                     group
                     flex
@@ -411,7 +415,7 @@ function Footer() {
                     @
                   </span>
 
-                  cosmicnidhi.astro@gmail.com
+                  <span>cosmicnidhi.astro&#64;gmail.com</span>
                 </a>
               </li>
 

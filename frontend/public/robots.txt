@@ -5,4 +5,5 @@ Disallow: /dashboard
 Disallow: /checkout
 Disallow: /cart
 
+Sitemap: https://cosmic-nidhi.onrender.com/sitemap.xml
 Sitemap: https://cosmicnidhi.com/sitemap.xml

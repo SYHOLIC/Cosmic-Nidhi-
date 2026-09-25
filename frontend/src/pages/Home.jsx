@@ -14,9 +14,9 @@ function Home() {
     <main className="relative">
       <SEOHead 
         pageName="home" 
-        fallbackTitle="Cosmic Nidhi - Zodiac Jewelry, Crystals & Vedic Astrology" 
-        fallbackDescription="Discover premium handcrafted zodiac-themed jewelry, authentic certified crystals, and personalized Vedic astrology consultations at Cosmic Nidhi."
-        fallbackKeywords="cosmic nidhi, zodiac jewelry, crystals, pitra dosh calculator, vedic astrology, astrologer consultation"
+        fallbackTitle="Cosmic Nidhi - Birth Chart Reading, Vastu Consultation & Explore Zodiac Astrology" 
+        fallbackDescription="Explore Cosmic Nidhi for authentic Vedic birth chart reading, personalized consultation, expert vastu guidance, and certified gemstone spiritual jewelry."
+        fallbackKeywords="reading, vastu, birth, consultation, explore, birth chart reading, vastu consultation, astrology consultation, cosmic nidhi, vedic astrology"
         canonicalUrl="https://cosmicnidhi.com"
       />
       <Hero />

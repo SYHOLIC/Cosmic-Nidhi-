@@ -561,7 +561,7 @@ export default function ProductsPage() {
         >
           <img
             src={heroZodiac}
-            alt=""
+            alt="Cosmic Nidhi Sacred Zodiac Chakra"
             className="h-full w-full object-contain"
             style={{ animation: "zodiacRotate 90s linear infinite" }}
           />

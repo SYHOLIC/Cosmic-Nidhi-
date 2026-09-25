@@ -615,7 +615,7 @@ export default function ZodiacProfilePage() {
         >
           <img
             src={heroZodiac}
-            alt=""
+            alt="Cosmic Nidhi Celestial Zodiac Wheel"
             className="h-full w-full object-contain mix-blend-screen"
             style={{ animation: "zodiacRotate 90s linear infinite" }}
           />

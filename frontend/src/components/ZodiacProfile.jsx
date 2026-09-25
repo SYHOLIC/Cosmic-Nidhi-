@@ -139,7 +139,7 @@ export default function ZodiacProfile({ sign, onClose }) {
               >
                 <img
                   src={heroZodiac}
-                  alt=""
+                  alt="Cosmic Nidhi Sacred Zodiac Chart"
                   className="h-full w-full object-contain mix-blend-screen"
                   style={{
                     animation: "zodiacRotate 90s linear infinite",

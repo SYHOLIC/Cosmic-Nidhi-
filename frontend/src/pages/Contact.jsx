@@ -102,8 +102,15 @@ export default function Contact() {
               </div>
               <div>
                 <h3 className="font-bold text-base mb-1">Email Us</h3>
-                <a href="mailto:cosmicnidhi.astro@gmail.com" className="text-[#FFF8EC]/75 hover:text-[#E9A534] transition-colors text-sm">
-                  cosmicnidhi.astro@gmail.com
+                <a
+                  href="#contact"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.location.href = ["mail", "to:", "cosmicnidhi.astro", "@", "gmail.com"].join("");
+                  }}
+                  className="text-[#FFF8EC]/75 hover:text-[#E9A534] transition-colors text-sm"
+                >
+                  <span>cosmicnidhi.astro&#64;gmail.com</span>
                 </a>
               </div>
             </div>

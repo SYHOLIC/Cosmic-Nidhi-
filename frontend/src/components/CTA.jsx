@@ -249,7 +249,7 @@ function CTA() {
         >
           <img
             src={heroZodiac}
-            alt=""
+            alt="Cosmic Nidhi Sacred Astrological Chakra Wheel"
             loading="lazy"
             width={1200}
             height={1200}
@@ -714,7 +714,11 @@ function CTA() {
               {" "}or{" "}
 
               <a
-                href="mailto:cosmicnidhi.astro@gmail.com"
+                href="#contact"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.location.href = ["mail", "to:", "cosmicnidhi.astro", "@", "gmail.com"].join("");
+                }}
                 className="
                   text-[#8E1B24]
                   transition-colors

@@ -30,15 +30,7 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));              // ← Changed
 app.use(express.urlencoded({ extended: true, limit: '10mb' })); // ← Changed
 
-// URL Canonicalization: Redirect www to non-www
-app.use((req, res, next) => {
-  const host = req.headers.host || '';
-  if (host.startsWith('www.')) {
-    const cleanHost = host.slice(4);
-    return res.redirect(301, `${req.protocol}://${cleanHost}${req.originalUrl}`);
-  }
-  next();
-});
+
 
 // Routes
 app.use('/api/auth', authRoutes);

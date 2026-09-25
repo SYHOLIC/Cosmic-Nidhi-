@@ -199,9 +199,18 @@ export default function ProductDetails() {
   return (
     <main className="min-h-screen bg-[#FFFDF9] pt-28 pb-20">
       <SEOHead 
-        pageName="product" 
-        fallbackTitle={`${product.name} | Cosmic Nidhi`} 
-        fallbackDescription={product.description?.substring(0, 160)} 
+        pageName={`product-${product.slug || product._id}`}
+        fallbackTitle={`${product.name} | Buy Authentic Gemstones & Jewelry | Cosmic Nidhi`} 
+        fallbackDescription={product.shortDescription || product.description?.substring(0, 160)}
+        fallbackKeywords={`${product.name}, buy ${product.name}, authentic crystal, gemstone jewelry, cosmic nidhi store`}
+        image={product.images?.[0] || product.image}
+        type="product"
+        productData={product}
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "Products", url: "/products" },
+          { name: product.name, url: `/product/${product.slug || product._id}` },
+        ]}
       />
       <div className="mx-auto max-w-[1200px] px-5 sm:px-7 lg:px-10">
         

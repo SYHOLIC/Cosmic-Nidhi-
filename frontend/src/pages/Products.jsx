@@ -531,8 +531,13 @@ export default function ProductsPage() {
     <main className="relative">
       <SEOHead 
         pageName="shop" 
-        fallbackTitle="Shop Premium Zodiac Collections | Cosmic Nidhi" 
-        fallbackDescription="Browse our exclusive collection of zodiac rings, pendants, crystals, and astrology-themed jewelry."
+        fallbackTitle="Shop Authentic Gemstones & Zodiac Jewelry | Cosmic Nidhi" 
+        fallbackDescription="Browse our curated collection of energized natural crystals, certified gemstone bracelets, sacred yantras, and zodiac astrology jewelry."
+        fallbackKeywords="buy gemstones online, certified crystals, zodiac bracelets, energized yantras, cosmic nidhi shop"
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "Shop", url: "/products" },
+        ]}
       />
       {/* ============================================================
           DARK HERO BAND — 2-column, compact

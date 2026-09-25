@@ -3,6 +3,7 @@ import { motion, useInView } from "framer-motion";
 import { useScrollY } from "../hooks/useReveal";
 import Reveal from "../components/Reveal";
 import BookingModal from "../components/BookingModal";
+import SEOHead from "../components/SEOHead";
 import nidhi1 from "../assets/image.png";
 
 export default function About() {
@@ -92,6 +93,16 @@ export default function About() {
 
   return (
     <>
+      <SEOHead
+        pageName="about"
+        fallbackTitle="About Us | Cosmic Nidhi - Sacred Astrology & Vedic Healing"
+        fallbackDescription="Learn about Cosmic Nidhi's sacred mission, authentic Vedic astrologers, energized spiritual crystals, and holistic consultations."
+        fallbackKeywords="about cosmic nidhi, authentic vedic astrology, astrologer consultation, energized crystals, spiritual guidance"
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "About Us", url: "/about" },
+        ]}
+      />
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-[#FFF7E9] pt-32 pb-16 md:pt-30 md:pb-10">
         <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-[#C1272D]/8 blur-3xl pointer-events-none" />

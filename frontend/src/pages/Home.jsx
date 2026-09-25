@@ -14,8 +14,10 @@ function Home() {
     <main className="relative">
       <SEOHead 
         pageName="home" 
-        fallbackTitle="Cosmic Nidhi - Zodiac Jewelry & Astrology" 
-        fallbackDescription="Discover premium zodiac-themed jewelry, authentic crystals, and personalized astrology services at Cosmic Nidhi."
+        fallbackTitle="Cosmic Nidhi - Zodiac Jewelry, Crystals & Vedic Astrology" 
+        fallbackDescription="Discover premium handcrafted zodiac-themed jewelry, authentic certified crystals, and personalized Vedic astrology consultations at Cosmic Nidhi."
+        fallbackKeywords="cosmic nidhi, zodiac jewelry, crystals, pitra dosh calculator, vedic astrology, astrologer consultation"
+        canonicalUrl="https://cosmicnidhi.com"
       />
       <Hero />
       <Marquee />

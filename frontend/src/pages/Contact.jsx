@@ -59,8 +59,13 @@ export default function Contact() {
     <main className="min-h-screen bg-[#FFFDF9] pt-28 pb-20">
       <SEOHead 
         pageName="contact" 
-        fallbackTitle="Contact Us | Cosmic Nidhi" 
-        fallbackDescription="Get in touch with Cosmic Nidhi for astrology services, order inquiries, and support."
+        fallbackTitle="Contact Us | Consult Astrologer | Cosmic Nidhi" 
+        fallbackDescription="Get in touch with Cosmic Nidhi for personalized Vedic astrology consultations, gemstones guidance, order queries, and support."
+        fallbackKeywords="contact cosmic nidhi, astrology support, consult astrologer, kundali inquiry, spiritual advice"
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "Contact Us", url: "/contact" },
+        ]}
       />
       
       <div className="mx-auto max-w-[1200px] px-5 sm:px-7 lg:px-10">

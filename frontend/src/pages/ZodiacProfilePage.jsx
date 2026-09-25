@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useCart } from "../context/CartContext";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import SEOHead from "../components/SEOHead";
 
 import { API_URL } from "../config/api";
 import { motion, AnimatePresence } from "framer-motion";
@@ -588,6 +589,18 @@ export default function ZodiacProfilePage() {
 
   return (
     <main className="relative">
+      <SEOHead
+        pageName={`zodiac-${signSlug?.toLowerCase()}`}
+        fallbackTitle={`${signName} Zodiac Sign - Traits, Compatibility & Lucky Gemstones | Cosmic Nidhi`}
+        fallbackDescription={`Discover comprehensive insights into ${signName} (${profile.dates || ""}). Explore personality traits, career, love compatibility, and sacred ${profile.luckyGemstone || "crystals"} at Cosmic Nidhi.`}
+        fallbackKeywords={`${signName.toLowerCase()} zodiac sign, ${signName.toLowerCase()} horoscope, ${signName.toLowerCase()} gemstones, ${signName.toLowerCase()} crystals, vedic astrology`}
+        image={icon}
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "Zodiac Signs", url: "/zodiac" },
+          { name: signName, url: `/zodiac/${signSlug}` },
+        ]}
+      />
 
       {/* ============================================================
           DARK HERO BAND

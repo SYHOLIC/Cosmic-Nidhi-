@@ -195,8 +195,14 @@ export default function ZodiacIndexPage() {
   return (
     <>
       <SEOHead
-        title="12 Zodiac Signs (Rashi) Guide | Cosmic Nidhi"
-        description="Explore in-depth Vedic & Western astrology profiles for all 12 Zodiac signs. Discover ruling planets, personality traits, lucky gemstones, and cosmic remedies."
+        pageName="zodiac"
+        fallbackTitle="12 Zodiac Signs (Rashi) Guide | Cosmic Nidhi"
+        fallbackDescription="Explore in-depth Vedic & Western astrology profiles for all 12 Zodiac signs. Discover ruling planets, personality traits, lucky gemstones, and cosmic remedies."
+        fallbackKeywords="12 zodiac signs, rashifal, astrology signs guide, lucky gemstones by zodiac, horoscope traits"
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "Zodiac Signs", url: "/zodiac" },
+        ]}
       />
 
       {/* Hero Header */}

@@ -16,6 +16,7 @@ import {
 import Reveal from "../components/Reveal";
 import BookingModal from "../components/BookingModal";
 import Pricing from "../components/Pricing";
+import SEOHead from "../components/SEOHead";
 
 /* Zodiac chakra backdrop */
 import heroZodiac from "../assets/hero-zodiac3.png";
@@ -331,6 +332,16 @@ export default function ServicesPage() {
 
   return (
     <main className="relative">
+      <SEOHead
+        pageName="services"
+        fallbackTitle="Astrology & Vastu Consultation Services | Cosmic Nidhi"
+        fallbackDescription="Book authentic Vedic astrology consultations, Kundali matching, career horoscope analysis, and certified Vastu Shastra consultations at Cosmic Nidhi."
+        fallbackKeywords="astrology services, vedic consultation, kundali reading, vastu shastra consultation, horoscope analysis"
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "Services", url: "/services" },
+        ]}
+      />
 
       {/* ============================================================
           DARK HERO BAND

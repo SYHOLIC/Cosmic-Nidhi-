@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
+import SEOHead from "../components/SEOHead";
 
 import { API_URL } from "../config/api";
 
@@ -40,6 +41,19 @@ export default function StaticPage() {
 
   return (
     <div className="min-h-screen bg-[#FFFDF9]">
+      <SEOHead
+        pageName={`page-${slug}`}
+        fallbackTitle={`${page.title} | Cosmic Nidhi`}
+        fallbackDescription={
+          typeof page.content === "string"
+            ? page.content.replace(/<[^>]*>?/gm, "").substring(0, 160)
+            : `${page.title} - Cosmic Nidhi policies and information.`
+        }
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: page.title, url: `/page/${slug}` },
+        ]}
+      />
       
       {/* Hero section */}
       <section className="relative pt-32 pb-16 bg-[#180205] text-center border-b border-[#E9A534]/15 overflow-hidden">

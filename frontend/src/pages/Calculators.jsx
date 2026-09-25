@@ -25,6 +25,7 @@ import {
   Flame
 } from 'lucide-react';
 import Reveal from '../components/Reveal';
+import SEOHead from '../components/SEOHead';
 
 // Calculator Data
 const CALCULATORS = [
@@ -394,6 +395,16 @@ export default function CalculatorsPage() {
 
   return (
     <>
+      <SEOHead
+        pageName="calculators"
+        fallbackTitle="Free Vedic Astrology Calculators | Cosmic Nidhi"
+        fallbackDescription="Discover free Vedic astrology calculators including Pitra Dosh, Kundali matching, Moon Sign, and Nakshatra analysis at Cosmic Nidhi."
+        fallbackKeywords="astrology calculators, pitra dosh calculator, free kundali, vedic calculators, horoscope matching"
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "Calculators", url: "/calculators" },
+        ]}
+      />
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-[#FFF7E9] pt-32 md:pt-40 pb-12 md:pb-16">
         <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-[#C1272D]/8 blur-3xl pointer-events-none" />

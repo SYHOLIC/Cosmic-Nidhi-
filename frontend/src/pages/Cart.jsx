@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import axios from "axios";
 import { API_URL } from "../config/api";
+import SEOHead from "../components/SEOHead";
 
 export default function CartPage() {
   const { cartItems, updateQuantity, removeFromCart, getCartTotal, addToCart } = useCart();
@@ -77,6 +78,12 @@ export default function CartPage() {
 
   return (
     <main className="min-h-screen bg-[#FFFDF9] pt-28 pb-20">
+      <SEOHead
+        pageName="cart"
+        fallbackTitle="Shopping Cart | Cosmic Nidhi"
+        fallbackDescription="View your selected spiritual jewelry and certified crystals in your Cosmic Nidhi shopping cart."
+        noindex={true}
+      />
       <div className="mx-auto max-w-[1200px] px-5 sm:px-7 lg:px-10">
         
         <div className="mb-8">

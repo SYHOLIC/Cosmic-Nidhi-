@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { calculatePitraDosha, CITIES_DATABASE } from "../utils/pitraDoshEngine";
 import VedicKundaliChart from "../components/VedicKundaliChart";
+import SEOHead from "../components/SEOHead";
 
 // Country dialing codes with flags for the WhatsApp selector
 const COUNTRY_LIST = [
@@ -256,6 +257,17 @@ export default function PitraDoshCalculator() {
 
   return (
     <div className="min-h-screen bg-[#F4F6F0] pt-20 sm:pt-24 lg:pt-28 xl:pt-32 pb-16 lg:pb-24 print:bg-white print:pt-4 print:pb-4">
+      <SEOHead
+        pageName="pitra-dosh"
+        fallbackTitle="Free Pitra Dosh Calculator & Remedies | Cosmic Nidhi"
+        fallbackDescription="Calculate Pitra Dosh in your Kundali using your birth date, time, and place. Get comprehensive 9th house planetary analysis, severity score, and authentic Vedic remedies."
+        fallbackKeywords="pitra dosh calculator, pitra dosh remedies, free kundali analysis, ancestor karma dosha, pitru dosh nivaran"
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "Calculators", url: "/calculators" },
+          { name: "Pitra Dosh Calculator", url: "/pitra-dosh-calculator" },
+        ]}
+      />
       {/* Background celestial ambient light */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden print:hidden">
         <div className="absolute top-10 left-1/4 h-[500px] w-[500px] rounded-full bg-[#E9A534]/10 blur-[120px]" />

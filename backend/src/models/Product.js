@@ -23,11 +23,11 @@ const productSchema = new mongoose.Schema({
   price: {
     type: Number,
     required: [true, 'Price is required'],
-    min: 0,
+    min: [0, 'Price cannot be negative'],
   },
   originalPrice: {
     type: Number,
-    min: 0,
+    min: [0, 'Original price cannot be negative'],
   },
   category: {
     type: mongoose.Schema.Types.ObjectId,
@@ -40,7 +40,7 @@ const productSchema = new mongoose.Schema({
   stock: {
     type: Number,
     default: 0,
-    min: 0,
+    min: [0, 'Stock quantity cannot be negative'],
   },
   rating: {
     type: Number,

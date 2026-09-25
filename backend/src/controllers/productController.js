@@ -155,6 +155,27 @@ const createProduct = async (req, res) => {
       });
     }
 
+    if (price === undefined || isNaN(price) || Number(price) < 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Valid non-negative price is required',
+      });
+    }
+
+    if (originalPrice !== undefined && originalPrice !== null && originalPrice !== '' && (isNaN(originalPrice) || Number(originalPrice) < 0)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Original price cannot be negative',
+      });
+    }
+
+    if (stock !== undefined && stock !== null && stock !== '' && (isNaN(stock) || Number(stock) < 0)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Stock quantity cannot be negative',
+      });
+    }
+
     // Sync image and images array
     let productImages = images || [];
     if (req.body.image && (!productImages || productImages.length === 0)) {
@@ -174,7 +195,7 @@ const createProduct = async (req, res) => {
         originalPrice: originalPrice ? Number(originalPrice) : undefined,
         category: categoryExists._id,
         images: productImages,
-        stock: stock !== undefined ? Number(stock) : 0,
+        stock: stock !== undefined ? Math.max(0, Math.floor(Number(stock))) : 0,
         features: features || [],
         isActive: isActive !== undefined ? isActive : true,
         isFeatured: isFeatured || false,
@@ -254,15 +275,33 @@ const updateProduct = async (req, res) => {
       req.body.image = req.body.images[0];
     }
 
-    // Ensure price and stock are parsed as numbers
+    // Ensure price and stock are parsed as numbers and validated
     if (req.body.price !== undefined) {
+      if (isNaN(req.body.price) || Number(req.body.price) < 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Valid non-negative price is required',
+        });
+      }
       req.body.price = Number(req.body.price);
     }
     if (req.body.originalPrice !== undefined && req.body.originalPrice !== null && req.body.originalPrice !== '') {
+      if (isNaN(req.body.originalPrice) || Number(req.body.originalPrice) < 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Original price cannot be negative',
+        });
+      }
       req.body.originalPrice = Number(req.body.originalPrice);
     }
-    if (req.body.stock !== undefined) {
-      req.body.stock = Number(req.body.stock);
+    if (req.body.stock !== undefined && req.body.stock !== null && req.body.stock !== '') {
+      if (isNaN(req.body.stock) || Number(req.body.stock) < 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Stock quantity cannot be negative',
+        });
+      }
+      req.body.stock = Math.max(0, Math.floor(Number(req.body.stock)));
     }
 
     if (!product.sku && !req.body.sku) {

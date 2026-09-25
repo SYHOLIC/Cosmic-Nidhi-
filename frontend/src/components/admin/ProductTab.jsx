@@ -252,12 +252,31 @@ function ProductFormModal({
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    });
+    let newValue = type === "checkbox" ? checked : value;
+
+    // Prevent negative numbers on stock, price, and originalPrice
+    if (name === "stock" || name === "price" || name === "originalPrice") {
+      if (typeof newValue === "string" && newValue.includes("-")) {
+        return;
+      }
+      if (newValue !== "" && !isNaN(newValue) && Number(newValue) < 0) {
+        return;
+      }
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: newValue,
+    }));
     if (errors[name]) {
-      setErrors({ ...errors, [name]: "" });
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+  };
+
+  const handleNonNegativeKeyDown = (e) => {
+    // Disallow minus sign and exponential notation
+    if (e.key === "-" || e.key === "e" || e.key === "E") {
+      e.preventDefault();
     }
   };
 
@@ -269,7 +288,15 @@ function ProductFormModal({
     const newErrors = {};
     if (!formData.name.trim()) newErrors.name = "Name is required";
     if (!formData.description.trim()) newErrors.description = "Description is required";
-    if (!formData.price || isNaN(formData.price)) newErrors.price = "Valid price is required";
+    if (formData.price === "" || formData.price === undefined || isNaN(formData.price) || Number(formData.price) < 0) {
+      newErrors.price = "Valid non-negative price is required";
+    }
+    if (formData.originalPrice !== "" && formData.originalPrice !== undefined && (isNaN(formData.originalPrice) || Number(formData.originalPrice) < 0)) {
+      newErrors.originalPrice = "Original price cannot be negative";
+    }
+    if (formData.stock === "" || formData.stock === undefined || isNaN(formData.stock) || Number(formData.stock) < 0) {
+      newErrors.stock = "Stock quantity cannot be negative";
+    }
     if (!formData.category) newErrors.category = "Category is required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -300,9 +327,9 @@ function ProductFormModal({
       image: finalImage,
       images: existingImgs.length > 0 ? existingImgs : (finalImage ? [finalImage] : []),
       features: parsedFeatures,
-      price: Number(formData.price),
-      originalPrice: formData.originalPrice ? Number(formData.originalPrice) : undefined,
-      stock: Number(formData.stock),
+      price: Math.max(0, Number(formData.price)),
+      originalPrice: formData.originalPrice ? Math.max(0, Number(formData.originalPrice)) : undefined,
+      stock: Math.max(0, Math.floor(Number(formData.stock) || 0)),
     });
   };
 
@@ -411,9 +438,14 @@ function ProductFormModal({
                   <input
                     type="number"
                     name="price"
+                    min="0"
+                    step="0.01"
                     value={formData.price}
                     onChange={handleChange}
-                    className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-[#FFFDF9] px-3.5 py-2.5 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534]/60 focus:outline-none focus:ring-2 focus:ring-[#E9A534]/20"
+                    onKeyDown={handleNonNegativeKeyDown}
+                    className={`w-full rounded-[7px] border ${
+                      errors.price ? "border-[#C1272D] focus:ring-[#C1272D]/20" : "border-[#5A0E14]/15 focus:border-[#E9A534]/60 focus:ring-[#E9A534]/20"
+                    } bg-[#FFFDF9] px-3.5 py-2.5 font-sans text-[13px] text-[#2C1210] focus:outline-none focus:ring-2`}
                   />
                   {errors.price && (
                     <p className="mt-1 flex items-center gap-1 font-sans text-[11px] text-[#C1272D]">
@@ -428,10 +460,20 @@ function ProductFormModal({
                   <input
                     type="number"
                     name="originalPrice"
+                    min="0"
+                    step="0.01"
                     value={formData.originalPrice}
                     onChange={handleChange}
-                    className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-[#FFFDF9] px-3.5 py-2.5 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534]/60 focus:outline-none focus:ring-2 focus:ring-[#E9A534]/20"
+                    onKeyDown={handleNonNegativeKeyDown}
+                    className={`w-full rounded-[7px] border ${
+                      errors.originalPrice ? "border-[#C1272D] focus:ring-[#C1272D]/20" : "border-[#5A0E14]/15 focus:border-[#E9A534]/60 focus:ring-[#E9A534]/20"
+                    } bg-[#FFFDF9] px-3.5 py-2.5 font-sans text-[13px] text-[#2C1210] focus:outline-none focus:ring-2`}
                   />
+                  {errors.originalPrice && (
+                    <p className="mt-1 flex items-center gap-1 font-sans text-[11px] text-[#C1272D]">
+                      <AlertCircle className="h-3 w-3" /> {errors.originalPrice}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -443,10 +485,20 @@ function ProductFormModal({
                   <input
                     type="number"
                     name="stock"
+                    min="0"
+                    step="1"
                     value={formData.stock}
                     onChange={handleChange}
-                    className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-[#FFFDF9] px-3.5 py-2.5 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534]/60 focus:outline-none focus:ring-2 focus:ring-[#E9A534]/20"
+                    onKeyDown={handleNonNegativeKeyDown}
+                    className={`w-full rounded-[7px] border ${
+                      errors.stock ? "border-[#C1272D] focus:ring-[#C1272D]/20" : "border-[#5A0E14]/15 focus:border-[#E9A534]/60 focus:ring-[#E9A534]/20"
+                    } bg-[#FFFDF9] px-3.5 py-2.5 font-sans text-[13px] text-[#2C1210] focus:outline-none focus:ring-2`}
                   />
+                  {errors.stock && (
+                    <p className="mt-1 flex items-center gap-1 font-sans text-[11px] text-[#C1272D]">
+                      <AlertCircle className="h-3 w-3" /> {errors.stock}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="mb-1.5 block font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/80">

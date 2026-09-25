@@ -254,13 +254,19 @@ function ProductFormModal({
     const { name, value, type, checked } = e.target;
     let newValue = type === "checkbox" ? checked : value;
 
-    // Prevent negative numbers on stock, price, and originalPrice
+    // Disallow and sanitize negative values on numeric fields
     if (name === "stock" || name === "price" || name === "originalPrice") {
-      if (typeof newValue === "string" && newValue.includes("-")) {
-        return;
+      if (typeof newValue === "string") {
+        newValue = newValue.replace(/-/g, "");
       }
-      if (newValue !== "" && !isNaN(newValue) && Number(newValue) < 0) {
-        return;
+      if (newValue !== "") {
+        const num = Number(newValue);
+        if (!isNaN(num) && num < 0) {
+          newValue = "0";
+        }
+      }
+      if (e.target) {
+        e.target.value = newValue;
       }
     }
 
@@ -274,9 +280,31 @@ function ProductFormModal({
   };
 
   const handleNonNegativeKeyDown = (e) => {
-    // Disallow minus sign and exponential notation
-    if (e.key === "-" || e.key === "e" || e.key === "E") {
+    // Disallow minus sign (both standard and numpad), e, E, and plus sign
+    if (
+      e.key === "-" ||
+      e.key === "Subtract" ||
+      e.code === "NumpadSubtract" ||
+      e.key === "e" ||
+      e.key === "E" ||
+      e.key === "+"
+    ) {
       e.preventDefault();
+      return;
+    }
+    // Block down arrow if value is already 0 or empty
+    if (e.key === "ArrowDown" && Number(e.currentTarget.value || 0) <= 0) {
+      e.preventDefault();
+      return;
+    }
+  };
+
+  const handleNonNegativePaste = (e) => {
+    const text = (e.clipboardData || window.clipboardData)?.getData("text");
+    if (text && text.includes("-")) {
+      e.preventDefault();
+      const sanitized = text.replace(/-/g, "");
+      document.execCommand("insertText", false, sanitized);
     }
   };
 
@@ -443,6 +471,20 @@ function ProductFormModal({
                     value={formData.price}
                     onChange={handleChange}
                     onKeyDown={handleNonNegativeKeyDown}
+                    onPaste={handleNonNegativePaste}
+                    onInput={(e) => {
+                      if (e.target.value.includes("-") || Number(e.target.value) < 0) {
+                        const sanitized = e.target.value.replace(/-/g, "");
+                        e.target.value = sanitized;
+                        setFormData((prev) => ({ ...prev, price: sanitized }));
+                      }
+                    }}
+                    onBlur={() => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        price: prev.price === "" ? "" : Math.max(0, parseFloat(prev.price) || 0),
+                      }));
+                    }}
                     className={`w-full rounded-[7px] border ${
                       errors.price ? "border-[#C1272D] focus:ring-[#C1272D]/20" : "border-[#5A0E14]/15 focus:border-[#E9A534]/60 focus:ring-[#E9A534]/20"
                     } bg-[#FFFDF9] px-3.5 py-2.5 font-sans text-[13px] text-[#2C1210] focus:outline-none focus:ring-2`}
@@ -465,6 +507,20 @@ function ProductFormModal({
                     value={formData.originalPrice}
                     onChange={handleChange}
                     onKeyDown={handleNonNegativeKeyDown}
+                    onPaste={handleNonNegativePaste}
+                    onInput={(e) => {
+                      if (e.target.value.includes("-") || Number(e.target.value) < 0) {
+                        const sanitized = e.target.value.replace(/-/g, "");
+                        e.target.value = sanitized;
+                        setFormData((prev) => ({ ...prev, originalPrice: sanitized }));
+                      }
+                    }}
+                    onBlur={() => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        originalPrice: prev.originalPrice === "" ? "" : Math.max(0, parseFloat(prev.originalPrice) || 0),
+                      }));
+                    }}
                     className={`w-full rounded-[7px] border ${
                       errors.originalPrice ? "border-[#C1272D] focus:ring-[#C1272D]/20" : "border-[#5A0E14]/15 focus:border-[#E9A534]/60 focus:ring-[#E9A534]/20"
                     } bg-[#FFFDF9] px-3.5 py-2.5 font-sans text-[13px] text-[#2C1210] focus:outline-none focus:ring-2`}
@@ -490,6 +546,20 @@ function ProductFormModal({
                     value={formData.stock}
                     onChange={handleChange}
                     onKeyDown={handleNonNegativeKeyDown}
+                    onPaste={handleNonNegativePaste}
+                    onInput={(e) => {
+                      if (e.target.value.includes("-") || Number(e.target.value) < 0) {
+                        const sanitized = e.target.value.replace(/-/g, "");
+                        e.target.value = sanitized;
+                        setFormData((prev) => ({ ...prev, stock: sanitized }));
+                      }
+                    }}
+                    onBlur={() => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        stock: prev.stock === "" ? 0 : Math.max(0, parseInt(prev.stock, 10) || 0),
+                      }));
+                    }}
                     className={`w-full rounded-[7px] border ${
                       errors.stock ? "border-[#C1272D] focus:ring-[#C1272D]/20" : "border-[#5A0E14]/15 focus:border-[#E9A534]/60 focus:ring-[#E9A534]/20"
                     } bg-[#FFFDF9] px-3.5 py-2.5 font-sans text-[13px] text-[#2C1210] focus:outline-none focus:ring-2`}

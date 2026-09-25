@@ -19,8 +19,8 @@ import Pricing from "../components/Pricing";
 import SEOHead from "../components/SEOHead";
 
 /* Zodiac chakra backdrop */
-import heroZodiac from "../assets/hero-zodiac3.png";
-import vastuConsultationImg from "../assets/vastu-consultation.jpg";
+import heroZodiac from "../assets/hero-zodiac3.webp";
+import vastuConsultationImg from "../assets/vastu-consultation.webp";
 
 /* ================================================================
    SERVICES DATA

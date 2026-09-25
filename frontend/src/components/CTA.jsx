@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import Reveal from "./Reveal";
 import Starfield from "./Starfield";
 import BookingModal from "./BookingModal";
-import heroZodiac from "../assets/hero-zodiac2.png";
+import heroZodiac from "../assets/hero-zodiac2.webp";
 
 // FAQ Data
 const FAQS = [

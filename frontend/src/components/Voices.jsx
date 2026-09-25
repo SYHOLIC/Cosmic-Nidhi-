@@ -12,7 +12,7 @@ import {
   Sparkles,
 } from "lucide-react";
 
-import starsTexture from "../assets/about.jpg";
+import starsTexture from "../assets/about.webp";
 
 /* ============================================================
    MARQUEE ITEMS

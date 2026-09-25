@@ -59,11 +59,13 @@ app.use('/api/contact', contactRoutes);
 app.use('/sitemap.xml', sitemapRoutes);
 app.get('/robots.txt', (req, res) => {
   res.type('text/plain');
+  res.set('Cache-Control', 'public, max-age=86400');
   const baseUrl = process.env.FRONTEND_URL || 'https://cosmic-nidhi.onrender.com';
   res.send(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /dashboard\nDisallow: /checkout\nDisallow: /cart\n\nSitemap: ${baseUrl}/sitemap.xml\nSitemap: https://cosmicnidhi.com/sitemap.xml\n`);
 });
 app.get('/ads.txt', (req, res) => {
   res.type('text/plain');
+  res.set('Cache-Control', 'public, max-age=86400');
   res.send('# Cosmic Nidhi Ads.txt\n');
 });
 

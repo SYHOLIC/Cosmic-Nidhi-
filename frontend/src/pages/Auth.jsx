@@ -27,7 +27,7 @@ import { useNavigate } from "react-router-dom";
 import Reveal from "../components/Reveal";
 
 /* Zodiac chakra backdrop */
-import heroZodiac from "../assets/hero-zodiac3.png";
+import heroZodiac from "../assets/hero-zodiac3.webp";
 
 import { API_URL } from "../config/api";
 

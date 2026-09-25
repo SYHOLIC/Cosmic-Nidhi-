@@ -14,7 +14,7 @@ import {
 import { useCart } from "../context/CartContext";
 import BookingModal from "./BookingModal";
 
-import logo from "../assets/logo.jpeg";
+import logo from "../assets/logo.webp";
 
 function Nav() {
   const navigate = useNavigate();

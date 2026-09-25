@@ -8,7 +8,7 @@ import {
   ShoppingBag,
 } from "lucide-react";
 import { ZODIAC_PROFILES } from "../data/zodiacProfiles";
-import heroZodiac from "../assets/hero-zodiac3.png";
+import heroZodiac from "../assets/hero-zodiac3.webp";
 
 /* ================================================================
    ZODIAC PROFILE MODAL

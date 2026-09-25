@@ -29,7 +29,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import SEOHead from "../components/SEOHead";
 
 /* Zodiac chakra backdrop */
-import heroZodiac from "../assets/hero-zodiac3.png";
+import heroZodiac from "../assets/hero-zodiac3.webp";
 
 import { API_URL } from "../config/api";
 

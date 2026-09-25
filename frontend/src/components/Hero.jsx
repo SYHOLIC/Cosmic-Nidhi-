@@ -8,8 +8,8 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
-import heroZodiac from "../assets/hero-zodiac3.png";
-import astrologerPortrait from "../assets/crystalss.png";
+import heroZodiac from "../assets/hero-zodiac3.webp";
+import astrologerPortrait from "../assets/crystalss.webp";
 
 const STARS = [
   [8, 28, 2],

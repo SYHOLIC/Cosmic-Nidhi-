@@ -4,7 +4,7 @@ import { useScrollY } from "../hooks/useReveal";
 import Reveal from "../components/Reveal";
 import BookingModal from "../components/BookingModal";
 import SEOHead from "../components/SEOHead";
-import nidhi1 from "../assets/image.png";
+import nidhi1 from "../assets/image.webp";
 
 export default function About() {
   const y = useScrollY();

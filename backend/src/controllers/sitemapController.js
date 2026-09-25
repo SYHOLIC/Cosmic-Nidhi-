@@ -15,15 +15,30 @@ exports.generateSitemap = async (req, res) => {
 
     // Static core routes
     const coreRoutes = [
-      { url: '/', priority: '1.0' },
-      { url: '/products', priority: '0.9' },
-      { url: '/services', priority: '0.8' },
+      { url: '/', priority: '1.0', changefreq: 'daily' },
+      { url: '/products', priority: '0.9', changefreq: 'daily' },
+      { url: '/services', priority: '0.8', changefreq: 'weekly' },
+      { url: '/calculators', priority: '0.8', changefreq: 'weekly' },
+      { url: '/pitra-dosh-calculator', priority: '0.9', changefreq: 'weekly' },
+      { url: '/zodiac', priority: '0.8', changefreq: 'weekly' },
+      { url: '/zodiac/aries', priority: '0.7', changefreq: 'monthly' },
+      { url: '/zodiac/taurus', priority: '0.7', changefreq: 'monthly' },
+      { url: '/zodiac/gemini', priority: '0.7', changefreq: 'monthly' },
+      { url: '/zodiac/cancer', priority: '0.7', changefreq: 'monthly' },
+      { url: '/zodiac/leo', priority: '0.7', changefreq: 'monthly' },
+      { url: '/zodiac/virgo', priority: '0.7', changefreq: 'monthly' },
+      { url: '/zodiac/libra', priority: '0.7', changefreq: 'monthly' },
+      { url: '/zodiac/scorpio', priority: '0.7', changefreq: 'monthly' },
+      { url: '/zodiac/sagittarius', priority: '0.7', changefreq: 'monthly' },
+      { url: '/zodiac/capricorn', priority: '0.7', changefreq: 'monthly' },
+      { url: '/zodiac/aquarius', priority: '0.7', changefreq: 'monthly' },
+      { url: '/zodiac/pisces', priority: '0.7', changefreq: 'monthly' },
     ];
 
     coreRoutes.forEach(route => {
       xml += `  <url>\n`;
       xml += `    <loc>${baseUrl}${route.url}</loc>\n`;
-      xml += `    <changefreq>daily</changefreq>\n`;
+      xml += `    <changefreq>${route.changefreq}</changefreq>\n`;
       xml += `    <priority>${route.priority}</priority>\n`;
       xml += `  </url>\n`;
     });
@@ -61,6 +76,7 @@ exports.generateSitemap = async (req, res) => {
     xml += `</urlset>`;
 
     res.header('Content-Type', 'application/xml');
+    res.header('Cache-Control', 'public, max-age=86400');
     res.send(xml);
   } catch (error) {
     res.status(500).send('Error generating sitemap');

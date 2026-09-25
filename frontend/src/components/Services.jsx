@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import BookingModal from './BookingModal';
-import vastuConsultationImg from '../assets/vastu-consultation.jpg';
+import vastuConsultationImg from '../assets/vastu-consultation.webp';
 
 const SERVICES = [
   {

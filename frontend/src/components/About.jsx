@@ -3,7 +3,7 @@ import { motion, useInView } from "framer-motion";
 import Reveal from "./Reveal";
 import BookingModal from "./BookingModal";
 import aboutChart from "../assets/about-img.webp";
-import nidhi1 from "../assets/image.png";
+import nidhi1 from "../assets/image.webp";
 
 export default function About() {
   const sectionRef = useRef(null);
@@ -120,6 +120,8 @@ export default function About() {
               <img
                 src={nidhi1}
                 alt="Nidhi Asthana - Cosmic Nidhi Founder"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-auto object-cover"
               />
               <div className="absolute inset-0 border-2 border-[#E9A534]/30 rounded-2xl pointer-events-none" />

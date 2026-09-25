@@ -17,18 +17,18 @@ import Reveal from "../components/Reveal";
 import SEOHead from "../components/SEOHead";
 
 /* Zodiac icons */
-import aries from "../assets/aries.png";
-import taurus from "../assets/taurus.png";
-import gemini from "../assets/gemini.png";
-import cancer from "../assets/cancer.png";
-import leo from "../assets/leo.png";
-import virgo from "../assets/virgo.png";
-import libra from "../assets/libra.png";
-import scorpio from "../assets/scorpio.png";
-import sagittarius from "../assets/sagittarius.png";
-import capricorn from "../assets/capricorn.png";
-import aquarius from "../assets/aquarius.png";
-import pisces from "../assets/pisces.png";
+import aries from "../assets/aries.webp";
+import taurus from "../assets/taurus.webp";
+import gemini from "../assets/gemini.webp";
+import cancer from "../assets/cancer.webp";
+import leo from "../assets/leo.webp";
+import virgo from "../assets/virgo.webp";
+import libra from "../assets/libra.webp";
+import scorpio from "../assets/scorpio.webp";
+import sagittarius from "../assets/sagittarius.webp";
+import capricorn from "../assets/capricorn.webp";
+import aquarius from "../assets/aquarius.webp";
+import pisces from "../assets/pisces.webp";
 
 const ZODIAC_SIGNS = [
   {

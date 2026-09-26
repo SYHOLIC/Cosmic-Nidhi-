@@ -207,9 +207,24 @@ export default function AuthPage() {
         return;
       }
 
-      setApiError(
-        error.response?.data?.message || "Something went wrong. Please try again."
-      );
+      const serverMessage =
+        typeof error.response?.data?.message === "string"
+          ? error.response.data.message
+          : typeof error.response?.data === "string" && error.response.data.length < 150
+          ? error.response.data
+          : null;
+
+      if (serverMessage) {
+        setApiError(serverMessage);
+      } else if (error.response?.status === 401) {
+        setApiError("Invalid email or password. Please verify your credentials.");
+      } else if (error.response?.status === 404) {
+        setApiError("Service endpoint not found (404). Please contact support or check server status.");
+      } else if (!error.response && error.message) {
+        setApiError("Network error: Unable to reach the server. Please check your connection.");
+      } else {
+        setApiError("Something went wrong. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }

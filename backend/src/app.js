@@ -32,27 +32,32 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' })); // ← Changed
 
 
 
-// Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/categories', categoryRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/bookings', bookingRoutes);
-app.use('/api/payment', paymentRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/coupons', couponRoutes);
-app.use('/api/reviews', reviewRoutes);
-app.use('/api/seo', seoRoutes);
-app.use('/api/pages', pageRoutes);
-app.use('/api/contact', contactRoutes);
+// Routes (mounted at both /api/* and /* for full compatibility with all client environments)
+const mountRoute = (path, handler) => {
+  app.use(`/api${path}`, handler);
+  app.use(path, handler);
+};
+
+mountRoute('/auth', authRoutes);
+mountRoute('/users', userRoutes);
+mountRoute('/products', productRoutes);
+mountRoute('/categories', categoryRoutes);
+mountRoute('/orders', orderRoutes);
+mountRoute('/bookings', bookingRoutes);
+mountRoute('/payment', paymentRoutes);
+mountRoute('/admin', adminRoutes);
+mountRoute('/coupons', couponRoutes);
+mountRoute('/reviews', reviewRoutes);
+mountRoute('/seo', seoRoutes);
+mountRoute('/pages', pageRoutes);
+mountRoute('/contact', contactRoutes);
 
 // SEO: Sitemap, Robots, Ads
 app.use('/sitemap.xml', sitemapRoutes);
 app.get('/robots.txt', (req, res) => {
   res.type('text/plain');
   res.set('Cache-Control', 'public, max-age=86400');
-  const baseUrl = process.env.FRONTEND_URL || 'https://cosmic-nidhi.onrender.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://cosmicnidhi-front.onrender.com';
   res.send(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /dashboard\nDisallow: /checkout\nDisallow: /cart\n\nSitemap: ${baseUrl}/sitemap.xml\nSitemap: https://cosmicnidhi.com/sitemap.xml\n`);
 });
 app.get('/ads.txt', (req, res) => {
@@ -63,14 +68,16 @@ app.get('/ads.txt', (req, res) => {
 app.get('/llms.txt', (req, res) => {
   res.type('text/plain');
   res.set('Cache-Control', 'public, max-age=86400');
-  const baseUrl = process.env.FRONTEND_URL || 'https://cosmic-nidhi.onrender.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://cosmicnidhi-front.onrender.com';
   res.send(`# Cosmic Nidhi - Vedic Astrology & Vastu Consultation\n> Authentic Vedic astrology, personalized birth chart readings, applied Vastu consultations, and certified spiritual gemstones.\n\n## Overview\nCosmic Nidhi is a premier platform dedicated to authentic Vedic wisdom, personalized astrological analysis, and spatial energy alignment.\n\n## Key URLs\n- Homepage: ${baseUrl}/\n- Services: ${baseUrl}/services\n- Products: ${baseUrl}/products\n- Pitra Dosh Calculator: ${baseUrl}/pitra-dosh-calculator\n- Zodiac Index: ${baseUrl}/zodiac\n- About: ${baseUrl}/about\n- Contact: ${baseUrl}/contact\n`);
 });
 
-// Health check
-app.get('/api/health', (req, res) => {
+// Health check (available at both /api/health and /health)
+const healthHandler = (req, res) => {
   res.json({ status: 'OK', message: 'Cosmic Nidhi API is running' });
-});
+};
+app.get('/api/health', healthHandler);
+app.get('/health', healthHandler);
 
 // Error handling
 app.use(errorHandler);

@@ -371,7 +371,7 @@ const sendAppointmentConfirmationEmail = async (booking) => {
     detailsList,
     note: `Please keep your exact date of birth, time of birth (with am/pm), and place of birth ready. Our team or astrologer will connect with you via your registered phone number / WhatsApp before the call.`,
     actionText: 'View in My Dashboard',
-    actionUrl: 'https://cosmic-nidhi-frontend.onrender.com/dashboard',
+    actionUrl: `${process.env.FRONTEND_URL || 'https://cosmicnidhi-front.onrender.com'}/dashboard`,
   });
 
   const text = `Namaste ${recipientName},\n\nYour consultation "${booking.serviceName}" has been scheduled for ${bookingDate} at ${booking.time}.\n\nReference: #${String(booking._id).slice(-6).toUpperCase()}\nConsultant: Astrologer Nidhi Asthana\n\nBlessings,\nCosmic Nidhi`;
@@ -411,7 +411,7 @@ const sendAppointmentRescheduledEmail = async (booking) => {
     detailsList,
     note: `If you have any questions or this updated slot does not work for you, you can reschedule again from your dashboard or contact our support team.`,
     actionText: 'Manage Booking in Dashboard',
-    actionUrl: 'https://cosmic-nidhi-frontend.onrender.com/dashboard',
+    actionUrl: `${process.env.FRONTEND_URL || 'https://cosmicnidhi-front.onrender.com'}/dashboard`,
   });
 
   const text = `Namaste ${recipientName},\n\nYour consultation has been rescheduled to ${bookingDate} at ${booking.time}.\n\nReference: #${String(booking._id).slice(-6).toUpperCase()}\n\nBlessings,\nCosmic Nidhi`;
@@ -450,7 +450,7 @@ const sendAppointmentReminderEmail = async (booking) => {
     detailsList,
     note: `Please ensure you are in a quiet, undisturbed space during your reading. Have your specific questions, birth chart details, and any notes handy.`,
     actionText: 'View Dashboard',
-    actionUrl: 'https://cosmic-nidhi-frontend.onrender.com/dashboard',
+    actionUrl: `${process.env.FRONTEND_URL || 'https://cosmicnidhi-front.onrender.com'}/dashboard`,
   });
 
   const text = `Namaste ${recipientName},\n\nReminder: Your consultation "${booking.serviceName}" is scheduled for ${bookingDate} at ${booking.time}.\n\nBlessings,\nCosmic Nidhi`;

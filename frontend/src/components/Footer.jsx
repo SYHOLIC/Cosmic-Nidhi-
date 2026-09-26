@@ -512,7 +512,7 @@ function Footer() {
                 hover:text-[#E9A534]
               "
             >
-              www.cosmicnidhi.in
+              cosmicnidhi.in
             </a>
 
             <span className="text-[#E9A534]/40 select-none">|</span>

@@ -11,6 +11,7 @@ const { optionalProtect } = require('../middleware/auth');
 router.get('/config', getPaymentConfig);
 router.post('/create-order', optionalProtect, createRazorpayOrder);
 router.post('/verify', optionalProtect, verifyPayment);
+router.post('/verify-payment', optionalProtect, verifyPayment);
 router.post('/verify-upi', optionalProtect, verifyUpiPayment);
 
 module.exports = router;

@@ -45,6 +45,14 @@ mountRoute('/categories', categoryRoutes);
 mountRoute('/orders', orderRoutes);
 mountRoute('/bookings', bookingRoutes);
 mountRoute('/payment', paymentRoutes);
+
+// Direct Razorpay Standard Checkout endpoints (/api/create-order and /api/verify-payment)
+const { createRazorpayOrder, verifyPayment } = require('./controllers/paymentController');
+const { optionalProtect } = require('./middleware/auth');
+app.post('/api/create-order', optionalProtect, createRazorpayOrder);
+app.post('/create-order', optionalProtect, createRazorpayOrder);
+app.post('/api/verify-payment', optionalProtect, verifyPayment);
+app.post('/verify-payment', optionalProtect, verifyPayment);
 mountRoute('/admin', adminRoutes);
 mountRoute('/coupons', couponRoutes);
 mountRoute('/reviews', reviewRoutes);

@@ -1519,7 +1519,7 @@ export default function Dashboard() {
       );
 
       const rzpOrder = rzpRes.data.order;
-      const keyId = rzpRes.data.keyId || "rzp_test_TeAqFB25uZz5vD";
+      const keyId = rzpRes.data.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_Tgx0nUvMcuNrUX";
 
       const options = {
         key: keyId,

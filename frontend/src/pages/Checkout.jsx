@@ -36,10 +36,11 @@ export default function CheckoutPage() {
   const [couponError, setCouponError] = useState("");
   const [applyingCoupon, setApplyingCoupon] = useState(false);
 
-  // Payment mode state
-  const [selectedPaymentMode, setSelectedPaymentMode] = useState("upi_qr");
+  // Payment mode state (default to Razorpay Gateway)
+  const [selectedPaymentMode, setSelectedPaymentMode] = useState("gateway");
   const [showUpiModal, setShowUpiModal] = useState(false);
   const [activeOrderData, setActiveOrderData] = useState(null);
+  const [checkoutError, setCheckoutError] = useState("");
 
   const [savingAddress, setSavingAddress] = useState(false);
 
@@ -186,7 +187,7 @@ export default function CheckoutPage() {
     const { totalAmount, razorpayOrderId, razorpayKey, localOrderId, address } = orderData;
 
     const options = {
-      key: razorpayKey || "rzp_test_TeAqFB25uZz5vD",
+      key: razorpayKey || import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_Tgx0nUvMcuNrUX",
       amount: Math.round(totalAmount * 100),
       currency: "INR",
       name: "Cosmic Nidhi",
@@ -214,6 +215,12 @@ export default function CheckoutPage() {
           }
         }
       },
+      modal: {
+        ondismiss: function () {
+          setIsProcessing(false);
+          console.log("Razorpay checkout modal dismissed by user");
+        }
+      },
       handler: async function (response) {
         try {
           const token = localStorage.getItem("token");
@@ -223,14 +230,19 @@ export default function CheckoutPage() {
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
+              order_id: response.razorpay_order_id,
+              payment_id: response.razorpay_payment_id,
+              signature: response.razorpay_signature,
               local_order_id: localOrderId,
             },
             { headers: { Authorization: `Bearer ${token}` } }
           );
 
+          setIsProcessing(false);
           clearCart();
           navigate("/dashboard");
         } catch (err) {
+          setIsProcessing(false);
           console.error("Payment verification failed", err);
           alert("Payment verification failed: " + (err.response?.data?.message || err.message));
         }
@@ -246,6 +258,7 @@ export default function CheckoutPage() {
 
     const rzp = new window.Razorpay(options);
     rzp.on("payment.failed", function (response) {
+      setIsProcessing(false);
       alert("Payment failed: " + (response.error?.description || "Transaction cancelled"));
     });
     rzp.open();
@@ -253,8 +266,11 @@ export default function CheckoutPage() {
 
   const handlePayment = async (overrideMode) => {
     const mode = overrideMode || selectedPaymentMode;
+    setCheckoutError("");
+
     if (!selectedAddressId) {
-      alert("Please select a delivery address.");
+      setCheckoutError("Please select or add a delivery address to proceed.");
+      setShowAddForm(true);
       return;
     }
     setIsProcessing(true);
@@ -279,6 +295,11 @@ export default function CheckoutPage() {
         image: item.image || (Array.isArray(item.images) ? (item.images[0]?.url || item.images[0]) : "") || ""
       }));
 
+      // Normalize phone and pincode to guarantee valid formatting
+      const rawPhone = String(address.phone || "").replace(/\D/g, "");
+      const cleanPhone = rawPhone.length >= 10 ? rawPhone.slice(-10) : rawPhone;
+      const cleanPincode = String(address.pincode || "").replace(/\D/g, "").slice(0, 6);
+
       // 1. Create MongoDB Order (pending state)
       const orderRes = await axios.post(
         `${API_URL}/orders`,
@@ -286,11 +307,11 @@ export default function CheckoutPage() {
           items: cleanItems,
           shippingAddress: {
             name: address.name,
-            phone: address.phone,
+            phone: cleanPhone,
             address: address.address,
             city: address.city,
             state: address.state,
-            pincode: address.pincode,
+            pincode: cleanPincode,
           },
           subtotal,
           totalAmount,
@@ -305,11 +326,11 @@ export default function CheckoutPage() {
       // 2. Create Razorpay Order & fetch payment configuration
       const rzpRes = await axios.post(
         `${API_URL}/payment/create-order`,
-        { amount: totalAmount, orderNumber },
+        { amount: totalAmount, orderNumber, is_rupees: true },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      const razorpayOrderId = rzpRes.data.order.id;
-      const razorpayKey = rzpRes.data.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_TeAqFB25uZz5vD";
+      const razorpayOrderId = rzpRes.data.order_id || rzpRes.data.order?.id;
+      const razorpayKey = rzpRes.data.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_Tgx0nUvMcuNrUX";
       const upiId = rzpRes.data.upiId || "8005824565@paytm";
 
       const orderPayload = {
@@ -319,7 +340,10 @@ export default function CheckoutPage() {
         razorpayOrderId,
         razorpayKey,
         upiId,
-        address,
+        address: {
+          ...address,
+          phone: cleanPhone,
+        },
       };
 
       setActiveOrderData(orderPayload);
@@ -330,9 +354,9 @@ export default function CheckoutPage() {
         openRazorpayModal(orderPayload);
       }
     } catch (err) {
-      console.error(err);
-      const errMsg = err.response?.data?.error || err.response?.data?.message || "Something went wrong while initiating payment.";
-      alert(errMsg);
+      console.error("Payment initiation error:", err);
+      const errMsg = err.response?.data?.message || err.response?.data?.error || err.message || "Something went wrong while initiating payment.";
+      setCheckoutError(errMsg);
     } finally {
       setIsProcessing(false);
     }
@@ -653,6 +677,13 @@ export default function CheckoutPage() {
                   </label>
                 </div>
               </div>
+
+              {checkoutError && (
+                <div className="mt-4 flex items-center gap-2 rounded-xl border border-red-500/40 bg-red-950/60 p-3 text-xs font-semibold text-red-200">
+                  <span className="shrink-0 text-red-400">⚠️</span>
+                  <span>{checkoutError}</span>
+                </div>
+              )}
 
               <button
                 type="button"

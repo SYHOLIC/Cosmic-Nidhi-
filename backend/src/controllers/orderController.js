@@ -137,7 +137,15 @@ const createOrder = async (req, res) => {
     }
 
     if (shippingAddress) {
-      if (shippingAddress.name && !/^[a-zA-Z\s]{2,50}$/.test(String(shippingAddress.name).trim())) {
+      if (shippingAddress.phone) {
+        const cleanDigits = String(shippingAddress.phone).replace(/\D/g, '');
+        shippingAddress.phone = cleanDigits.length >= 10 ? cleanDigits.slice(-10) : cleanDigits;
+      }
+      if (shippingAddress.pincode) {
+        const cleanPin = String(shippingAddress.pincode).replace(/\D/g, '');
+        shippingAddress.pincode = cleanPin.slice(0, 6);
+      }
+      if (shippingAddress.name && !/^[a-zA-Z\s.]{2,50}$/.test(String(shippingAddress.name).trim())) {
         return res.status(400).json({
           success: false,
           message: 'Shipping Full Name must contain only alphabets and spaces',
@@ -146,7 +154,7 @@ const createOrder = async (req, res) => {
       if (shippingAddress.phone && !/^\d{10}$/.test(String(shippingAddress.phone).trim())) {
         return res.status(400).json({
           success: false,
-          message: 'Shipping phone number must be exactly 10 digits',
+          message: 'Shipping phone number must be a valid 10-digit number',
         });
       }
       if (shippingAddress.pincode && !/^\d{6}$/.test(String(shippingAddress.pincode).trim())) {

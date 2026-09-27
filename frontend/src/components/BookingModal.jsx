@@ -360,7 +360,7 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
         const { order, keyId } = orderRes.data;
 
         const options = {
-          key: keyId || "rzp_test_TeAqFB25uZz5vD",
+          key: keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_Tgx0nUvMcuNrUX",
           amount: order.amount,
           currency: "INR",
           name: "Cosmic Nidhi",

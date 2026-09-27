@@ -9,7 +9,7 @@ import nidhi1 from "../assets/image.webp";
 export default function About() {
   const y = useScrollY();
   const counterRef = useRef(null);
-  const isCounterInView = useInView(counterRef, { once: true, margin: "-20px" });
+  const isCounterInView = useInView(counterRef, { once: true, margin: "60px 0px" });
 
   // Counter state
   const [years, setYears] = useState(0);
@@ -173,9 +173,10 @@ export default function About() {
 
               {/* Years badge */}
               <motion.div
+                ref={counterRef}
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.7, delay: 0.5 }}
+                transition={{ duration: 0.7, delay: 0.3 }}
                 viewport={{ once: true }}
                 className="absolute -top-3 left-0 sm:-top-4 sm:-left-4 z-20 bg-[#FFF7E9] border-2 border-[#E9A534] rounded-xl px-6 py-4 shadow-xl text-center flex flex-col items-center justify-center will-change-transform"
               >

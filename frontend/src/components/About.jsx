@@ -7,41 +7,47 @@ import nidhi1 from "../assets/image.webp";
 
 export default function About() {
   const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  const counterRef = useRef(null);
+  const isInView = useInView(sectionRef, { once: true, margin: "0px" });
+  const isCounterInView = useInView(counterRef, { once: true, margin: "60px 0px" });
 
   // Counter for years
   const [years, setYears] = useState(0);
-  const [hasAnimated, setHasAnimated] = useState(false);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
 
+  // Silky smooth 60fps counter animation
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated) {
-          setHasAnimated(true);
-          const target = 10;
-          let current = 0;
-          const increment = target / 60;
-          const timer = setInterval(() => {
-            current += increment;
-            if (current >= target) {
-              setYears(target);
-              clearInterval(timer);
-            } else {
-              setYears(Math.floor(current));
-            }
-          }, 50);  // 50ms × 60 steps = ~3000ms — smooth and natural
-          return () => clearInterval(timer);
-        }
-      },
-      { threshold: 0.3 }
-    );
+    if (!isCounterInView) return;
+    let startTimestamp = null;
+    const duration = 1800;
+    const target = 10;
+    let animId;
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-    return () => observer.disconnect();
-  }, [hasAnimated]);
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      setYears(Math.min(Math.floor(easeOut * (target + 0.99)), target));
+      if (progress < 1) {
+        animId = requestAnimationFrame(step);
+      } else {
+        setYears(target);
+      }
+    };
+    animId = requestAnimationFrame(step);
+
+    return () => {
+      if (animId) cancelAnimationFrame(animId);
+    };
+  }, [isCounterInView]);
+
+  // Reliable fallback so counter is NEVER stuck at 0 on any device/viewport
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setYears(10);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Features data
   const features = [
@@ -131,9 +137,10 @@ export default function About() {
 
             {/* Years badge */}
             <motion.div
+              ref={counterRef}
               initial={{ opacity: 0, x: -20 }}
-              animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.7, delay: 0.5 }}
+              animate={isInView || isCounterInView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.7, delay: 0.3 }}
               className="absolute -top-4 -left-4 bg-[#FFF7E9] border-2 border-[#E9A534] rounded-xl px-6 py-4 shadow-xl text-center flex flex-col items-center justify-center"
             >
               <p className="font-display text-4xl bg-gradient-to-r from-[#5A0E14] via-[#C1272D] to-[#E9A534] bg-clip-text text-transparent">

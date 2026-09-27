@@ -21,6 +21,8 @@ import SEOHead from "../components/SEOHead";
 /* Zodiac chakra backdrop */
 import heroZodiac from "../assets/hero-zodiac3.webp";
 import vastuConsultationImg from "../assets/vastu-consultation.webp";
+import birthChartImg from "../assets/about.webp";
+import numerologyImg from "../assets/image.webp";
 
 /* ================================================================
    SERVICES DATA
@@ -33,8 +35,7 @@ const SERVICES = [
     title: "Numerology Consultation",
     subtitle: "Decode Your Numbers. Understand Your Patterns. Discover Your Possibilities.",
     desc: "In traditional Vedic and Chaldean numerology, numbers associated with your name and birth date reveal recurring life themes, core strengths, and pivotal cycles.\n\nAt Cosmic Nidhi, we combine traditional principles with practical interpretation to help you discover what your numbers represent and gain clarity for career, relationships, and personal growth.",
-    image:
-      "https://cosmicnidhi.in/wp-content/uploads/2024/04/img_5-700x800.jpg",
+    image: numerologyImg,
     accent: "#E9A534",
     type: "Numerology",
     deliverables: "Numerology report, video/phone call, name-analysis notes",
@@ -58,8 +59,7 @@ const SERVICES = [
     title: "Birth Chart / Janam Kundli Reading",
     subtitle: "Understand your life patterns & timing",
     desc: "A personalised birth-chart consultation uses your date, exact time and place of birth to explore selected themes such as personality patterns, relationships, work, strengths, challenges and upcoming periods. The session is tailored to your questions and does not present life as fixed or predetermined.",
-    image:
-      "https://cosmicnidhi.in/wp-content/uploads/2019/05/img_2-700x800.jpg",
+    image: birthChartImg,
     accent: "#C1272D",
     type: "Vedic & Western",
     deliverables:

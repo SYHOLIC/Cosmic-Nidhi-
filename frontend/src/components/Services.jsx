@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import BookingModal from './BookingModal';
 import vastuConsultationImg from '../assets/vastu-consultation.webp';
+import birthChartImg from '../assets/about.webp';
+import numerologyImg from '../assets/image.webp';
 
 const SERVICES = [
   {
@@ -10,7 +12,7 @@ const SERVICES = [
     title: 'Numerology Consultation',
     subtitle: 'Decode Your Numbers. Understand Your Patterns. Discover Your Possibilities.',
     desc: 'Numbers are more than just digits. In traditional numerology, numbers associated with your name and date of birth are interpreted to understand recurring patterns, tendencies and life themes.\n\nAt Cosmic Nidhi, we bring a modern and personalized approach to Vedic Numerology, combining traditional principles with detailed analysis and practical interpretation.',
-    image: 'https://cosmicnidhi.in/wp-content/uploads/2024/04/img_5-700x800.jpg',
+    image: numerologyImg,
     accent: '#E9A534',
     type: 'Numerology',
     deliverables: 'Numerology report, video/phone call, name-analysis notes',
@@ -46,7 +48,7 @@ const SERVICES = [
     title: 'Birth Chart / Janam Kundli Reading',
     subtitle: 'Understand your life patterns & timing',
     desc: 'A personalised birth-chart consultation uses your date, exact time and place of birth to explore selected themes such as personality patterns, relationships, work, strengths, challenges and upcoming periods. The session is tailored to your questions and does not present life as fixed or predetermined.',
-    image: 'https://cosmicnidhi.in/wp-content/uploads/2019/05/img_2-700x800.jpg',
+    image: birthChartImg,
     accent: '#C1272D',
     type: 'Vedic & Western',
     deliverables: 'Chart PDF, consultation call, written summary, recording, follow-up questions',

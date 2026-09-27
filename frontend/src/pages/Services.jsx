@@ -21,8 +21,9 @@ import SEOHead from "../components/SEOHead";
 /* Zodiac chakra backdrop */
 import heroZodiac from "../assets/hero-zodiac3.webp";
 import vastuConsultationImg from "../assets/vastu-consultation.webp";
-import birthChartImg from "../assets/about.webp";
-import numerologyImg from "../assets/image.webp";
+import birthChartImg from "../assets/birth-chart.jpg";
+import numerologyImg from "../assets/numerology-consultation.jpg";
+import kundliMatchingImg from "../assets/kundli-matching.jpg";
 
 /* ================================================================
    SERVICES DATA
@@ -106,8 +107,7 @@ const SERVICES = [
     title: "Kundli Matching / Relationship Guidance",
     subtitle: "Understand the Connection. Explore the Compatibility. Strengthen the Journey.",
     desc: "Every relationship has its own unique dynamics. Through a comparative reading of two birth kundlis, we explore planetary alignments, compatibility indicators, and communication patterns.\n\nOur approach goes beyond traditional Guna Milan scores, helping both partners foster mutual understanding and make confident life decisions together.",
-    image:
-      "https://www.hiastro.in/_next/image?url=https:%2F%2Fsteadfast-cows-9445c3a50f.media.strapiapp.com%2FUnlock_Zodiac_Love_Compatibility_Your_Cosmic_Guide_2bfc1451f0.jpg&w=1920&q=75",
+    image: kundliMatchingImg,
     accent: "#C1272D",
     type: "Compatibility",
     deliverables: "Compatibility report and/or consultation · Both Bride & Groom DOB and Name required",

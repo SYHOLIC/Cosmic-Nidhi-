@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import BookingModal from './BookingModal';
 import vastuConsultationImg from '../assets/vastu-consultation.webp';
-import birthChartImg from '../assets/about.webp';
-import numerologyImg from '../assets/image.webp';
+import birthChartImg from '../assets/birth-chart.jpg';
+import numerologyImg from '../assets/numerology-consultation.jpg';
+import kundliMatchingImg from '../assets/kundli-matching.jpg';
 
 const SERVICES = [
   {
@@ -76,7 +77,7 @@ const SERVICES = [
     title: 'Kundli Matching / Relationship Guidance',
     subtitle: 'Understand the Connection. Explore the Compatibility. Strengthen the Journey.',
     desc: 'Every relationship has its own unique dynamics. Through a comparative reading of two birth kundlis, we explore planetary influences, compatibility indicators, communication patterns, strengths and areas that may require greater understanding.\n\nOur approach goes beyond simply looking at traditional matching scores. It brings together relevant astrological perspectives to help you understand the patterns, possibilities and dynamics within a relationship.\n\nThe consultation is designed to encourage awareness, meaningful conversation and thoughtful reflection, helping you approach your relationship journey with greater clarity and understanding.',
-    image: 'https://www.hiastro.in/_next/image?url=https:%2F%2Fsteadfast-cows-9445c3a50f.media.strapiapp.com%2FUnlock_Zodiac_Love_Compatibility_Your_Cosmic_Guide_2bfc1451f0.jpg&w=1920&q=75',
+    image: kundliMatchingImg,
     accent: '#C1272D',
     type: 'Compatibility',
     deliverables: 'Compatibility report and/or consultation · Both Bride & Groom DOB and Name required',

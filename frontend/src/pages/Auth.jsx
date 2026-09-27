@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Reveal from "../components/Reveal";
+import SEOHead from "../components/SEOHead";
 
 /* Zodiac chakra backdrop */
 import heroZodiac from "../assets/hero-zodiac3.webp";
@@ -296,6 +297,12 @@ export default function AuthPage() {
 
   return (
     <section className="relative flex min-h-[100svh] items-center overflow-hidden bg-[#FFF7E9] pb-6 pt-[74px] lg:pt-[78px]">
+      <SEOHead
+        pageName="auth"
+        fallbackTitle="Sign In / Register | Cosmic Nidhi"
+        fallbackDescription="Access your Cosmic Nidhi account to manage astrology consultations and spiritual gemstone orders."
+        noindex={true}
+      />
 
       {/* Ambient glows */}
       <div className="pointer-events-none absolute -right-32 top-0 h-[500px] w-[500px] rounded-full bg-[#C1272D]/[0.05] blur-[120px]" />

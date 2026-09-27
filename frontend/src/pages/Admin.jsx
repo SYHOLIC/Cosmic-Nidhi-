@@ -43,6 +43,7 @@ import ReviewTab from "../components/admin/ReviewTab";
 import SeoTab from "../components/admin/SeoTab";
 import PageTab from "../components/admin/PageTab";
 import BookingTab from "../components/admin/BookingTab";
+import SEOHead from "../components/SEOHead";
 import MessageTab from "../components/admin/MessageTab";
 import AdminNotifications from "../components/admin/AdminNotifications";
 
@@ -1244,6 +1245,12 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-[calc(100svh-78px)] bg-[#FFF7E9]">
+      <SEOHead
+        pageName="admin"
+        fallbackTitle="Admin Portal | Cosmic Nidhi"
+        fallbackDescription="Cosmic Nidhi administration console."
+        noindex={true}
+      />
 
       <Sidebar
         activeTab={activeTab}

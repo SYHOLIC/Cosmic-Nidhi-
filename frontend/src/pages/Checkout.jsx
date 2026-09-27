@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import UPIPaymentModal from "../components/UPIPaymentModal";
+import SEOHead from "../components/SEOHead";
 
 import { API_URL } from "../config/api";
 import { loadRazorpay } from "../utils/loadRazorpay";
@@ -347,6 +348,12 @@ export default function CheckoutPage() {
 
   return (
     <main className="min-h-screen bg-[#FFFDF9] pt-28 pb-20">
+      <SEOHead
+        pageName="checkout"
+        fallbackTitle="Secure Checkout | Cosmic Nidhi"
+        fallbackDescription="Complete your astrology consultation booking or gemstone purchase securely."
+        noindex={true}
+      />
       <div className="mx-auto max-w-[1200px] px-5 sm:px-7 lg:px-10">
         
         <div className="mb-8">

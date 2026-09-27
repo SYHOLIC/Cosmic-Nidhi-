@@ -112,7 +112,7 @@ export default function SEOHead({
           "cosmic nidhi, zodiac jewelry, crystals, astrology consultations, pitra dosh calculator, vedic remedies";
 
         const currentUrl = canonicalUrl || (typeof window !== "undefined" ? window.location.href : "https://cosmicnidhi.com");
-        const finalImage = image || fallbackImage || "https://cosmicnidhi.com/assets/about-img.webp";
+        const finalImage = image || fallbackImage || "https://cosmicnidhi.com/og-image.webp";
 
         // 1. Title Tag
         document.title = finalTitle;
@@ -120,7 +120,11 @@ export default function SEOHead({
         // 2. Standard Meta Tags
         updateMeta("name", "description", finalDesc);
         updateMeta("name", "keywords", finalKeywords);
-        updateMeta("name", "robots", noindex ? "noindex, nofollow" : "index, follow");
+        updateMeta(
+          "name",
+          "robots",
+          noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+        );
 
         // 3. Open Graph Tags
         updateMeta("property", "og:type", type);
@@ -129,12 +133,17 @@ export default function SEOHead({
         updateMeta("property", "og:description", finalDesc);
         updateMeta("property", "og:url", currentUrl);
         updateMeta("property", "og:image", finalImage);
+        updateMeta("property", "og:image:alt", finalTitle);
+        updateMeta("property", "og:locale", "en_IN");
 
         // 4. Twitter Card Tags
         updateMeta("name", "twitter:card", "summary_large_image");
+        updateMeta("name", "twitter:site", "@cosmicnidhi");
+        updateMeta("name", "twitter:creator", "@cosmicnidhi");
         updateMeta("name", "twitter:title", finalTitle);
         updateMeta("name", "twitter:description", finalDesc);
         updateMeta("name", "twitter:image", finalImage);
+        updateMeta("name", "twitter:image:alt", finalTitle);
 
         // 5. Canonical Link
         updateLink("canonical", currentUrl);

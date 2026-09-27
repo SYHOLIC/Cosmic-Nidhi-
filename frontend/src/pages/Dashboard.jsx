@@ -31,6 +31,7 @@ import {
 import Reveal from "../components/Reveal";
 import BookingModal from "../components/BookingModal";
 import { loadRazorpay } from "../utils/loadRazorpay";
+import SEOHead from "../components/SEOHead";
 
 /* Zodiac chakra backdrop */
 import heroZodiac from "../assets/hero-zodiac3.webp";
@@ -1609,6 +1610,12 @@ export default function Dashboard() {
 
   return (
     <>
+      <SEOHead
+        pageName="dashboard"
+        fallbackTitle="My Account & Readings | Cosmic Nidhi"
+        fallbackDescription="Manage your astrology bookings, personal birth chart reports, and order history."
+        noindex={true}
+      />
       {/* HERO BAND (dark) */}
       <section className="relative overflow-hidden border-b border-[#E9A534]/15 bg-[#180205] pt-32 pb-16 md:pt-40 md:pb-20">
 

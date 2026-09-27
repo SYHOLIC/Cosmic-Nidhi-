@@ -58,7 +58,7 @@ app.get('/robots.txt', (req, res) => {
   res.type('text/plain');
   res.set('Cache-Control', 'public, max-age=86400');
   const baseUrl = process.env.FRONTEND_URL || 'https://cosmicnidhi-front.onrender.com';
-  res.send(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /dashboard\nDisallow: /checkout\nDisallow: /cart\n\nSitemap: ${baseUrl}/sitemap.xml\nSitemap: https://cosmicnidhi.com/sitemap.xml\n`);
+  res.send(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /admin/\nDisallow: /dashboard\nDisallow: /dashboard/\nDisallow: /checkout\nDisallow: /checkout/\nDisallow: /cart\nDisallow: /cart/\nDisallow: /auth\nDisallow: /auth/\nDisallow: /api/\n\nSitemap: https://cosmicnidhi.com/sitemap.xml\nSitemap: ${baseUrl}/sitemap.xml\n`);
 });
 app.get('/ads.txt', (req, res) => {
   res.type('text/plain');

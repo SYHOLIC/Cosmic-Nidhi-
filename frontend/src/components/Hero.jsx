@@ -220,7 +220,10 @@ function Hero() {
           mx-auto
           h-full
           max-w-[1770px]
-          px-[6.4%]
+          px-5
+          sm:px-6
+          md:px-8
+          lg:px-[6.4%]
         "
       >
         <div className="relative h-full">
@@ -291,7 +294,7 @@ function Hero() {
                   text-[#FFF8EC]
                 "
               >
-                <span className="block text-xs sm:text-sm font-sans tracking-[0.25em] uppercase text-[#E9A534] font-semibold mb-2">
+                <span className="block text-[11px] sm:text-sm font-sans tracking-[0.16em] sm:tracking-[0.25em] uppercase text-[#E9A534] font-semibold mb-2">
                   Cosmic Nidhi • Vedic Astrology & Vastu Consultation
                 </span>
                 <span className="block">
@@ -347,10 +350,11 @@ function Hero() {
             <Reveal delay={300}>
               <div
                 className="
-                  mt-[34px]
+                  mt-[26px] sm:mt-[34px]
                   flex
+                  flex-wrap
                   items-center
-                  gap-[28px]
+                  gap-3.5 sm:gap-[28px]
                 "
               >
                 {/* PRIMARY */}
@@ -362,18 +366,18 @@ function Hero() {
                   className="
                     group
                     inline-flex
-                    h-[58px]
+                    h-[52px] sm:h-[58px]
                     items-center
-                    gap-[18px]
+                    gap-3 sm:gap-[18px]
                     rounded-[9px]
                     border
                     border-[#F2C66D]
                     bg-gradient-to-r
                     from-[#F3D49B]
                     to-[#DDB56D]
-                    px-[30px]
+                    px-5 sm:px-[30px]
                     font-sans
-                    text-[13px]
+                    text-[12px] sm:text-[13px]
                     font-semibold
                     text-[#3C080D]
                     shadow-[0_12px_32px_rgba(0,0,0,0.26)]
@@ -414,7 +418,7 @@ function Hero() {
                     items-center
                     gap-[9px]
                     font-sans
-                    text-[13px]
+                    text-[12px] sm:text-[13px]
                     font-medium
                     text-[#EBD7B1]
                     transition-colors
@@ -912,8 +916,8 @@ function Hero() {
           }
 
           .cosmic-hero > .relative.z-20 {
-            padding-left: 0;
-            padding-right: 0;
+            padding-left: 24px;
+            padding-right: 24px;
           }
 
           .hero-zodiac {
@@ -973,6 +977,11 @@ function Hero() {
           .cosmic-hero {
             height: 830px;
             min-height: 830px;
+          }
+
+          .cosmic-hero > .relative.z-20 {
+            padding-left: 20px;
+            padding-right: 20px;
           }
 
           .cosmic-heading {

@@ -12,7 +12,7 @@ const getBaseApiUrl = () => {
     window.location.hostname !== 'localhost' &&
     window.location.hostname !== '127.0.0.1'
   ) {
-    return 'https://cosmicnidhi-back.onrender.com/api';
+    return 'https://cosmic-nidhi-backend.onrender.com/api';
   }
   return 'http://localhost:5000/api';
 };

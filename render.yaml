@@ -43,6 +43,6 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_URL
-        value: https://cosmicnidhi-back.onrender.com/api
+        value: https://cosmic-nidhi-backend.onrender.com/api
       - key: VITE_RAZORPAY_KEY_ID
         value: rzp_live_ThtGnZqbg36Kwx

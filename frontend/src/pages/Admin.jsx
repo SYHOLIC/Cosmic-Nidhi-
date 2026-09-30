@@ -7,7 +7,7 @@ import {
   Package,
   ShoppingBag,
   Calendar,
-  IndianRupee,
+  TrendingUp,
   Tag,
   User,
   Mail,
@@ -1240,7 +1240,7 @@ export default function AdminPage() {
     {
       label: "Revenue",
       value: `₹${(stats.totalRevenue || 0).toLocaleString()}`,
-      icon: IndianRupee,
+      icon: TrendingUp,
     },
   ];
 

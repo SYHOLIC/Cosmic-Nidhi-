@@ -14,7 +14,6 @@ import {
   Upload,
   Loader2,
   Tag,
-  DollarSign,
   Layers,
   Eye
 } from "lucide-react";

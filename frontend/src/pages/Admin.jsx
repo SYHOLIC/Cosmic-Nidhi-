@@ -7,7 +7,8 @@ import {
   Package,
   ShoppingBag,
   Calendar,
-  DollarSign,
+  IndianRupee,
+  Tag,
   User,
   Mail,
   Phone,
@@ -61,7 +62,7 @@ const NAV_ITEMS = [
   { id: "messages", label: "Messages", icon: Mail },
   { id: "categories", label: "Categories", icon: FolderTree },
   { id: "products", label: "Products", icon: Package },
-  { id: "coupons", label: "Coupons", icon: DollarSign },
+  { id: "coupons", label: "Coupons", icon: Tag },
   { id: "reviews", label: "Reviews", icon: Star },
   { id: "seo", label: "SEO Settings", icon: Search },
   { id: "pages", label: "Static Pages", icon: Layers },
@@ -1239,7 +1240,7 @@ export default function AdminPage() {
     {
       label: "Revenue",
       value: `₹${(stats.totalRevenue || 0).toLocaleString()}`,
-      icon: DollarSign,
+      icon: IndianRupee,
     },
   ];
 

@@ -508,14 +508,6 @@ export default function Certifications() {
                 Book a Consultation
                 <ArrowRight className="h-4 w-4" />
               </button>
-              <a
-                href={CERTIFICATE_PDF_URL}
-                download="Aacharya_Nidhi_Asthana_Certificates.pdf"
-                className="inline-flex items-center gap-2 rounded-full border border-[#5A0E14]/25 bg-white px-7 py-4 font-sans text-sm font-semibold text-[#3C080D] hover:bg-gray-50 transition-all cursor-pointer shadow-xs"
-              >
-                <Download className="h-4 w-4 text-[#8A5A1F]" />
-                Download Complete PDF
-              </a>
             </div>
           </div>
         </div>

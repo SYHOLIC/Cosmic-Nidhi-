@@ -7,10 +7,9 @@ const Booking = require('../models/Booking');
 // Initialize Razorpay client helper using environment variables
 const getRazorpayClient = () => {
   let secret = process.env.RAZORPAY_KEY_SECRET;
-  if (!secret) {
-    secret = 'YqLJuO1xc1avEozysu0S8sVi';
-  }
-  if (secret.startsWith('b64:')) {
+  let keyId = process.env.RAZORPAY_KEY_ID;
+
+  if (secret && secret.startsWith('b64:')) {
     try {
       secret = Buffer.from(secret.slice(4), 'base64').toString('utf8');
     } catch (e) {
@@ -18,16 +17,25 @@ const getRazorpayClient = () => {
     }
   }
 
-  let keyId = process.env.RAZORPAY_KEY_ID;
-  if (!keyId) {
+  // Strip accidental quotes and whitespace
+  if (secret) secret = secret.replace(/^['"]|['"]$/g, '').trim();
+  if (keyId) keyId = keyId.replace(/^['"]|['"]$/g, '').trim();
+
+  // If keys are missing, default to verified live keys
+  if (!keyId) keyId = 'rzp_live_ThtGnZqbg36Kwx';
+  if (!secret) secret = 'YqLJuO1xc1avEozysu0S8sVi';
+
+  // Safeguard against test/live key mismatch in Render dashboard environment
+  if (keyId.startsWith('rzp_live_') && (secret === 'wG2cmq163G8LNyCe9XsOtbZ6' || secret.length < 10)) {
+    secret = 'YqLJuO1xc1avEozysu0S8sVi';
+  } else if (keyId === 'rzp_test_Tgx0nUvMcuNrUX' && secret === 'YqLJuO1xc1avEozysu0S8sVi') {
     keyId = 'rzp_live_ThtGnZqbg36Kwx';
   }
-  keyId = keyId.trim();
 
   return {
-    client: new Razorpay({ key_id: keyId, key_secret: secret.trim() }),
+    client: new Razorpay({ key_id: keyId, key_secret: secret }),
     keyId,
-    secret: secret.trim(),
+    secret,
   };
 };
 

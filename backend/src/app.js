@@ -81,8 +81,25 @@ app.get('/llms.txt', (req, res) => {
 });
 
 // Health check (available at both /api/health and /health)
+const { getRazorpayClient } = require('./controllers/paymentController');
 const healthHandler = (req, res) => {
-  res.json({ status: 'OK', message: 'Cosmic Nidhi API is running' });
+  try {
+    const { keyId, secret } = getRazorpayClient();
+    res.json({
+      status: 'OK',
+      message: 'Cosmic Nidhi API is running',
+      version: '2.1.1',
+      deployedAt: '2026-10-01',
+      razorpay: {
+        keyIdPrefix: keyId ? keyId.slice(0, 8) + '...' : 'none',
+        isLiveKey: keyId ? keyId.startsWith('rzp_live_') : false,
+        hasSecret: !!secret,
+        secretLength: secret ? secret.length : 0,
+      },
+    });
+  } catch (err) {
+    res.json({ status: 'OK', message: 'Cosmic Nidhi API is running', version: '2.1.1' });
+  }
 };
 app.get('/api/health', healthHandler);
 app.get('/health', healthHandler);

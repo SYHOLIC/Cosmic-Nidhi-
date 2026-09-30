@@ -237,14 +237,6 @@ export default function Certifications() {
               <Eye className="h-4 w-4 text-[#E9C76D]" />
               View Complete PDF Dossier (36 Pages)
             </button>
-            <a
-              href={CERTIFICATE_PDF_URL}
-              download="Aacharya_Nidhi_Asthana_Certificates.pdf"
-              className="inline-flex items-center gap-2 rounded-full border border-[#5A0E14]/25 bg-white px-5 py-2.5 font-sans text-xs font-semibold text-[#3C080D] hover:bg-[#FDECC8]/40 hover:border-[#E9A534] transition-all cursor-pointer shadow-xs"
-            >
-              <Download className="h-4 w-4 text-[#C1272D]" />
-              Download Official PDF (7.6 MB)
-            </a>
           </motion.div>
 
           <motion.div

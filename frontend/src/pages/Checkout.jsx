@@ -187,7 +187,7 @@ export default function CheckoutPage() {
     const { totalAmount, razorpayOrderId, razorpayKey, localOrderId, address } = orderData;
 
     const options = {
-      key: razorpayKey || import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_Tgx0nUvMcuNrUX",
+      key: razorpayKey || import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_ThtGnZqbg36Kwx",
       amount: Math.round(totalAmount * 100),
       currency: "INR",
       name: "Cosmic Nidhi",
@@ -330,7 +330,7 @@ export default function CheckoutPage() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const razorpayOrderId = rzpRes.data.order_id || rzpRes.data.order?.id;
-      const razorpayKey = rzpRes.data.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_Tgx0nUvMcuNrUX";
+      const razorpayKey = rzpRes.data.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_ThtGnZqbg36Kwx";
       const upiId = rzpRes.data.upiId || "8005824565@paytm";
 
       const orderPayload = {

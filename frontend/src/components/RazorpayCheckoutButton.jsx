@@ -83,7 +83,7 @@ export default function RazorpayCheckoutButton({
       const keyId =
         createOrderRes.data.keyId ||
         import.meta.env.VITE_RAZORPAY_KEY_ID ||
-        "rzp_test_Tgx0nUvMcuNrUX";
+        "rzp_live_ThtGnZqbg36Kwx";
 
       // 3. Configure Razorpay Standard Checkout options
       const options = {

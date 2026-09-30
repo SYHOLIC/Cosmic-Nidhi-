@@ -8,7 +8,7 @@ const Booking = require('../models/Booking');
 const getRazorpayClient = () => {
   let secret = process.env.RAZORPAY_KEY_SECRET;
   if (!secret) {
-    secret = 'wG2cmq163G8LNyCe9XsOtbZ6';
+    secret = 'YqLJuO1xc1avEozysu0S8sVi';
   }
   if (secret.startsWith('b64:')) {
     try {
@@ -20,7 +20,7 @@ const getRazorpayClient = () => {
 
   let keyId = process.env.RAZORPAY_KEY_ID;
   if (!keyId) {
-    keyId = 'rzp_test_Tgx0nUvMcuNrUX';
+    keyId = 'rzp_live_ThtGnZqbg36Kwx';
   }
   keyId = keyId.trim();
 

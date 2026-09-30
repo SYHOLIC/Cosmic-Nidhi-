@@ -78,6 +78,7 @@ const StaticPage = lazy(() => import("./pages/StaticPage"));
 const ProductDetails = lazy(() => import("./pages/ProductDetails"));
 const Contact = lazy(() => import("./pages/Contact"));
 const PitraDoshCalculator = lazy(() => import("./pages/PitraDoshCalculator"));
+const CertificationsPage = lazy(() => import("./pages/Certifications"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 function PageLoader() {
@@ -124,6 +125,7 @@ function AppRoutes() {
           <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/certifications" element={<CertificationsPage />} />
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/calculators" element={<CalculatorsPage />} />

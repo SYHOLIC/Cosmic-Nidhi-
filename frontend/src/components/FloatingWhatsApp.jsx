@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function FloatingWhatsApp() {
   const location = useLocation();
-  const [isHovered, setIsHovered] = useState(false);
+  const [hoveredButton, setHoveredButton] = useState(null); // 'instagram' | 'whatsapp' | null
 
   // Hide on admin routes to keep admin workspace clean
   if (location.pathname.startsWith("/admin")) {
@@ -16,54 +16,110 @@ export default function FloatingWhatsApp() {
     "Hello Cosmic Nidhi! 🙏 I would like to know more about your astrology consultations and guidance."
   );
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
+  const instagramUrl = "https://www.instagram.com/cosmicnidhi.astrology/";
 
   return (
-    <div className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 flex items-center select-none">
-      {/* Tooltip on hover (desktop) */}
-      <AnimatePresence>
-        {isHovered && (
-          <motion.div
-            initial={{ opacity: 0, x: 10, scale: 0.95 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            exit={{ opacity: 0, x: 10, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-            className="hidden sm:flex items-center gap-1.5 mr-3 rounded-full border border-emerald-500/30 bg-[#160305]/95 px-3.5 py-1.5 shadow-[0_8px_24px_rgba(0,0,0,0.5)] backdrop-blur-md"
-          >
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
-            </span>
-            <span className="font-sans text-[12px] font-semibold text-[#FFF4E4] whitespace-nowrap">
-              Chat on WhatsApp
-            </span>
-          </motion.div>
-        )}
-      </AnimatePresence>
+    <aside
+      aria-label="Floating social connect actions"
+      className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end gap-3 select-none pointer-events-none"
+    >
+      {/* 1. FLOATING INSTAGRAM ACTION BUTTON */}
+      <div className="relative flex items-center pointer-events-auto">
+        <AnimatePresence>
+          {hoveredButton === "instagram" && (
+            <motion.div
+              initial={{ opacity: 0, x: 10, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 10, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className="hidden sm:flex items-center gap-1.5 mr-3 rounded-full border border-pink-500/30 bg-[#160305]/95 px-3.5 py-1.5 shadow-[0_8px_24px_rgba(0,0,0,0.5)] backdrop-blur-md"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-pink-400 opacity-75"></span>
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-pink-500"></span>
+              </span>
+              <span className="font-sans text-[12px] font-semibold text-[#FFF4E4] whitespace-nowrap">
+                Follow on Instagram
+              </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-      {/* Floating WhatsApp Action Button */}
-      <motion.a
-        href={whatsappUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Chat with Cosmic Nidhi on WhatsApp"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        whileHover={{ scale: 1.08 }}
-        whileTap={{ scale: 0.94 }}
-        className="relative group flex h-[52px] w-[52px] sm:h-[56px] sm:w-[56px] items-center justify-center rounded-full bg-gradient-to-tr from-[#20ba59] via-[#25D366] to-[#2de572] text-white shadow-[0_8px_28px_rgba(37,211,102,0.42)] transition-shadow duration-300 hover:shadow-[0_12px_36px_rgba(37,211,102,0.6)] cursor-pointer"
-      >
-        {/* Subtle breathing ripple */}
-        <span className="absolute -inset-1 rounded-full bg-emerald-400/25 animate-ping pointer-events-none" />
-
-        {/* Official WhatsApp SVG Vector Icon */}
-        <svg
-          className="relative z-10 h-7 w-7 sm:h-8 sm:w-8 fill-current drop-shadow-sm transition-transform duration-300 group-hover:scale-105"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
+        <motion.a
+          href={instagramUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Follow Cosmic Nidhi on Instagram: @cosmicnidhi.astrology"
+          onMouseEnter={() => setHoveredButton("instagram")}
+          onMouseLeave={() => setHoveredButton(null)}
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.94 }}
+          style={{
+            background:
+              "radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%)",
+          }}
+          className="relative group flex h-[52px] w-[52px] sm:h-[56px] sm:w-[56px] items-center justify-center rounded-full text-white shadow-[0_8px_28px_rgba(214,36,159,0.45)] transition-shadow duration-300 hover:shadow-[0_12px_36px_rgba(214,36,159,0.68)] cursor-pointer"
         >
-          <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2ZM12.05 20.15C10.57 20.15 9.12 19.76 7.85 19L7.55 18.82L4.43 19.64L5.26 16.59L5.07 16.29C4.24 14.97 3.8 13.47 3.8 11.91C3.8 7.37 7.5 3.67 12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.05 20.15ZM16.56 14.37C16.31 14.25 15.09 13.65 14.86 13.56C14.64 13.48 14.47 13.44 14.31 13.69C14.14 13.94 13.66 14.5 13.51 14.67C13.37 14.84 13.22 14.86 12.97 14.74C12.72 14.61 11.92 14.35 10.97 13.5C10.23 12.84 9.73 12.03 9.58 11.78C9.44 11.53 9.57 11.39 9.69 11.27C9.8 11.16 9.94 10.98 10.06 10.84C10.19 10.7 10.23 10.6 10.31 10.43C10.39 10.27 10.35 10.12 10.29 10C10.23 9.88 9.73 8.66 9.53 8.16C9.32 7.67 9.12 7.74 8.96 7.73C8.82 7.72 8.65 7.72 8.48 7.72C8.31 7.72 8.04 7.78 7.81 8.03C7.58 8.28 6.94 8.88 6.94 10.1C6.94 11.32 7.83 12.49 7.95 12.66C8.08 12.83 9.68 15.28 12.14 16.34C12.72 16.59 13.18 16.74 13.53 16.85C14.12 17.04 14.66 17.01 15.08 16.95C15.56 16.88 16.56 16.35 16.76 15.77C16.97 15.2 16.97 14.71 16.91 14.61C16.84 14.5 16.69 14.43 16.56 14.37Z" />
-        </svg>
-      </motion.a>
-    </div>
+          {/* Subtle breathing ripple */}
+          <span className="absolute -inset-1 rounded-full bg-pink-400/25 animate-ping pointer-events-none" />
+
+          {/* Official Instagram SVG Vector Icon */}
+          <svg
+            className="relative z-10 h-6 w-6 sm:h-[26px] sm:w-[26px] fill-current drop-shadow-sm transition-transform duration-300 group-hover:scale-105"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-3.584-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.28-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919C8.333.014 8.741 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+          </svg>
+        </motion.a>
+      </div>
+
+      {/* 2. FLOATING WHATSAPP ACTION BUTTON */}
+      <div className="relative flex items-center pointer-events-auto">
+        <AnimatePresence>
+          {hoveredButton === "whatsapp" && (
+            <motion.div
+              initial={{ opacity: 0, x: 10, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 10, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className="hidden sm:flex items-center gap-1.5 mr-3 rounded-full border border-emerald-500/30 bg-[#160305]/95 px-3.5 py-1.5 shadow-[0_8px_24px_rgba(0,0,0,0.5)] backdrop-blur-md"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+              </span>
+              <span className="font-sans text-[12px] font-semibold text-[#FFF4E4] whitespace-nowrap">
+                Chat on WhatsApp
+              </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <motion.a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Chat with Cosmic Nidhi on WhatsApp"
+          onMouseEnter={() => setHoveredButton("whatsapp")}
+          onMouseLeave={() => setHoveredButton(null)}
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.94 }}
+          className="relative group flex h-[52px] w-[52px] sm:h-[56px] sm:w-[56px] items-center justify-center rounded-full bg-gradient-to-tr from-[#20ba59] via-[#25D366] to-[#2de572] text-white shadow-[0_8px_28px_rgba(37,211,102,0.42)] transition-shadow duration-300 hover:shadow-[0_12px_36px_rgba(37,211,102,0.6)] cursor-pointer"
+        >
+          {/* Subtle breathing ripple */}
+          <span className="absolute -inset-1 rounded-full bg-emerald-400/25 animate-ping pointer-events-none" />
+
+          {/* Official WhatsApp SVG Vector Icon */}
+          <svg
+            className="relative z-10 h-7 w-7 sm:h-8 sm:w-8 fill-current drop-shadow-sm transition-transform duration-300 group-hover:scale-105"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2ZM12.05 20.15C10.57 20.15 9.12 19.76 7.85 19L7.55 18.82L4.43 19.64L5.26 16.59L5.07 16.29C4.24 14.97 3.8 13.47 3.8 11.91C3.8 7.37 7.5 3.67 12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.05 20.15ZM16.56 14.37C16.31 14.25 15.09 13.65 14.86 13.56C14.64 13.48 14.47 13.44 14.31 13.69C14.14 13.94 13.66 14.5 13.51 14.67C13.37 14.84 13.22 14.86 12.97 14.74C12.72 14.61 11.92 14.35 10.97 13.5C10.23 12.84 9.73 12.03 9.58 11.78C9.44 11.53 9.57 11.39 9.69 11.27C9.8 11.16 9.94 10.98 10.06 10.84C10.19 10.7 10.23 10.6 10.31 10.43C10.39 10.27 10.35 10.12 10.29 10C10.23 9.88 9.73 8.66 9.53 8.16C9.32 7.67 9.12 7.74 8.96 7.73C8.82 7.72 8.65 7.72 8.48 7.72C8.31 7.72 8.04 7.78 7.81 8.03C7.58 8.28 6.94 8.88 6.94 10.1C6.94 11.32 7.83 12.49 7.95 12.66C8.08 12.83 9.68 15.28 12.14 16.34C12.72 16.59 13.18 16.74 13.53 16.85C14.12 17.04 14.66 17.01 15.08 16.95C15.56 16.88 16.56 16.35 16.76 15.77C16.97 15.2 16.97 14.71 16.91 14.61C16.84 14.5 16.69 14.43 16.56 14.37Z" />
+          </svg>
+        </motion.a>
+      </div>
+    </aside>
   );
 }

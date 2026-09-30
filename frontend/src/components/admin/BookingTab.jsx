@@ -19,6 +19,8 @@ import {
   CalendarClock,
   X,
   Sparkles,
+  FileText,
+  MapPin,
 } from "lucide-react";
 import { API_URL } from "../../config/api";
 
@@ -661,6 +663,11 @@ export default function BookingTab({ bookings = [], onRefreshBookings }) {
                         <span className="mt-0.5 font-sans text-[10px] text-[#6B3A2A]/60">
                           {booking.duration || "Consultation"}
                         </span>
+                        {booking.clientDetails?.architectureMap && (
+                          <span className="mt-1 inline-flex items-center gap-1 w-fit rounded bg-red-50 border border-red-200/70 px-1.5 py-0.5 text-[9px] font-bold text-[#C1272D]">
+                            <FileText className="h-2.5 w-2.5" /> Map PDF
+                          </span>
+                        )}
                       </div>
                     </td>
 
@@ -1135,6 +1142,80 @@ export default function BookingTab({ bookings = [], onRefreshBookings }) {
                           "N/A"}
                       </strong>
                     </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Site Address if present */}
+              {viewModalBooking.clientDetails?.address && (
+                <div className="rounded-lg border border-[#E9A534]/30 bg-[#FDECC8]/20 p-3 space-y-1">
+                  <h4 className="font-bold text-[#8A5A1F] uppercase text-[11px] flex items-center gap-1.5 border-b border-[#5A0E14]/10 pb-1">
+                    <MapPin className="h-3.5 w-3.5" />
+                    Property / Site Address (Vastu)
+                  </h4>
+                  <p className="text-[#3C080D] font-medium text-xs mt-1">
+                    {viewModalBooking.clientDetails.address}
+                  </p>
+                </div>
+              )}
+
+              {/* Architecture / Floor Map if present */}
+              {viewModalBooking.clientDetails?.architectureMap && (
+                <div className="rounded-lg border border-[#E9A534]/50 bg-[#FFFDF9] p-3.5 space-y-2 shadow-xs">
+                  <h4 className="font-bold text-[#8A5A1F] uppercase text-[11px] flex items-center gap-1.5 border-b border-[#E9A534]/20 pb-1">
+                    <FileText className="h-3.5 w-3.5 text-[#C1272D]" />
+                    Architecture / Floor Map (PDF)
+                  </h4>
+                  <div className="flex items-center justify-between gap-3 pt-1">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-50 text-[#C1272D] font-bold text-[10px] border border-red-200">
+                        PDF
+                      </span>
+                      <div className="min-w-0">
+                        <p className="font-semibold text-xs text-[#3C080D] truncate">
+                          {viewModalBooking.clientDetails.architectureMap.name || "Architecture-Map.pdf"}
+                        </p>
+                        {viewModalBooking.clientDetails.architectureMap.size && (
+                          <p className="text-[10px] text-gray-500">
+                            {(viewModalBooking.clientDetails.architectureMap.size / (1024 * 1024)).toFixed(2)} MB
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    {viewModalBooking.clientDetails.architectureMap.data && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          try {
+                            const dataUri = viewModalBooking.clientDetails.architectureMap.data;
+                            const arr = dataUri.split(",");
+                            const mime = arr[0].match(/:(.*?);/)?.[1] || "application/pdf";
+                            const bstr = atob(arr[1]);
+                            let n = bstr.length;
+                            const u8arr = new Uint8Array(n);
+                            while (n--) {
+                              u8arr[n] = bstr.charCodeAt(n);
+                            }
+                            const blob = new Blob([u8arr], { type: mime });
+                            const blobUrl = URL.createObjectURL(blob);
+                            const win = window.open(blobUrl, "_blank");
+                            if (!win) {
+                              const a = document.createElement("a");
+                              a.href = blobUrl;
+                              a.download = viewModalBooking.clientDetails.architectureMap.name || "architecture-map.pdf";
+                              a.click();
+                            }
+                          } catch (e) {
+                            console.error("Failed to view PDF", e);
+                            alert("Unable to open PDF preview.");
+                          }
+                        }}
+                        className="inline-flex items-center gap-1.5 rounded bg-[#5A0E14] px-3 py-1.5 text-[11px] font-semibold text-[#FFF8EC] hover:bg-[#43090E] transition-colors cursor-pointer shrink-0 shadow-xs"
+                      >
+                        <Eye className="h-3 w-3" />
+                        View / Download PDF
+                      </button>
+                    )}
                   </div>
                 </div>
               )}

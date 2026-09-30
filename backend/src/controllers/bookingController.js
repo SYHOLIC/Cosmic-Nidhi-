@@ -104,6 +104,17 @@ const createBooking = async (req, res) => {
       }
     }
 
+    if (clientDetails?.architectureMap) {
+      const map = clientDetails.architectureMap;
+      const MAX_MAP_SIZE = 5 * 1024 * 1024; // 5 MB
+      if (map.size && map.size > MAX_MAP_SIZE) {
+        return res.status(400).json({
+          success: false,
+          message: 'Architecture map file size exceeds the 5MB limit',
+        });
+      }
+    }
+
     const booking = await Booking.create({
       user: req.user ? req.user._id : undefined,
       serviceType: serviceType || 'birth-chart',

@@ -125,7 +125,7 @@ export default function About() {
             >
               <img
                 src={nidhi1}
-                alt="Nidhi Asthana - Cosmic Nidhi Founder"
+                alt="Aacharya Nidhi Asthana - Cosmic Nidhi Founder"
                 width={600}
                 height={750}
                 loading="lazy"
@@ -167,6 +167,21 @@ export default function About() {
                 </p>
                 <p className="mt-4 text-[#2C1210]/70 leading-relaxed font-sans text-base md:text-lg text-justify">
                   Every consultation is approached with care, context and confidentiality. Rather than using fear-based predictions or one-size-fits-all answers, Cosmic Nidhi aims to translate traditional systems into clear observations and practical questions for modern life.
+                </p>
+              </div>
+            </Reveal>
+
+            {/* Biography */}
+            <Reveal delay={180}>
+              <div className="mt-8 p-6 sm:p-8 bg-[#FDECC8]/40 rounded-2xl border border-[#E9A534]/20 shadow-sm">
+                <h3 className="font-display text-2xl text-[#3C080D] mb-3">
+                  Meet <span className="text-[#C1272D]">Aacharya Nidhi Asthana</span>
+                </h3>
+                <p className="text-[#2C1210]/80 leading-relaxed font-sans text-base md:text-lg text-justify">
+                  With over {years} years of experience in the fields of Astrology, Vastu Shastra, and Numerology, I have helped individuals gain clarity, confidence, and a deeper understanding of their life path. My approach combines traditional knowledge with practical guidance, focusing on areas such as career, relationships, finance, health, family, and personal growth.
+                </p>
+                <p className="mt-4 text-[#C1272D] leading-relaxed font-sans text-base md:text-lg italic font-medium">
+                  "Let the stars guide you, while you create your own destiny."
                 </p>
               </div>
             </Reveal>

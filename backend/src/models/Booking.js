@@ -64,6 +64,11 @@ const bookingSchema = new mongoose.Schema({
     partnerPlaceOfBirth: String,
     questions: String,
     address: String,
+    architectureMap: {
+      name: String,
+      size: Number,
+      data: String,
+    },
   },
   notes: {
     type: String,

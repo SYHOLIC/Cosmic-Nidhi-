@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
@@ -17,6 +17,9 @@ import {
   Compass,
   CreditCard,
   ShieldCheck,
+  Upload,
+  Eye,
+  Trash2,
 } from "lucide-react";
 import axios from "axios";
 
@@ -137,6 +140,100 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
   const [successBooking, setSuccessBooking] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
 
+  // Architecture Map PDF State (Max 5MB)
+  const [architectureMap, setArchitectureMap] = useState(null); // { name, size, data }
+  const [mapUploadError, setMapUploadError] = useState("");
+  const [isDraggingMap, setIsDraggingMap] = useState(false);
+  const mapFileInputRef = useRef(null);
+
+  const formatFileSize = (bytes) => {
+    if (!bytes || bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+  };
+
+  const processMapFile = (file) => {
+    setMapUploadError("");
+    if (!file) return;
+
+    const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
+    const isPdf =
+      file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+
+    if (!isPdf) {
+      setMapUploadError("Invalid file type. Only PDF architecture maps are accepted.");
+      return;
+    }
+
+    if (file.size > MAX_SIZE) {
+      setMapUploadError(
+        `File exceeds 5 MB limit (${(file.size / (1024 * 1024)).toFixed(2)} MB). Please upload a PDF under 5 MB.`
+      );
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setArchitectureMap({
+        name: file.name,
+        size: file.size,
+        data: reader.result,
+      });
+      setMapUploadError("");
+    };
+    reader.onerror = () => {
+      setMapUploadError("Failed to read the PDF file. Please try again.");
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleMapFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      processMapFile(file);
+    }
+  };
+
+  const handleMapDrop = (e) => {
+    e.preventDefault();
+    setIsDraggingMap(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      processMapFile(file);
+    }
+  };
+
+  const handleRemoveMap = (e) => {
+    if (e && e.stopPropagation) e.stopPropagation();
+    setArchitectureMap(null);
+    setMapUploadError("");
+    if (mapFileInputRef.current) {
+      mapFileInputRef.current.value = "";
+    }
+  };
+
+  const handlePreviewMap = (e) => {
+    if (e && e.stopPropagation) e.stopPropagation();
+    if (!architectureMap?.data) return;
+    try {
+      const arr = architectureMap.data.split(",");
+      const mime = arr[0].match(/:(.*?);/)?.[1] || "application/pdf";
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      const blob = new Blob([u8arr], { type: mime });
+      const blobUrl = URL.createObjectURL(blob);
+      window.open(blobUrl, "_blank");
+    } catch (err) {
+      console.error("Failed to open PDF preview", err);
+    }
+  };
+
   // Populate from initialService or logged-in user
   useEffect(() => {
     if (initialService) {
@@ -172,6 +269,11 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
     
     setSuccessBooking(null);
     setErrorMsg("");
+    setArchitectureMap(null);
+    setMapUploadError("");
+    if (mapFileInputRef.current) {
+      mapFileInputRef.current.value = "";
+    }
   }, [initialService, isOpen]);
 
   // Fetch booked slots whenever selectedDate changes
@@ -318,11 +420,18 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
           partnerPlaceOfBirth: clientDetails.partnerPlaceOfBirth,
           questions: clientDetails.questions,
           address: clientDetails.address,
+          architectureMap: architectureMap ? {
+            name: architectureMap.name,
+            size: architectureMap.size,
+            data: architectureMap.data,
+          } : undefined,
         },
         notes: isMatching
           ? `[Kundli Matching] Bride: ${clientDetails.name} (DOB: ${clientDetails.dateOfBirth}) | Groom: ${clientDetails.partnerName} (DOB: ${clientDetails.partnerDateOfBirth}) | Notes: ${clientDetails.questions || "None"}`
           : isVastu
-          ? `[Vastu Consultation - NCR Location Only] Site Address: ${clientDetails.address} | Notes: ${clientDetails.questions || "None"}`
+          ? `[Vastu Consultation - NCR Location Only] Site Address: ${clientDetails.address} ${architectureMap ? `| Architecture Map: ${architectureMap.name} (${formatFileSize(architectureMap.size)})` : ""} | Notes: ${clientDetails.questions || "None"}`
+          : architectureMap
+          ? `${clientDetails.questions || ""} | Architecture Map: ${architectureMap.name} (${formatFileSize(architectureMap.size)})`.trim()
           : clientDetails.questions,
       };
 
@@ -704,6 +813,97 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
                         className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
                       />
                     </div>
+
+                    {/* Architecture / Floor Map PDF Upload (Max 5MB) */}
+                    <div className="pt-1 border-t border-[#E9A534]/20">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-[#6B3A2A]/80 flex items-center gap-1.5">
+                          <FileText className="h-3.5 w-3.5 text-[#C1272D]" />
+                          Architecture / Floor Map (PDF, Max 5MB)
+                          <span className="text-[#6B3A2A]/50 font-normal lowercase">(optional)</span>
+                        </label>
+                        {architectureMap && (
+                          <span className="font-sans text-[10px] text-green-700 font-semibold bg-green-50 px-2 py-0.5 rounded border border-green-200 flex items-center gap-1">
+                            <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
+                            PDF Ready
+                          </span>
+                        )}
+                      </div>
+
+                      {!architectureMap ? (
+                        <div
+                          onDragOver={(e) => {
+                            e.preventDefault();
+                            setIsDraggingMap(true);
+                          }}
+                          onDragLeave={() => setIsDraggingMap(false)}
+                          onDrop={handleMapDrop}
+                          onClick={() => mapFileInputRef.current?.click()}
+                          className={`relative flex flex-col items-center justify-center p-4 border-2 border-dashed rounded-[7px] cursor-pointer transition-all ${
+                            isDraggingMap
+                              ? "border-[#C1272D] bg-[#C1272D]/5"
+                              : "border-[#E9A534]/50 bg-white/80 hover:border-[#C1272D]/60 hover:bg-white"
+                          }`}
+                        >
+                          <input
+                            ref={mapFileInputRef}
+                            type="file"
+                            accept="application/pdf,.pdf"
+                            onChange={handleMapFileChange}
+                            className="hidden"
+                          />
+                          <Upload className="h-5 w-5 text-[#8A5A1F] mb-1.5" />
+                          <p className="font-sans text-[12px] font-semibold text-[#3C080D]">
+                            Click or drag & drop architecture map PDF
+                          </p>
+                          <p className="font-sans text-[10px] text-[#6B3A2A]/70 mt-0.5">
+                            PDF format only · Maximum file size 5 MB
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-between p-3 rounded-[7px] border border-[#E9A534]/40 bg-white shadow-xs">
+                          <div className="flex items-center gap-2.5 overflow-hidden">
+                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-red-50 text-[#C1272D] border border-red-200/60 font-bold text-[10px]">
+                              PDF
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-sans text-[12px] font-semibold text-[#3C080D] truncate">
+                                {architectureMap.name}
+                              </p>
+                              <p className="font-sans text-[10px] text-[#6B3A2A]/70">
+                                {formatFileSize(architectureMap.size)}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            {architectureMap.data && (
+                              <button
+                                type="button"
+                                onClick={handlePreviewMap}
+                                title="Preview PDF"
+                                className="flex h-7 items-center gap-1 px-2 text-[11px] font-semibold rounded text-[#8A5A1F] hover:bg-[#FDECC8]/60 transition-colors cursor-pointer"
+                              >
+                                <Eye className="h-3.5 w-3.5" />
+                                <span>Preview</span>
+                              </button>
+                            )}
+                            <button
+                              type="button"
+                              onClick={handleRemoveMap}
+                              title="Remove PDF"
+                              className="flex h-7 w-7 items-center justify-center rounded text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                      {mapUploadError && (
+                        <p className="mt-1.5 text-[11px] font-semibold text-red-600 font-sans">
+                          {mapUploadError}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 )}
 
@@ -1018,6 +1218,72 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
                     className="w-full resize-none rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
                   />
                 </div>
+
+                {/* Optional Architecture Map for Non-Vastu Consultations */}
+                {!activeService.type.startsWith("vastu") && (
+                  <div>
+                    {!architectureMap ? (
+                      <div className="flex items-center justify-between">
+                        <button
+                          type="button"
+                          onClick={() => mapFileInputRef.current?.click()}
+                          className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#8A5A1F] hover:text-[#C1272D] transition-colors cursor-pointer"
+                        >
+                          <FileText className="h-3.5 w-3.5 text-[#C1272D]" />
+                          <span>Attach Architecture / Floor Map (PDF, Max 5MB)</span>
+                        </button>
+                        <input
+                          ref={mapFileInputRef}
+                          type="file"
+                          accept="application/pdf,.pdf"
+                          onChange={handleMapFileChange}
+                          className="hidden"
+                        />
+                      </div>
+                    ) : (
+                      <div className="rounded-[7px] border border-[#E9A534]/40 bg-[#FFFDF9] p-2.5 shadow-xs">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 overflow-hidden">
+                            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded bg-red-50 text-[#C1272D] border border-red-200 text-[10px] font-bold">
+                              PDF
+                            </span>
+                            <div className="min-w-0">
+                              <p className="text-[12px] font-semibold text-[#3C080D] truncate">
+                                {architectureMap.name}
+                              </p>
+                              <p className="text-[10px] text-[#6B3A2A]/70">
+                                {formatFileSize(architectureMap.size)}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-1 shrink-0">
+                            {architectureMap.data && (
+                              <button
+                                type="button"
+                                onClick={handlePreviewMap}
+                                className="px-2 py-1 text-[11px] font-semibold text-[#8A5A1F] hover:bg-[#FDECC8]/60 rounded transition-colors cursor-pointer"
+                              >
+                                Preview
+                              </button>
+                            )}
+                            <button
+                              type="button"
+                              onClick={handleRemoveMap}
+                              className="p-1 text-red-600 hover:bg-red-50 rounded transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {mapUploadError && (
+                      <p className="mt-1 text-[11px] font-semibold text-red-600 font-sans">
+                        {mapUploadError}
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 {/* 6. Payment Mode Selection */}
                 <div>

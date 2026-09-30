@@ -423,7 +423,7 @@ export default function FloatingSocialConnect() {
                     Cosmic Nidhi
                   </h3>
                   <p className="text-xs text-[#FFF8EC]/60">
-                    Lead Astrologer: Nidhi Asthana
+                    Lead Astrologer: Aacharya Nidhi Asthana
                   </p>
                 </div>
               </div>

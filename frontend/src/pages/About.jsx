@@ -165,7 +165,7 @@ export default function About() {
               >
                 <img
                   src={nidhi1}
-                  alt="Nidhi Asthana - Cosmic Nidhi Founder"
+                  alt="Aacharya Nidhi Asthana - Cosmic Nidhi Founder"
                   className="w-full h-auto object-cover"
                 />
                 <div className="absolute inset-0 border-2 border-[#E9A534]/40 rounded-2xl pointer-events-none" />
@@ -212,7 +212,7 @@ export default function About() {
               <Reveal delay={180}>
                 <div className="mt-8 p-8 bg-[#FDECC8]/40 rounded-2xl border border-[#E9A534]/20 shadow-sm">
                   <h3 className="font-display text-2xl text-[#3C080D] mb-3">
-                    Meet <span className="text-[#C1272D]">Nidhi Asthana</span>
+                    Meet <span className="text-[#C1272D]">Aacharya Nidhi Asthana</span>
                   </h3>
                   <p className="text-[#2C1210]/80 leading-relaxed font-sans text-base md:text-lg text-justify">
                     With over {years} years of experience in the fields of Astrology, Vastu Shastra, and Numerology, I have helped individuals gain clarity, confidence, and a deeper understanding of their life path. My approach combines traditional knowledge with practical guidance, focusing on areas such as career, relationships, finance, health, family, and personal growth.

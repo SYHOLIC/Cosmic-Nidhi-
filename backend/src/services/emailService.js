@@ -356,9 +356,16 @@ const sendAppointmentConfirmationEmail = async (booking) => {
     { label: 'Consultation Date', value: bookingDate },
     { label: 'Time Slot', value: booking.time || '10:00 AM' },
     { label: 'Duration', value: booking.duration || '60 mins' },
-    { label: 'Consultant', value: 'Astrologer Nidhi Asthana' },
+    { label: 'Consultant', value: 'Aacharya Nidhi Asthana' },
     { label: 'Status', value: String(booking.status || 'Confirmed').toUpperCase() },
   ];
+
+  if (booking.clientDetails?.architectureMap?.name) {
+    detailsList.push({
+      label: 'Architecture Map',
+      value: `${booking.clientDetails.architectureMap.name} (Attached PDF)`,
+    });
+  }
 
   if (booking.amount) {
     detailsList.push({ label: 'Amount', value: `₹${booking.amount} (${booking.paymentStatus || 'pending'})` });
@@ -367,14 +374,14 @@ const sendAppointmentConfirmationEmail = async (booking) => {
   const html = getEmailTemplate({
     title: 'Consultation Confirmed - Cosmic Nidhi',
     greeting: `Namaste ${recipientName},`,
-    intro: `Your reading session has been scheduled with Astrologer Nidhi Asthana. We are honored to accompany you on your path of self-discovery and celestial alignment.`,
+    intro: `Your reading session has been scheduled with Aacharya Nidhi Asthana. We are honored to accompany you on your path of self-discovery and celestial alignment.`,
     detailsList,
     note: `Please keep your exact date of birth, time of birth (with am/pm), and place of birth ready. Our team or astrologer will connect with you via your registered phone number / WhatsApp before the call.`,
     actionText: 'View in My Dashboard',
     actionUrl: `${process.env.FRONTEND_URL || 'https://cosmicnidhi-front.onrender.com'}/dashboard`,
   });
 
-  const text = `Namaste ${recipientName},\n\nYour consultation "${booking.serviceName}" has been scheduled for ${bookingDate} at ${booking.time}.\n\nReference: #${String(booking._id).slice(-6).toUpperCase()}\nConsultant: Astrologer Nidhi Asthana\n\nBlessings,\nCosmic Nidhi`;
+  const text = `Namaste ${recipientName},\n\nYour consultation "${booking.serviceName}" has been scheduled for ${bookingDate} at ${booking.time}.\n\nReference: #${String(booking._id).slice(-6).toUpperCase()}\nConsultant: Aacharya Nidhi Asthana\n\nBlessings,\nCosmic Nidhi`;
 
   return await sendCosmicEmail({
     to: recipientEmail,

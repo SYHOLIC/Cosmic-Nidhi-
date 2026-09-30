@@ -312,25 +312,15 @@ export default function Certifications() {
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
+                  <div className="flex items-center gap-2.5 w-full sm:w-auto">
                     <button
                       type="button"
                       onClick={() => setPdfModalOpen(true)}
-                      className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 rounded-full border border-[#5A0E14]/20 bg-white px-4 py-2 font-sans text-xs font-bold text-[#3C080D] hover:bg-[#FDECC8]/40 hover:border-[#E9A534] transition-all cursor-pointer shadow-xs"
+                      className="inline-flex items-center justify-center gap-2 rounded-full border border-[#5A0E14]/20 bg-white px-5 py-2 font-sans text-xs font-bold text-[#3C080D] hover:bg-[#FDECC8]/40 hover:border-[#E9A534] transition-all cursor-pointer shadow-xs"
                     >
                       <Eye className="h-3.5 w-3.5 text-[#8A5A1F]" />
                       Preview PDF
                     </button>
-                    <a
-                      href={CERTIFICATE_PDF_URL}
-                      download="Aacharya_Nidhi_Asthana_Certificates.pdf"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 rounded-full bg-[#5A0E14] px-4 py-2 font-sans text-xs font-bold uppercase tracking-wider text-[#FFF8EC] hover:bg-[#43090E] transition-all shadow-md cursor-pointer"
-                    >
-                      <Download className="h-3.5 w-3.5 text-[#E9C76D]" />
-                      Download PDF
-                    </a>
                   </div>
                 </div>
               </div>

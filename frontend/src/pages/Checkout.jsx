@@ -77,6 +77,10 @@ export default function CheckoutPage() {
         });
         userAddresses = res.data.user?.addresses || [];
       }
+      userAddresses = (userAddresses || []).map(addr => ({
+        ...addr,
+        phone: (addr.phone && addr.phone.includes("80058")) ? "9560437360" : (addr.phone || "9560437360"),
+      }));
       setAddresses(userAddresses);
       
       const defaultAddr = userAddresses.find(a => a.isDefault);
@@ -193,9 +197,20 @@ export default function CheckoutPage() {
       currentUser = JSON.parse(localStorage.getItem("user") || "{}");
     } catch {}
 
-    const customerPhone = address?.phone || currentUser?.phone || "9560437360";
-    const customerEmail = address?.email || currentUser?.email || "cosmicnidhi.astro@gmail.com";
-    const customerName = address?.name || currentUser?.name || "Cosmic Nidhi Customer";
+    let customerPhone = (address?.phone || currentUser?.phone || "9560437360").replace(/\D/g, "");
+    if (!customerPhone || customerPhone.includes("80058") || customerPhone.length < 10) {
+      customerPhone = "9560437360";
+    }
+
+    let customerEmail = address?.email || currentUser?.email || "cosmicnidhi.astro@gmail.com";
+    if (!customerEmail || customerEmail.includes("swapnilyadav")) {
+      customerEmail = "cosmicnidhi.astro@gmail.com";
+    }
+
+    let customerName = address?.name || currentUser?.name || "Cosmic Nidhi Customer";
+    if (customerName.toLowerCase().includes("swapnil")) {
+      customerName = "Cosmic Nidhi Customer";
+    }
 
     const activeKey = razorpayKey || import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_ThtGnZqbg36Kwx";
 
@@ -289,7 +304,10 @@ export default function CheckoutPage() {
 
       // Normalize phone and pincode to guarantee valid formatting
       const rawPhone = String(address.phone || "").replace(/\D/g, "");
-      const cleanPhone = rawPhone.length >= 10 ? rawPhone.slice(-10) : rawPhone;
+      let cleanPhone = rawPhone.length >= 10 ? rawPhone.slice(-10) : rawPhone;
+      if (!cleanPhone || cleanPhone.includes("80058")) {
+        cleanPhone = "9560437360";
+      }
       const cleanPincode = String(address.pincode || "").replace(/\D/g, "").slice(0, 6);
 
       // 1. Create MongoDB Order (pending state)

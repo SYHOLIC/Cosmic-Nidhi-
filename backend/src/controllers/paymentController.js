@@ -28,8 +28,9 @@ const getRazorpayClient = () => {
   // Safeguard against test/live key mismatch in Render dashboard environment
   if (keyId.startsWith('rzp_live_') && (secret === 'wG2cmq163G8LNyCe9XsOtbZ6' || secret.length < 10)) {
     secret = 'YqLJuO1xc1avEozysu0S8sVi';
-  } else if (keyId === 'rzp_test_Tgx0nUvMcuNrUX' && secret === 'YqLJuO1xc1avEozysu0S8sVi') {
+  } else if (keyId === 'rzp_test_Tgx0nUvMcuNrUX') {
     keyId = 'rzp_live_ThtGnZqbg36Kwx';
+    secret = 'YqLJuO1xc1avEozysu0S8sVi';
   }
 
   return {
@@ -337,4 +338,5 @@ module.exports = {
   verifyPayment,
   verifyUpiPayment,
   getPaymentConfig,
+  getRazorpayClient,
 };

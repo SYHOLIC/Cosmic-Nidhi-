@@ -21,22 +21,10 @@ const getRazorpayClient = () => {
   if (secret) secret = secret.replace(/^['"]|['"]$/g, '').trim();
   if (keyId) keyId = keyId.replace(/^['"]|['"]$/g, '').trim();
 
-  // If keys are missing, default to verified live keys
-  if (!keyId) keyId = 'rzp_live_ThtGnZqbg36Kwx';
-  if (!secret) secret = 'YqLJuO1xc1avEozysu0S8sVi';
-
-  // Safeguard against test/live key mismatch in Render dashboard environment
-  if (keyId.startsWith('rzp_live_') && (secret === 'wG2cmq163G8LNyCe9XsOtbZ6' || secret.length < 10)) {
-    secret = 'YqLJuO1xc1avEozysu0S8sVi';
-  } else if (keyId === 'rzp_test_Tgx0nUvMcuNrUX') {
-    keyId = 'rzp_live_ThtGnZqbg36Kwx';
-    secret = 'YqLJuO1xc1avEozysu0S8sVi';
-  }
-
   return {
-    client: new Razorpay({ key_id: keyId, key_secret: secret }),
-    keyId,
-    secret,
+    client: keyId && secret ? new Razorpay({ key_id: keyId, key_secret: secret }) : null,
+    keyId: keyId || '',
+    secret: secret || '',
   };
 };
 
@@ -116,6 +104,12 @@ const createRazorpayOrder = async (req, res) => {
     }
 
     const { keyId, secret } = getRazorpayClient();
+    if (!keyId || !secret) {
+      return res.status(503).json({
+        success: false,
+        message: 'Razorpay is currently not configured. Please configure RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in environment variables.',
+      });
+    }
 
     const options = {
       amount: amountInPaise,
@@ -189,6 +183,12 @@ const verifyPayment = async (req, res) => {
     }
 
     const { secret } = getRazorpayClient();
+    if (!secret) {
+      return res.status(503).json({
+        success: false,
+        message: 'Razorpay is not configured on the server.',
+      });
+    }
 
     // Compute expected signature: HMAC-SHA256(order_id + "|" + payment_id, KEY_SECRET)
     const payload = `${rzpOrderId}|${rzpPaymentId}`;

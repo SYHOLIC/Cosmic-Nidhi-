@@ -1519,7 +1519,12 @@ export default function Dashboard() {
       );
 
       const rzpOrder = rzpRes.data.order;
-      const keyId = rzpRes.data.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_ThtGnZqbg36Kwx";
+      const keyId = rzpRes.data.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || "";
+
+      if (!keyId) {
+        alert("Payment gateway is temporarily unavailable. Please try again later.");
+        return;
+      }
 
       const options = {
         key: keyId,

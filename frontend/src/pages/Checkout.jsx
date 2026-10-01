@@ -195,8 +195,15 @@ export default function CheckoutPage() {
     const customerEmail = address?.email || currentUser?.email || "";
     const customerName = address?.name || currentUser?.name || "";
 
+    const activeKey = razorpayKey || import.meta.env.VITE_RAZORPAY_KEY_ID || "";
+    if (!activeKey) {
+      alert("Payment gateway is temporarily unavailable. Please choose another payment method or try again later.");
+      setIsProcessing(false);
+      return;
+    }
+
     const options = {
-      key: razorpayKey || import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_ThtGnZqbg36Kwx",
+      key: activeKey,
       amount: Math.round(totalAmount * 100),
       currency: "INR",
       name: "Cosmic Nidhi",
@@ -344,7 +351,7 @@ export default function CheckoutPage() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const razorpayOrderId = rzpRes.data.order_id || rzpRes.data.order?.id;
-      const razorpayKey = rzpRes.data.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_ThtGnZqbg36Kwx";
+      const razorpayKey = rzpRes.data.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || "";
       const upiId = rzpRes.data.upiId || "";
 
       const orderPayload = {

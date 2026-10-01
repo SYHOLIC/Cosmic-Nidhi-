@@ -467,9 +467,16 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
         }
 
         const { order, keyId } = orderRes.data;
+        const activeKey = keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || "";
+
+        if (!activeKey) {
+          setError("Payment gateway is temporarily unavailable. Please try again later.");
+          setLoading(false);
+          return;
+        }
 
         const options = {
-          key: keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_ThtGnZqbg36Kwx",
+          key: activeKey,
           amount: order.amount,
           currency: "INR",
           name: "Cosmic Nidhi",

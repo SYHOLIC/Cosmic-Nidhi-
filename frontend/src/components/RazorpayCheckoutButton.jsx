@@ -83,7 +83,11 @@ export default function RazorpayCheckoutButton({
       const keyId =
         createOrderRes.data.keyId ||
         import.meta.env.VITE_RAZORPAY_KEY_ID ||
-        "rzp_live_ThtGnZqbg36Kwx";
+        "";
+
+      if (!keyId) {
+        throw new Error("Payment gateway is temporarily unavailable. Key ID is not configured.");
+      }
 
       // 3. Configure Razorpay Standard Checkout options
       const options = {

@@ -177,10 +177,83 @@ export default function CheckoutPage() {
 
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const openRazorpayModal = async () => {
-    alert("Razorpay payment gateway is currently disabled. Please use Instant UPI QR.");
-    setIsProcessing(false);
-    return;
+  const openRazorpayModal = async (orderData) => {
+    if (!orderData) return;
+    const loaded = await loadRazorpay();
+    if (!loaded || !window.Razorpay) {
+      alert("Unable to load payment gateway. Please check your internet connection.");
+      setIsProcessing(false);
+      return;
+    }
+
+    const { totalAmount, razorpayOrderId, razorpayKey, localOrderId, address } = orderData;
+
+    let currentUser = {};
+    try {
+      currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+    } catch {}
+
+    const customerPhone = address?.phone || currentUser?.phone || "";
+    const customerEmail = address?.email || currentUser?.email || "";
+    const customerName = address?.name || currentUser?.name || "";
+
+    const activeKey = razorpayKey || import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_ThtGnZqbg36Kwx";
+
+    const options = {
+      key: activeKey,
+      amount: Math.round(totalAmount * 100),
+      currency: "INR",
+      name: "Cosmic Nidhi",
+      description: "Order Payment",
+      order_id: razorpayOrderId,
+      prefill: {
+        name: customerName,
+        email: customerEmail,
+        contact: customerPhone,
+      },
+      theme: {
+        color: "#E9A534",
+      },
+      modal: {
+        ondismiss: function () {
+          setIsProcessing(false);
+          console.log("Razorpay checkout modal dismissed by user");
+        },
+      },
+      handler: async function (response) {
+        try {
+          const token = localStorage.getItem("token");
+          await axios.post(
+            `${API_URL}/payment/verify`,
+            {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              order_id: response.razorpay_order_id,
+              payment_id: response.razorpay_payment_id,
+              signature: response.razorpay_signature,
+              local_order_id: localOrderId,
+            },
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+
+          setIsProcessing(false);
+          clearCart();
+          navigate("/dashboard");
+        } catch (err) {
+          setIsProcessing(false);
+          console.error("Payment verification failed", err);
+          alert("Payment verification failed: " + (err.response?.data?.message || err.message));
+        }
+      },
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.on("payment.failed", function (response) {
+      setIsProcessing(false);
+      alert("Payment failed: " + (response.error?.description || "Transaction cancelled"));
+    });
+    rzp.open();
   };
 
   const handlePayment = async (overrideMode) => {
@@ -570,6 +643,31 @@ export default function CheckoutPage() {
                   </label>
 
 
+                  <label
+                    onClick={() => setSelectedPaymentMode("gateway")}
+                    className={`flex cursor-pointer items-center justify-between rounded-xl border p-3 transition-all ${
+                      selectedPaymentMode === "gateway"
+                        ? "border-[#E9A534] bg-[#E9A534]/15 shadow-[0_0_15px_rgba(233,165,52,0.15)]"
+                        : "border-white/10 bg-white/5 hover:border-[#E9A534]/40"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className="rounded-lg bg-[#E9A534]/20 p-2 text-[#E9A534]">
+                        <CreditCard size={18} />
+                      </div>
+                      <div>
+                        <div className="font-sans text-[13px] font-bold text-white">Razorpay Gateway</div>
+                        <p className="text-[11px] text-[#F5E5C7]/60">Cards, NetBanking, Wallets & QR</p>
+                      </div>
+                    </div>
+                    <input
+                      type="radio"
+                      name="payment_mode"
+                      checked={selectedPaymentMode === "gateway"}
+                      onChange={() => setSelectedPaymentMode("gateway")}
+                      className="h-4 w-4 text-[#E9A534] focus:ring-[#E9A534]"
+                    />
+                  </label>
                 </div>
               </div>
 

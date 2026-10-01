@@ -467,7 +467,7 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
         }
 
         const { order, keyId } = orderRes.data;
-        const activeKey = keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || "";
+        const activeKey = keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_ThtGnZqbg36Kwx";
 
         if (!activeKey) {
           setError("Payment gateway is temporarily unavailable. Please try again later.");

@@ -4,20 +4,13 @@ const https = require('https');
 const Order = require('../models/Order');
 const Booking = require('../models/Booking');
 
-// Master toggle to disable Razorpay until user adds new credentials from scratch
-const RAZORPAY_DISABLED = true;
+// Razorpay Integration Active
+const RAZORPAY_DISABLED = false;
 
 // Initialize Razorpay client helper using environment variables
 const getRazorpayClient = () => {
-  if (RAZORPAY_DISABLED) {
-    return {
-      client: null,
-      keyId: '',
-      secret: '',
-    };
-  }
-  let secret = process.env.RAZORPAY_KEY_SECRET;
-  let keyId = process.env.RAZORPAY_KEY_ID;
+  let secret = process.env.RAZORPAY_KEY_SECRET || 'YqLJuO1xc1avEozysu0S8sVi';
+  let keyId = process.env.RAZORPAY_KEY_ID || 'rzp_live_ThtGnZqbg36Kwx';
 
   if (secret && secret.startsWith('b64:')) {
     try {
@@ -33,8 +26,8 @@ const getRazorpayClient = () => {
 
   return {
     client: keyId && secret ? new Razorpay({ key_id: keyId, key_secret: secret }) : null,
-    keyId: keyId || '',
-    secret: secret || '',
+    keyId: keyId || 'rzp_live_ThtGnZqbg36Kwx',
+    secret: secret || 'YqLJuO1xc1avEozysu0S8sVi',
   };
 };
 

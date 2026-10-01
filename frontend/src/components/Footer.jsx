@@ -362,7 +362,7 @@ function Footer() {
                   <div className="flex flex-col gap-0.5 pt-0.5">
                     <span className="text-[0.6rem] uppercase tracking-[0.15em] text-[#E9A534]/60 font-sans mb-0.5">Questions?</span>
                     <a
-                      href="https://wa.me/919560437360?text=Hi%20Cosmic%20Nidhi%2C%20I%20have%20a%20question"
+                      href="https://wa.me/918826044955?text=Hi%20Cosmic%20Nidhi%2C%20I%20have%20a%20question"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="hover:text-[#E9A534] transition-colors duration-300 font-medium"

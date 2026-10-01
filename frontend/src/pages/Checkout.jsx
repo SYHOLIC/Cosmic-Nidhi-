@@ -79,7 +79,7 @@ export default function CheckoutPage() {
       }
       userAddresses = (userAddresses || []).map(addr => ({
         ...addr,
-        phone: (addr.phone && addr.phone.includes("80058")) ? "9560437360" : (addr.phone || "9560437360"),
+        phone: (addr.phone && addr.phone.includes("80058")) ? "8826044955" : (addr.phone || "8826044955"),
       }));
       setAddresses(userAddresses);
       
@@ -197,9 +197,9 @@ export default function CheckoutPage() {
       currentUser = JSON.parse(localStorage.getItem("user") || "{}");
     } catch {}
 
-    let customerPhone = (address?.phone || currentUser?.phone || "9560437360").replace(/\D/g, "");
+    let customerPhone = (address?.phone || currentUser?.phone || "8826044955").replace(/\D/g, "");
     if (!customerPhone || customerPhone.includes("80058") || customerPhone.length < 10) {
-      customerPhone = "9560437360";
+      customerPhone = "8826044955";
     }
 
     let customerEmail = address?.email || currentUser?.email || "cosmicnidhi.astro@gmail.com";
@@ -306,7 +306,7 @@ export default function CheckoutPage() {
       const rawPhone = String(address.phone || "").replace(/\D/g, "");
       let cleanPhone = rawPhone.length >= 10 ? rawPhone.slice(-10) : rawPhone;
       if (!cleanPhone || cleanPhone.includes("80058")) {
-        cleanPhone = "9560437360";
+        cleanPhone = "8826044955";
       }
       const cleanPincode = String(address.pincode || "").replace(/\D/g, "").slice(0, 6);
 
@@ -341,7 +341,7 @@ export default function CheckoutPage() {
       );
       const razorpayOrderId = rzpRes.data.order_id || rzpRes.data.order?.id;
       const razorpayKey = rzpRes.data.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || "";
-      const upiId = rzpRes.data.upiId || "";
+      const upiId = rzpRes.data.upiId || "8826044955@paytm";
 
       const orderPayload = {
         localOrderId,
@@ -727,7 +727,7 @@ export default function CheckoutPage() {
         amount={activeOrderData?.totalAmount || 0}
         orderNumber={activeOrderData?.orderNumber}
         localOrderId={activeOrderData?.localOrderId}
-        upiId={activeOrderData?.upiId || ""}
+        upiId={activeOrderData?.upiId || "8826044955@paytm"}
         onOpenRazorpay={() => openRazorpayModal(activeOrderData)}
         onPaymentSuccess={() => {
           setShowUpiModal(false);

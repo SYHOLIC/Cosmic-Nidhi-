@@ -485,7 +485,7 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
           prefill: {
             name: form.name || "Cosmic Nidhi Client",
             email: form.email || "cosmicnidhi.astro@gmail.com",
-            contact: form.phone || "9560437360",
+            contact: form.phone || "8826044955",
           },
           config: {
             display: {
@@ -681,10 +681,10 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
 
                 <div className="flex flex-wrap items-center justify-center gap-3">
                   <a
-                    href="tel:9560437360"
+                    href="tel:8826044955"
                     className="inline-flex items-center gap-2 rounded-full border border-[#E9A534] bg-[#FFF8EC] px-6 py-2.5 font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-[#3C080D] shadow-sm transition-transform hover:-translate-y-0.5"
                   >
-                    <Phone size={13} className="text-[#8B2F2B]" /> Call Us: 9560437360 / 8826044955
+                    <Phone size={13} className="text-[#8B2F2B]" /> Call Us: +91 88260 44955
                   </a>
                   <button
                     type="button"

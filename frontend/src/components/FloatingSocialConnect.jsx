@@ -16,11 +16,10 @@ export default function FloatingSocialConnect() {
 
   // Pre-configured official contact details
   const primaryPhones = [
-    { display: "+91 95604 37360", tel: "9560437360" },
     { display: "+91 88260 44955", tel: "8826044955" },
   ];
 
-  const whatsappNumber = "919560437360";
+  const whatsappNumber = "918826044955";
   const whatsappMessage = encodeURIComponent(
     "Hello Cosmic Nidhi! 🙏 I would like to know more about your astrology consultations and guidance."
   );
@@ -351,7 +350,7 @@ export default function FloatingSocialConnect() {
                 className="hidden sm:inline-flex items-center gap-1.5 absolute right-full mr-3 whitespace-nowrap rounded-full bg-[#1A0307]/95 px-3.5 py-1.5 text-[12px] font-medium tracking-wide text-[#FFF8EC] border border-[#25D366]/40 shadow-[0_8px_20px_rgba(0,0,0,0.45)] backdrop-blur-md"
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-[#25D366] animate-pulse"></span>
-                WhatsApp: +91 95604 37360
+                WhatsApp: +91 88260 44955
               </motion.span>
             )}
           </AnimatePresence>
@@ -360,7 +359,7 @@ export default function FloatingSocialConnect() {
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Chat with Cosmic Nidhi on WhatsApp: +91 95604 37360"
+            aria-label="Chat with Cosmic Nidhi on WhatsApp: +91 88260 44955"
             className="relative flex h-13 w-13 sm:h-[54px] sm:w-[54px] items-center justify-center rounded-full text-white shadow-[0_8px_26px_rgba(37,211,102,0.42)] transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(37,211,102,0.6)] focus:outline-none focus:ring-2 focus:ring-[#25D366] focus:ring-offset-2 focus:ring-offset-[#1A0307]"
             style={{
               background: "linear-gradient(145deg, #2fe673 0%, #25D366 40%, #128C7E 100%)",

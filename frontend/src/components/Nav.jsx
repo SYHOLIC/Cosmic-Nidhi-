@@ -1010,7 +1010,7 @@ function Nav() {
 
             {/* Mobile phone */}
             <a
-              href="tel:9560437360"
+              href="tel:8826044955"
               onClick={closeMobileMenu}
               className="
                 group mt-5 flex items-center justify-between
@@ -1028,7 +1028,7 @@ function Nav() {
                     Call / WhatsApp
                   </p>
                   <p className="mt-1 font-sans text-[13px] font-semibold text-[#FFF8EC]">
-                    95604 37360 / 8826 044 955
+                    +91 88260 44955
                   </p>
                 </div>
               </div>

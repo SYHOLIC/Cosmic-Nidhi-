@@ -134,7 +134,7 @@ const createRazorpayOrder = async (req, res) => {
       order,
       keyId,
       key: keyId,
-      upiId: process.env.MERCHANT_UPI_ID || '',
+      upiId: process.env.MERCHANT_UPI_ID || '8826044955@paytm',
       merchantName: 'Cosmic Nidhi',
     });
   } catch (error) {
@@ -331,7 +331,7 @@ const getPaymentConfig = async (req, res) => {
   return res.status(200).json({
     success: !!keyId,
     keyId: keyId || '',
-    upiId: process.env.MERCHANT_UPI_ID || '',
+    upiId: process.env.MERCHANT_UPI_ID || '8826044955@paytm',
     merchantName: 'Cosmic Nidhi',
     razorpayDisabled: !keyId,
   });

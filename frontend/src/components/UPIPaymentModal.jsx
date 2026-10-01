@@ -10,7 +10,7 @@ export default function UPIPaymentModal({
   amount,
   orderNumber,
   localOrderId,
-  upiId = "",
+  upiId = "8826044955@paytm",
   merchantName = "Cosmic Nidhi",
   onOpenRazorpay,
   onPaymentSuccess,

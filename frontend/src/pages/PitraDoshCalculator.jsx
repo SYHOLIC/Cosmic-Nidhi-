@@ -248,11 +248,11 @@ export default function PitraDoshCalculator() {
 
   // WhatsApp consult link with pre-filled Kundali summary
   const getWhatsAppConsultUrl = () => {
-    if (!result) return "https://wa.me/919560437360";
+    if (!result) return "https://wa.me/918826044955";
     const msg = encodeURIComponent(
       `Namaste Cosmic Nidhi 🙏\n\nI just checked my Pitra Dosha on your website:\n• Name: ${result.meta.fullName}\n• DOB: ${result.meta.dateOfBirth} (${result.meta.timeOfBirth} ${result.meta.timePeriod})\n• Place: ${result.meta.birthPlace}\n• Dosha Result: ${result.scores.statusText} (${result.scores.severity})\n• Lagna: ${result.ascendant.sign} | 9th House: ${result.ninthHouse.sign}\n\nCould you please guide me on customized Pitra Dosha Nivaran remedies and personalized consultation?`
     );
-    return `https://wa.me/919560437360?text=${msg}`;
+    return `https://wa.me/918826044955?text=${msg}`;
   };
 
   return (
@@ -983,11 +983,11 @@ export default function PitraDoshCalculator() {
                       </a>
 
                       <a
-                        href="tel:9560437360"
+                        href="tel:8826044955"
                         className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 py-3.5 font-sans text-xs font-bold uppercase tracking-wider text-white transition-all hover:bg-white/20"
                       >
                         <Phone size={15} />
-                        Call: 95604 37360
+                        Call: +91 88260 44955
                       </a>
                     </div>
                   </div>

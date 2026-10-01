@@ -120,10 +120,8 @@ export default function Contact() {
                 <Phone size={22} />
               </div>
               <div>
-                <h3 className="font-bold text-base mb-1">Primary Contacts</h3>
+                <h3 className="font-bold text-base mb-1">Primary Contact</h3>
                 <p className="text-[#FFF8EC]/75 text-sm">
-                  <a href="tel:9560437360" className="hover:text-[#E9A534] transition-colors">+91 95604 37360</a>
-                  {" / "}
                   <a href="tel:8826044955" className="hover:text-[#E9A534] transition-colors">+91 88260 44955</a>
                 </p>
                 <p className="text-[#E9A534]/70 text-xs mt-1">Available for Call & WhatsApp Consultations</p>

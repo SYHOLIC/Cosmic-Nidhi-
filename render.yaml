@@ -27,6 +27,8 @@ services:
         value: b64:U0cua01sNjBZZnJTb205ZUNCcC1SbkxlUS5Vc0ZJcXZ6ajBaT3d2bzJmMnppWHlQTWdaZnFLa1c0QnBvQjBoejJzZ3ZZ
       - key: SENDGRID_FROM_EMAIL
         value: swapnilcipher@gmail.com
+      - key: MERCHANT_UPI_ID
+        value: 8826044955@paytm
 
   # =======================================================
   # 2. Frontend Static Site

@@ -11,7 +11,7 @@ export default function FloatingWhatsApp() {
     return null;
   }
 
-  const whatsappNumber = "919560437360";
+  const whatsappNumber = "918826044955";
   const whatsappMessage = encodeURIComponent(
     "Hello Cosmic Nidhi! 🙏 I would like to know more about your astrology consultations and guidance."
   );

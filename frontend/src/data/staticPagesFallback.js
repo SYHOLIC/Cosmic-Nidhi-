@@ -49,7 +49,7 @@ export const staticPagesFallback = {
       <p>We may periodically update this Privacy Policy to reflect changing legal requirements or improvements to our services. The date of the most recent revision will always be displayed at the bottom of this page.</p>
 
       <h2>9. Contact Us</h2>
-      <p>If you have any questions, concerns, or requests regarding your personal data or privacy, please reach out to us at <a href="mailto:cosmicnidhi.astro@gmail.com">cosmicnidhi.astro@gmail.com</a> or message us on WhatsApp at +91 95604 37360.</p>
+      <p>If you have any questions, concerns, or requests regarding your personal data or privacy, please reach out to us at <a href="mailto:cosmicnidhi.astro@gmail.com">cosmicnidhi.astro@gmail.com</a> or message us on WhatsApp at +91 88260 44955.</p>
 
       <div style="margin-top: 30px; padding-top: 15px; border-top: 1px solid rgba(90, 14, 20, 0.15); font-size: 13px; color: #6B3A2A;">
         <p><strong>Last Updated:</strong> September 2026</p>
@@ -111,7 +111,7 @@ export const staticPagesFallback = {
       <ul>
         <li><strong>Eligibility for Replacement or Return:</strong> You may request a return or replacement within <strong>7 days</strong> of delivery if the product was damaged during transit or possesses a verified manufacturing defect.</li>
         <li><strong>Condition:</strong> To qualify, the item must be unused, unaltered, in its original packaging, and accompanied by the certificate of authenticity and purchase invoice.</li>
-        <li><strong>How to Initiate:</strong> Contact our support team on WhatsApp (+91 95604 37360) or email <a href="mailto:cosmicnidhi.astro@gmail.com">cosmicnidhi.astro@gmail.com</a> with photographs or an unboxing video showing the damage.</li>
+        <li><strong>How to Initiate:</strong> Contact our support team on WhatsApp (+91 88260 44955) or email <a href="mailto:cosmicnidhi.astro@gmail.com">cosmicnidhi.astro@gmail.com</a> with photographs or an unboxing video showing the damage.</li>
       </ul>
 
       <h2>3. Astrological Consultations & Personalized Reports</h2>
@@ -131,7 +131,7 @@ export const staticPagesFallback = {
       <h2>6. Support & Inquiries</h2>
       <p>For any questions regarding returns, exchanges, or refunds, our customer support team is available:</p>
       <ul>
-        <li><strong>WhatsApp:</strong> +91 95604 37360</li>
+        <li><strong>WhatsApp:</strong> +91 88260 44955</li>
         <li><strong>Email:</strong> <a href="mailto:cosmicnidhi.astro@gmail.com">cosmicnidhi.astro@gmail.com</a></li>
         <li><strong>Office:</strong> A-56/1, 4th Floor, Sector 50, Noida, Uttar Pradesh 201301</li>
       </ul>

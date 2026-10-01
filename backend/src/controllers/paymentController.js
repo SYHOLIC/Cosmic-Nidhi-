@@ -4,8 +4,18 @@ const https = require('https');
 const Order = require('../models/Order');
 const Booking = require('../models/Booking');
 
+// Master toggle to disable Razorpay until user adds new credentials from scratch
+const RAZORPAY_DISABLED = true;
+
 // Initialize Razorpay client helper using environment variables
 const getRazorpayClient = () => {
+  if (RAZORPAY_DISABLED) {
+    return {
+      client: null,
+      keyId: '',
+      secret: '',
+    };
+  }
   let secret = process.env.RAZORPAY_KEY_SECRET;
   let keyId = process.env.RAZORPAY_KEY_ID;
 
@@ -326,10 +336,11 @@ const verifyUpiPayment = async (req, res) => {
 const getPaymentConfig = async (req, res) => {
   const { keyId } = getRazorpayClient();
   return res.status(200).json({
-    success: true,
-    keyId,
+    success: !!keyId,
+    keyId: keyId || '',
     upiId: process.env.MERCHANT_UPI_ID || '',
     merchantName: 'Cosmic Nidhi',
+    razorpayDisabled: !keyId,
   });
 };
 

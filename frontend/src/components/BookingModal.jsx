@@ -483,9 +483,9 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
           description: `${activeService.name} Consultation Booking`,
           order_id: order.id,
           prefill: {
-            name: form.name || "",
-            email: form.email || "",
-            contact: form.phone || "",
+            name: form.name || "Cosmic Nidhi Client",
+            email: form.email || "cosmicnidhi.astro@gmail.com",
+            contact: form.phone || "9560437360",
           },
           config: {
             display: {

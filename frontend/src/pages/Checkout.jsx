@@ -193,9 +193,9 @@ export default function CheckoutPage() {
       currentUser = JSON.parse(localStorage.getItem("user") || "{}");
     } catch {}
 
-    const customerPhone = address?.phone || currentUser?.phone || "";
-    const customerEmail = address?.email || currentUser?.email || "";
-    const customerName = address?.name || currentUser?.name || "";
+    const customerPhone = address?.phone || currentUser?.phone || "9560437360";
+    const customerEmail = address?.email || currentUser?.email || "cosmicnidhi.astro@gmail.com";
+    const customerName = address?.name || currentUser?.name || "Cosmic Nidhi Customer";
 
     const activeKey = razorpayKey || import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_ThtGnZqbg36Kwx";
 

@@ -186,6 +186,15 @@ export default function CheckoutPage() {
     }
     const { totalAmount, razorpayOrderId, razorpayKey, localOrderId, address } = orderData;
 
+    let currentUser = {};
+    try {
+      currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+    } catch {}
+
+    const customerPhone = address?.phone || currentUser?.phone || "";
+    const customerEmail = address?.email || currentUser?.email || "";
+    const customerName = address?.name || currentUser?.name || "";
+
     const options = {
       key: razorpayKey || import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_ThtGnZqbg36Kwx",
       amount: Math.round(totalAmount * 100),
@@ -193,6 +202,11 @@ export default function CheckoutPage() {
       name: "Cosmic Nidhi",
       description: "Order Payment",
       order_id: razorpayOrderId,
+      prefill: {
+        name: customerName,
+        email: customerEmail,
+        contact: customerPhone,
+      },
       config: {
         display: {
           blocks: {
@@ -331,7 +345,7 @@ export default function CheckoutPage() {
       );
       const razorpayOrderId = rzpRes.data.order_id || rzpRes.data.order?.id;
       const razorpayKey = rzpRes.data.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_ThtGnZqbg36Kwx";
-      const upiId = rzpRes.data.upiId || "8005824565@paytm";
+      const upiId = rzpRes.data.upiId || "";
 
       const orderPayload = {
         localOrderId,
@@ -716,7 +730,7 @@ export default function CheckoutPage() {
         amount={activeOrderData?.totalAmount || 0}
         orderNumber={activeOrderData?.orderNumber}
         localOrderId={activeOrderData?.localOrderId}
-        upiId={activeOrderData?.upiId || "8005824565@paytm"}
+        upiId={activeOrderData?.upiId || ""}
         onOpenRazorpay={() => openRazorpayModal(activeOrderData)}
         onPaymentSuccess={() => {
           setShowUpiModal(false);

@@ -475,6 +475,11 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
           name: "Cosmic Nidhi",
           description: `${activeService.name} Consultation Booking`,
           order_id: order.id,
+          prefill: {
+            name: form.name || "",
+            email: form.email || "",
+            contact: form.phone || "",
+          },
           config: {
             display: {
               blocks: {

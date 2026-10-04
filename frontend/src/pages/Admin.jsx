@@ -329,7 +329,7 @@ function Sidebar({
 
 function TopBar({ activeTab, setActiveTab, onMenuClick, handleLogout, orders, bookings }) {
   return (
-    <div className="sticky top-0 z-30 border-b border-[#5A0E14]/12 bg-[#FFFDF9]/95 backdrop-blur-md">
+    <div className="sticky top-[74px] lg:top-[78px] z-30 border-b border-[#5A0E14]/12 bg-[#FFFDF9]/95 backdrop-blur-md">
       <div className="flex h-16 items-center justify-between px-4 sm:px-6">
         <div className="flex items-center gap-3">
           <button
@@ -1245,7 +1245,7 @@ export default function AdminPage() {
   ];
 
   return (
-    <div className="min-h-[calc(100svh-78px)] w-full max-w-full overflow-x-hidden bg-[#FFF7E9]">
+    <div className="min-h-[calc(100svh-78px)] w-full max-w-full overflow-x-hidden bg-[#FFF7E9] pt-[74px] lg:pt-[78px]">
       <SEOHead
         pageName="admin"
         fallbackTitle="Admin Portal | Cosmic Nidhi"

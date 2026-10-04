@@ -116,10 +116,15 @@ export default function ProductDetails() {
 
   const fetchProduct = async () => {
     try {
-      const res = await axios.get(`${API_URL}/products/slug/${slug}`);
+      let res;
+      try {
+        res = await axios.get(`${API_URL}/products/slug/${slug}`);
+      } catch {
+        res = await axios.get(`${API_URL}/products/${slug}`);
+      }
       setProduct(res.data.product);
     } catch (err) {
-      console.error(err);
+      console.error("Error loading product details:", err);
     } finally {
       setLoading(false);
     }
@@ -284,9 +289,31 @@ export default function ProductDetails() {
               )}
             </div>
 
-            <p className="mt-6 text-base text-[#5A0E14]/80 leading-relaxed text-justify">
-              {product.description}
+            {product.shortDescription && product.shortDescription !== product.description && (
+              <p className="mt-4 font-sans text-sm font-medium text-[#8A5A1F] leading-relaxed">
+                {product.shortDescription}
+              </p>
+            )}
+
+            <p className="mt-6 text-base text-[#5A0E14]/80 leading-relaxed text-justify whitespace-pre-line">
+              {product.description || product.shortDescription || "Discover the energy and benefits of this carefully curated spiritual item."}
             </p>
+
+            {Array.isArray(product.features) && product.features.length > 0 && (
+              <div className="mt-6 rounded-xl border border-[#5A0E14]/10 bg-[#FDECC8]/20 p-4">
+                <p className="font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#8A5A1F] mb-2.5">
+                  Key Highlights & Benefits
+                </p>
+                <ul className="space-y-1.5">
+                  {product.features.map((feat, idx) => (
+                    <li key={idx} className="flex items-start gap-2 font-sans text-xs text-[#5A0E14]/85">
+                      <span className="text-[#C1272D] font-bold">✦</span>
+                      <span>{typeof feat === 'string' ? feat : feat?.title || feat?.name}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <div className="flex items-center rounded-full border border-[#5A0E14]/20 bg-white">

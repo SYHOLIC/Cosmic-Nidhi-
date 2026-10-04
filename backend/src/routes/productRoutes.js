@@ -20,17 +20,17 @@ router.get('/featured', getFeaturedProducts);
 router.get('/search', searchProducts);
 router.get('/category/:categoryId', getProductsByCategory);
 
-// Admin routes
+// Specific routes must come before /:id
+router.get('/slug/:slug', getProductBySlug);
+router.get('/:id/reviews', getProductReviews);
+
+// Admin create
 router.post('/', protect, admin, createProduct);
+
+// Parameterized product route by ID
 router.route('/:id')
   .get(getProductById)
   .put(protect, admin, updateProduct)
   .delete(protect, admin, deleteProduct);
-
-router.route('/:id/reviews')
-  .get(getProductReviews);
-
-router.route('/slug/:slug')
-  .get(getProductBySlug);
 
 module.exports = router;

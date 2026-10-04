@@ -1026,10 +1026,13 @@ export default function ProductTab() {
                         <p className="font-sans text-[13px] font-semibold text-[#3C080D] truncate">
                           {product.name}
                         </p>
+                        <p className="font-sans text-[11px] text-[#6B3A2A]/70 truncate max-w-[280px]">
+                          {product.shortDescription || product.description || "No description"}
+                        </p>
                         {product.badge && (
-                          <p className="font-sans text-[10px] text-[#C1272D] font-semibold">
+                          <span className="inline-block mt-0.5 rounded px-1.5 py-0.2 font-sans text-[9px] bg-[#E9A534]/15 text-[#C1272D] font-bold">
                             {product.badge}
-                          </p>
+                          </span>
                         )}
                       </div>
                     </div>

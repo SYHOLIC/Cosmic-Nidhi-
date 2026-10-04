@@ -350,7 +350,7 @@ function ProductCard({ product, index, onQuickView, isWishlisted }) {
         </h3>
 
         <p className="mt-1 line-clamp-2 min-h-[36px] font-sans text-[12px] leading-relaxed text-[#5A0E14]/70">
-          {product.description || "Discover the energy and benefits of this carefully curated spiritual item."}
+          {product.shortDescription || product.description || "Discover the energy and benefits of this carefully curated spiritual item."}
         </p>
 
         <div className="mt-2.5 flex flex-wrap items-baseline gap-2">
@@ -535,6 +535,9 @@ export default function ProductsPage() {
         _id: p._id,
         slug: p.slug || p._id,
         name: p.name,
+        description: p.description || p.shortDescription || "",
+        shortDescription: p.shortDescription || "",
+        features: p.features || [],
         price: p.price,
         originalPrice: p.originalPrice || null,
         image: (p.images && p.images.length > 0 ? p.images[0] : "") || p.image || "",

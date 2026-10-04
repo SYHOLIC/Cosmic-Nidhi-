@@ -26,7 +26,29 @@ const getProducts = async (req, res) => {
     }
     
     if (req.query.category) {
-      filter.category = req.query.category;
+      if (mongoose.Types.ObjectId.isValid(req.query.category)) {
+        const allCategories = await Category.find({}, '_id parentCategory');
+        const childrenMap = {};
+        allCategories.forEach((c) => {
+          const parentId = c.parentCategory ? c.parentCategory.toString() : null;
+          if (parentId) {
+            if (!childrenMap[parentId]) childrenMap[parentId] = [];
+            childrenMap[parentId].push(c._id.toString());
+          }
+        });
+        const getDescendants = (catId) => {
+          const direct = childrenMap[catId] || [];
+          let list = [...direct];
+          for (const d of direct) {
+            list = list.concat(getDescendants(d));
+          }
+          return list;
+        };
+        const allCatIds = [req.query.category, ...getDescendants(req.query.category)];
+        filter.category = { $in: allCatIds };
+      } else {
+        filter.category = req.query.category;
+      }
     }
     if (req.query.minPrice || req.query.maxPrice) {
       filter.price = {};

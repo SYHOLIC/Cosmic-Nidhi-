@@ -28,27 +28,74 @@ const generateUniqueSlug = async (name, excludeId = null) => {
 };
 
 // @desc    Get all categories
-// @route   GET /api/categories
-// @access  Public
+// @route   GET /api/categories (Public) and GET /api/admin/categories (Admin)
+// @access  Public / Private (Admin)
 const getCategories = async (req, res) => {
   try {
-    const categories = await Category.find({ isActive: true }).populate(
-      'parentCategory',
-      'name slug'
-    );
+    const isAdmin = Boolean(req.user && req.user.role === 'admin');
+    const query = isAdmin ? {} : { isActive: true };
+    const categories = await Category.find(query)
+      .populate('parentCategory', 'name slug')
+      .sort({ createdAt: 1 });
 
-    const categoriesWithCount = await Promise.all(
-      categories.map(async (category) => {
-        const productCount = await Product.countDocuments({
-          category: category._id,
-          isActive: true,
-        });
-        return {
-          ...category.toObject(),
-          productCount,
-        };
-      })
-    );
+    const countMatch = isAdmin
+      ? { category: { $ne: null } }
+      : { category: { $ne: null }, isActive: true };
+
+    const directCounts = await Product.aggregate([
+      { $match: countMatch },
+      { $group: { _id: '$category', count: { $sum: 1 } } },
+    ]);
+
+    const directCountMap = {};
+    directCounts.forEach((item) => {
+      if (item._id) {
+        directCountMap[item._id.toString()] = item.count;
+      }
+    });
+
+    // Build parent-to-children mapping to resolve subcategories recursively
+    const childrenMap = {};
+    categories.forEach((cat) => {
+      const parentId = cat.parentCategory?._id
+        ? cat.parentCategory._id.toString()
+        : cat.parentCategory
+        ? cat.parentCategory.toString()
+        : null;
+      if (parentId) {
+        if (!childrenMap[parentId]) childrenMap[parentId] = [];
+        childrenMap[parentId].push(cat._id.toString());
+      }
+    });
+
+    // Helper to recursively collect all descendant category IDs
+    const getDescendantIds = (catId) => {
+      const directChildren = childrenMap[catId] || [];
+      let all = [...directChildren];
+      for (const childId of directChildren) {
+        all = all.concat(getDescendantIds(childId));
+      }
+      return all;
+    };
+
+    const categoriesWithCount = categories.map((category) => {
+      const catIdStr = category._id.toString();
+      const descendantIds = getDescendantIds(catIdStr);
+      const directProductCount = directCountMap[catIdStr] || 0;
+      const subcategoryProductCount = descendantIds.reduce(
+        (sum, id) => sum + (directCountMap[id] || 0),
+        0
+      );
+      const totalProductCount = directProductCount + subcategoryProductCount;
+
+      return {
+        ...category.toObject(),
+        directProductCount,
+        subcategoryProductCount,
+        productCount: totalProductCount,
+        totalProductCount,
+      };
+    });
 
     res.status(200).json({
       success: true,
@@ -79,16 +126,46 @@ const getCategoryById = async (req, res) => {
       });
     }
 
+    // Find all subcategories recursively
+    const allCategories = await Category.find({ isActive: true });
+    const childrenMap = {};
+    allCategories.forEach((cat) => {
+      const parentId = cat.parentCategory?.toString();
+      if (parentId) {
+        if (!childrenMap[parentId]) childrenMap[parentId] = [];
+        childrenMap[parentId].push(cat._id.toString());
+      }
+    });
+
+    const getDescendants = (catId) => {
+      const children = childrenMap[catId] || [];
+      let all = [...children];
+      for (const c of children) {
+        all = all.concat(getDescendants(c));
+      }
+      return all;
+    };
+
+    const targetCategoryIds = [
+      category._id.toString(),
+      ...getDescendants(category._id.toString()),
+    ];
+
     const products = await Product.find({
-      category: category._id,
+      category: { $in: targetCategoryIds },
       isActive: true,
     }).limit(20);
+
+    const totalProductCount = await Product.countDocuments({
+      category: { $in: targetCategoryIds },
+      isActive: true,
+    });
 
     res.status(200).json({
       success: true,
       category,
       products,
-      productCount: products.length,
+      productCount: totalProductCount,
     });
   } catch (error) {
     res.status(500).json({

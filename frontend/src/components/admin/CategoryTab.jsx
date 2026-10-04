@@ -623,7 +623,14 @@ function CategoryRow({ category, level = 0, onEdit, onDelete, onAddSub }) {
         </td>
 
         <td className="px-4 py-3">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#E9A534]/40 bg-[#E9A534]/[0.10] px-2.5 py-0.5 font-sans text-[11px] font-semibold text-[#8A5A1F]">
+          <span
+            title={
+              hasChildren
+                ? `${category.productCount || 0} total products (${category.directProductCount || 0} direct + ${Math.max(0, (category.productCount || 0) - (category.directProductCount || 0))} in subcategories)`
+                : `${category.productCount || 0} products`
+            }
+            className="inline-flex items-center gap-1.5 rounded-full border border-[#E9A534]/40 bg-[#E9A534]/[0.10] px-2.5 py-0.5 font-sans text-[11px] font-semibold text-[#8A5A1F]"
+          >
             <Package className="h-3 w-3" strokeWidth={1.7} />
             {category.productCount || 0}
           </span>
@@ -713,14 +720,35 @@ export default function CategoryTab() {
 
       const allCats = res.data.categories || [];
       const topLevel = allCats.filter((c) => !c.parentCategory);
-      const withChildren = topLevel.map((parent) => ({
-        ...parent,
-        children: allCats.filter(
+      const withChildren = topLevel.map((parent) => {
+        const children = allCats.filter(
           (c) =>
             c.parentCategory?._id === parent._id ||
             c.parentCategory === parent._id
-        ),
-      }));
+        );
+        const childrenProductCount = children.reduce(
+          (sum, child) => sum + (child.productCount || 0),
+          0
+        );
+        const parentDirectCount =
+          typeof parent.directProductCount === "number"
+            ? parent.directProductCount
+            : (parent.productCount || 0);
+
+        const totalProductCount =
+          typeof parent.totalProductCount === "number"
+            ? parent.totalProductCount
+            : (typeof parent.productCount === "number" && parent.productCount > parentDirectCount
+                ? parent.productCount
+                : parentDirectCount + childrenProductCount);
+
+        return {
+          ...parent,
+          directProductCount: parentDirectCount,
+          productCount: totalProductCount,
+          children,
+        };
+      });
 
       setCategories(withChildren);
     } catch (err) {

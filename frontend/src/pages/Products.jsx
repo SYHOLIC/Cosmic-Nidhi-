@@ -444,27 +444,41 @@ export default function ProductsPage() {
       const allCats = res.data.categories;
       
       const topLevel = allCats.filter((c) => !c.parentCategory);
-      const withChildren = topLevel.map((parent) => ({
-        _id: parent._id,
-        id: parent._id,
-        name: parent.name,
-        slug: parent.slug,
-        icon: Gem,
-        description: parent.description,
-        image: parent.image || "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=800&h=600&fit=crop",
-        productCount: parent.productCount || 0,
-        children: allCats.filter(
+      const withChildren = topLevel.map((parent) => {
+        const children = allCats.filter(
           (c) =>
             c.parentCategory?._id === parent._id ||
             c.parentCategory === parent._id
-        ).map(child => ({
+        ).map((child) => ({
           _id: child._id,
           id: child._id,
           name: child.name,
           slug: child.slug,
-          productCount: child.productCount || 0
-        }))
-      }));
+          productCount: child.productCount || 0,
+        }));
+
+        const childrenProductCount = children.reduce(
+          (sum, ch) => sum + (ch.productCount || 0),
+          0
+        );
+
+        const totalCount =
+          typeof parent.totalProductCount === "number"
+            ? parent.totalProductCount
+            : (parent.productCount || 0) + (parent.directProductCount !== undefined ? 0 : childrenProductCount);
+
+        return {
+          _id: parent._id,
+          id: parent._id,
+          name: parent.name,
+          slug: parent.slug,
+          icon: Gem,
+          description: parent.description,
+          image: parent.image || "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=800&h=600&fit=crop",
+          productCount: totalCount,
+          children,
+        };
+      });
       
       setCategories(withChildren);
     } catch (err) {

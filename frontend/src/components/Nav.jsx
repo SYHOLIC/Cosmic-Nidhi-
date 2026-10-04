@@ -125,6 +125,7 @@ function Nav() {
   ========================================================= */
 
   const SERVICES_DROPDOWN_ITEMS = [
+    { label: "Tarot Card Reading", href: "/services#tarot", desc: "Clarity, guidance & support for your next step" },
     { label: "Birth Chart / Janam Kundli", href: "/services#birth-chart", desc: "Detailed planetary life map & remedies" },
     { label: "Numerology Consultation", href: "/services#numerology", desc: "Destiny, name & lifepath guidance" },
     { label: "Applied Vastu Consultation", href: "/services#vastu", desc: "Harmonize energy flows for home & work" },

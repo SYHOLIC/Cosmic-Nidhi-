@@ -81,6 +81,51 @@ const SERVICES_LIST = [
     priceDisplay: "₹2,100",
     deliverables: "Side-by-side kundli reading, compatibility report (Requires Bride & Groom Name & DOB)",
   },
+  {
+    type: "tarot",
+    name: "Tarot Card Reading",
+    duration: "15–60 minutes",
+    icon: Sparkles,
+    amount: 1200,
+    priceDisplay: "From ₹1,200",
+    deliverables: "Personalized card spread, intuitive guidance, audio/video call or in-person session",
+  },
+];
+
+export const TAROT_SESSION_OPTIONS = [
+  {
+    id: "15min",
+    duration: "15 Minutes",
+    label: "15 Minutes – Quick Guidance",
+    desc: "1–2 specific questions",
+    amount: 1200,
+    priceDisplay: "₹1,200",
+  },
+  {
+    id: "30min",
+    duration: "30 Minutes",
+    label: "30 Minutes – Detailed Tarot Reading",
+    desc: "Deeper guidance around one or more areas",
+    amount: 2100,
+    priceDisplay: "₹2,100",
+  },
+  {
+    id: "60min",
+    duration: "45/60 Minutes",
+    label: "45/60 Minutes – In-Depth Consultation",
+    desc: "Multiple questions and detailed discussion",
+    amount: 3200,
+    priceDisplay: "₹3,200",
+  },
+];
+
+export const TAROT_AREAS_OF_GUIDANCE = [
+  "Love & Relationships",
+  "Career & Business",
+  "Money & Financial Decisions",
+  "Family & Personal Matters",
+  "General Guidance",
+  "Specific Questions / Situation Reading",
 ];
 
 const TIME_SLOTS = [
@@ -120,6 +165,11 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
   const [selectedTime, setSelectedTime] = useState(TIME_SLOTS[0]);
   const [paymentMode, setPaymentMode] = useState("advance_online");
   const [bookedSlots, setBookedSlots] = useState([]);
+
+  // Tarot specific booking state
+  const [tarotSessionId, setTarotSessionId] = useState("15min");
+  const [consultationMode, setConsultationMode] = useState("online"); // "online" | "in_person"
+  const [guidanceArea, setGuidanceArea] = useState("General Guidance");
 
   const [clientDetails, setClientDetails] = useState({
     name: "",
@@ -241,11 +291,16 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
         (s) =>
           s.name.toLowerCase().includes(initialService.title?.toLowerCase() || "") ||
           s.type === initialService.type?.toLowerCase() ||
-          initialService.title?.toLowerCase().includes(s.type)
+          s.type === initialService.slug?.toLowerCase() ||
+          initialService.title?.toLowerCase().includes(s.type) ||
+          (initialService.slug && s.type.includes(initialService.slug))
       );
       if (match) {
         setSelectedServiceType(match.type);
       }
+      if (initialService.duration?.includes("15")) setTarotSessionId("15min");
+      else if (initialService.duration?.includes("30")) setTarotSessionId("30min");
+      else if (initialService.duration?.includes("45") || initialService.duration?.includes("60")) setTarotSessionId("60min");
     }
 
     // Default date to tomorrow
@@ -324,6 +379,25 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
   const activeService =
     SERVICES_LIST.find((s) => s.type === selectedServiceType) || SERVICES_LIST[0];
 
+  const selectedTarotOption =
+    TAROT_SESSION_OPTIONS.find((opt) => opt.id === tarotSessionId) ||
+    TAROT_SESSION_OPTIONS[0];
+
+  const currentAmount =
+    activeService.type === "tarot"
+      ? selectedTarotOption.amount
+      : activeService.amount;
+
+  const currentDuration =
+    activeService.type === "tarot"
+      ? selectedTarotOption.duration
+      : activeService.duration;
+
+  const currentPriceDisplay =
+    activeService.type === "tarot"
+      ? selectedTarotOption.priceDisplay
+      : activeService.priceDisplay || `₹${activeService.amount}`;
+
   const availableSlotsCount = TIME_SLOTS.filter(
     (slot) => !isSlotPassed(slot, selectedDate) && !bookedSlots.includes(slot)
   ).length;
@@ -365,6 +439,7 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
 
     const isMatching = activeService.type === "kundli-matching";
     const isVastu = activeService.type.startsWith("vastu");
+    const isTarot = activeService.type === "tarot";
 
     if (isMatching) {
       if (!clientDetails.name?.trim() || !/^[a-zA-Z\s]{2,50}$/.test(clientDetails.name.trim())) {
@@ -401,11 +476,13 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
 
       const payload = {
         serviceType: activeService.type,
-        serviceName: activeService.name,
+        serviceName: isTarot
+          ? `Tarot Card Reading (${selectedTarotOption.duration})`
+          : activeService.name,
         date: selectedDate,
         time: selectedTime,
-        duration: activeService.duration,
-        amount: activeService.amount,
+        duration: currentDuration,
+        amount: currentAmount,
         paymentMethod: paymentMode === "advance_online" ? "online_razorpay" : "pay_later",
         clientDetails: {
           name: clientDetails.name,
@@ -420,6 +497,11 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
           partnerPlaceOfBirth: clientDetails.partnerPlaceOfBirth,
           questions: clientDetails.questions,
           address: clientDetails.address,
+          consultationMode: isTarot
+            ? (consultationMode === "online" ? "Online Consultation (Video/Call)" : "In-Person Consultation")
+            : undefined,
+          areaOfGuidance: isTarot ? guidanceArea : undefined,
+          sessionOption: isTarot ? selectedTarotOption.label : undefined,
           architectureMap: architectureMap ? {
             name: architectureMap.name,
             size: architectureMap.size,
@@ -430,6 +512,8 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
           ? `[Kundli Matching] Bride: ${clientDetails.name} (DOB: ${clientDetails.dateOfBirth}) | Groom: ${clientDetails.partnerName} (DOB: ${clientDetails.partnerDateOfBirth}) | Notes: ${clientDetails.questions || "None"}`
           : isVastu
           ? `[Vastu Consultation - NCR Location Only] Site Address: ${clientDetails.address} ${architectureMap ? `| Architecture Map: ${architectureMap.name} (${formatFileSize(architectureMap.size)})` : ""} | Notes: ${clientDetails.questions || "None"}`
+          : isTarot
+          ? `[Tarot Card Reading - ${consultationMode === "online" ? "Online Consultation (Video/Call)" : "In-Person Consultation"}] Session: ${selectedTarotOption.label} (₹${selectedTarotOption.amount}) | Area of Concern: ${guidanceArea} | DOB: ${clientDetails.dateOfBirth || "Optional / None"} | Notes: ${clientDetails.questions || "General guidance"}`
           : architectureMap
           ? `${clientDetails.questions || ""} | Architecture Map: ${architectureMap.name} (${formatFileSize(architectureMap.size)})`.trim()
           : clientDetails.questions,
@@ -455,7 +539,7 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
 
         const orderRes = await axios.post(
           `${API_URL}/payment/create-order`,
-          { amount: activeService.amount },
+          { amount: currentAmount },
           { headers }
         );
 
@@ -480,12 +564,12 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
           amount: order.amount,
           currency: "INR",
           name: "Cosmic Nidhi",
-          description: `${activeService.name} Consultation Booking`,
+          description: `${isTarot ? `Tarot Card Reading (${selectedTarotOption.duration})` : activeService.name} Consultation Booking`,
           order_id: order.id,
           prefill: {
-            name: form.name || "Cosmic Nidhi Client",
-            email: form.email || "cosmicnidhi.astro@gmail.com",
-            contact: form.phone || "8826044955",
+            name: clientDetails.name || "Cosmic Nidhi Client",
+            email: clientDetails.email || "cosmicnidhi.astro@gmail.com",
+            contact: clientDetails.phone || "8826044955",
           },
           config: {
             display: {
@@ -640,28 +724,38 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
                 {successBooking.paymentStatus === "paid" ? (
                   <div className="mx-auto mt-2 inline-flex items-center gap-1.5 rounded-full border border-green-600/30 bg-green-50 px-3 py-1 font-sans text-[11.5px] font-bold uppercase tracking-[0.1em] text-green-800">
                     <CheckCircle2 size={13} />
-                    <span>Advance Payment Verified · {activeService.priceDisplay || `₹${activeService.amount}`}</span>
+                    <span>Advance Payment Verified · {currentPriceDisplay}</span>
                   </div>
                 ) : (
                   <div className="mx-auto mt-2 inline-flex items-center gap-1.5 rounded-full border border-[#E9A534]/40 bg-[#FDECC8]/40 px-3 py-1 font-sans text-[11.5px] font-bold uppercase tracking-[0.1em] text-[#8A5A1F]">
                     <Clock size={13} />
-                    <span>Payment Due at Consultation · {activeService.priceDisplay || `₹${activeService.amount}`}</span>
+                    <span>Payment Due at Consultation · {currentPriceDisplay}</span>
                   </div>
                 )}
 
                 <p className="mx-auto mt-3 max-w-md font-sans text-[13.5px] leading-relaxed text-[#6B3A2A]/85">
                   Thank you, <strong className="text-[#3C080D]">{clientDetails.name}</strong>. Your appointment for{" "}
-                  <strong className="text-[#8B2F2B]">{activeService.name}</strong> on{" "}
+                  <strong className="text-[#8B2F2B]">{activeService.type === "tarot" ? `Tarot Card Reading (${currentDuration})` : activeService.name}</strong> on{" "}
                   <strong className="text-[#3C080D]">{new Date(selectedDate).toLocaleDateString()}</strong> at{" "}
                   <strong className="text-[#3C080D]">{selectedTime}</strong> has been received.
                 </p>
 
                 <div className="mx-auto my-6 max-w-md rounded-[8px] border border-[#E9A534]/25 bg-[#FDECC8]/30 p-4 text-left font-sans text-[12.5px] text-[#3C080D]">
                   <p className="flex items-center gap-2 font-semibold">
-                    <Clock size={14} className="text-[#E9A534]" /> Session Duration: {activeService.duration}
+                    <Clock size={14} className="text-[#E9A534]" /> Session Duration: {currentDuration}
                   </p>
+                  {activeService.type === "tarot" && (
+                    <>
+                      <p className="mt-1 flex items-center gap-2 font-semibold text-[#8A5A1F]">
+                        <Sparkles size={14} className="text-[#E9A534]" /> Mode: {consultationMode === "online" ? "Online Consultation (Video/Call)" : "In-Person Consultation"}
+                      </p>
+                      <p className="mt-1 flex items-center gap-2 text-[#3C080D]">
+                        <Star size={14} className="text-[#E9A534]" /> Focus Area: {guidanceArea}
+                      </p>
+                    </>
+                  )}
                   <p className="mt-1 flex items-center gap-2 font-semibold text-[#8B2F2B]">
-                    <span>✦</span> Fee: {activeService.priceDisplay || `₹${activeService.amount}`}{" "}
+                    <span>✦</span> Fee: {currentPriceDisplay}{" "}
                     <span className={successBooking.paymentStatus === "paid" ? "text-green-700 font-bold ml-1" : "text-[#8A5A1F] ml-1"}>
                       ({successBooking.paymentStatus === "paid" ? "Paid in Advance ✓" : "Due at session"})
                     </span>
@@ -675,7 +769,7 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
                     <FileText size={14} className="text-[#E9A534]" /> Deliverables: {activeService.deliverables}
                   </p>
                   <p className="mt-2 text-[11.5px] text-[#6B3A2A]/75">
-                    ✦ Our lead astrologer will connect with you via Phone / WhatsApp prior to the session.
+                    ✦ Our lead practitioner will connect with you via Phone / WhatsApp prior to the session.
                   </p>
                 </div>
 
@@ -740,6 +834,64 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
                     })}
                   </div>
                 </div>
+
+                {/* 1b. Tarot Specific Session Duration Selector */}
+                {activeService.type === "tarot" && (
+                  <div className="rounded-[10px] border border-[#E9A534]/50 bg-[#FDECC8]/30 p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="h-4 w-4 text-[#8A5A1F]" />
+                        <label className="block font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-[#8A5A1F]">
+                          Select Session Duration &amp; Reading Depth
+                        </label>
+                      </div>
+                      <span className="font-display text-[15px] font-bold text-[#8B2F2B]">
+                        {currentPriceDisplay}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                      {TAROT_SESSION_OPTIONS.map((opt) => {
+                        const isSelected = tarotSessionId === opt.id;
+                        return (
+                          <button
+                            key={opt.id}
+                            type="button"
+                            onClick={() => setTarotSessionId(opt.id)}
+                            className={`flex flex-col justify-between rounded-[8px] border p-3 text-left transition-all ${
+                              isSelected
+                                ? "border-[#8B2F2B] bg-[#FFF8EC] shadow-sm ring-2 ring-[#E9A534]"
+                                : "border-[#5A0E14]/15 bg-white hover:border-[#E9A534]/60"
+                            }`}
+                          >
+                            <div>
+                              <div className="flex items-center justify-between">
+                                <span className="font-sans text-[12px] font-bold text-[#3C080D]">
+                                  {opt.duration}
+                                </span>
+                                <span className="font-display text-[13px] font-bold text-[#C1272D]">
+                                  {opt.priceDisplay}
+                                </span>
+                              </div>
+                              <p className="mt-1 font-sans text-[10.5px] leading-snug text-[#6B3A2A]/80">
+                                {opt.desc}
+                              </p>
+                            </div>
+                            <div className="mt-2.5 pt-2 border-t border-[#5A0E14]/10 flex items-center justify-between">
+                              <span
+                                className={`text-[9.5px] font-bold uppercase tracking-wider ${
+                                  isSelected ? "text-[#8B2F2B]" : "text-[#6B3A2A]/50"
+                                }`}
+                              >
+                                {isSelected ? "Selected ✓" : "Choose"}
+                              </span>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
 
                 {/* 2. Date & Time Selection */}
                 <div className="grid gap-4 sm:grid-cols-2">
@@ -1101,6 +1253,201 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
                       </div>
                     </div>
                   </>
+                ) : activeService.type === "tarot" ? (
+                  <>
+                    {/* 3. Tarot Client Details & Consultation Preferences */}
+                    <div className="space-y-4">
+                      {/* Consultation Mode */}
+                      <div>
+                        <label className="mb-1.5 block font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#8A5A1F]">
+                          3. Consultation Mode *
+                        </label>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                          <button
+                            type="button"
+                            onClick={() => setConsultationMode("online")}
+                            className={`flex items-center gap-3 rounded-[8px] border p-3 text-left transition-all ${
+                              consultationMode === "online"
+                                ? "border-[#E9A534] bg-[#5A0E14] text-[#FFF8EC] shadow-sm"
+                                : "border-[#5A0E14]/15 bg-white text-[#3C080D] hover:bg-[#FDECC8]/30"
+                            }`}
+                          >
+                            <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
+                              consultationMode === "online" ? "bg-[#E9A534]/20 text-[#E9C76D]" : "bg-[#FDECC8]/60 text-[#8A5A1F]"
+                            }`}>
+                              <Phone className="h-4 w-4" />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-sans text-[12.5px] font-bold leading-tight">
+                                Online Consultation
+                              </p>
+                              <p className={`text-[10.5px] mt-0.5 ${consultationMode === "online" ? "text-[#E9C76D]/80" : "text-[#6B3A2A]/70"}`}>
+                                Live Video Call or Phone / WhatsApp
+                              </p>
+                            </div>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setConsultationMode("in_person")}
+                            className={`flex items-center gap-3 rounded-[8px] border p-3 text-left transition-all ${
+                              consultationMode === "in_person"
+                                ? "border-[#E9A534] bg-[#5A0E14] text-[#FFF8EC] shadow-sm"
+                                : "border-[#5A0E14]/15 bg-white text-[#3C080D] hover:bg-[#FDECC8]/30"
+                            }`}
+                          >
+                            <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
+                              consultationMode === "in_person" ? "bg-[#E9A534]/20 text-[#E9C76D]" : "bg-[#FDECC8]/60 text-[#8A5A1F]"
+                            }`}>
+                              <MapPin className="h-4 w-4" />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-sans text-[12.5px] font-bold leading-tight">
+                                In-Person Consultation
+                              </p>
+                              <p className={`text-[10.5px] mt-0.5 ${consultationMode === "in_person" ? "text-[#E9C76D]/80" : "text-[#6B3A2A]/70"}`}>
+                                Face-to-Face sacred reading
+                              </p>
+                            </div>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Contact & Personal Information */}
+                      <div>
+                        <label className="mb-2 block font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-[#8A5A1F]">
+                          Your Information
+                        </label>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <div>
+                            <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-[#6B3A2A]/80">
+                              Full Name *
+                            </label>
+                            <input
+                              type="text"
+                              required
+                              placeholder="e.g. Priya Sharma"
+                              value={clientDetails.name}
+                              onChange={(e) =>
+                                setClientDetails({
+                                  ...clientDetails,
+                                  name: e.target.value.replace(/[^a-zA-Z\s]/g, ""),
+                                })
+                              }
+                              className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-[#6B3A2A]/80">
+                              Phone / WhatsApp (10 digits) *
+                            </label>
+                            <input
+                              type="tel"
+                              required
+                              inputMode="numeric"
+                              pattern="[0-9]{10}"
+                              maxLength={10}
+                              placeholder="e.g. 9876543210"
+                              value={clientDetails.phone}
+                              onChange={(e) =>
+                                setClientDetails({
+                                  ...clientDetails,
+                                  phone: e.target.value.replace(/\D/g, "").slice(0, 10),
+                                })
+                              }
+                              className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
+                            />
+                          </div>
+
+                          <div className="sm:col-span-2">
+                            <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-[#6B3A2A]/80">
+                              Email Address *
+                            </label>
+                            <input
+                              type="email"
+                              required
+                              placeholder="e.g. priya@example.com"
+                              value={clientDetails.email}
+                              onChange={(e) =>
+                                setClientDetails({ ...clientDetails, email: e.target.value })
+                              }
+                              className="w-full rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Areas of Guidance */}
+                      <div>
+                        <div className="flex items-center justify-between mb-1.5">
+                          <label className="block font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-[#6B3A2A]/80">
+                            Primary Area of Guidance / Concern *
+                          </label>
+                          <span className="font-sans text-[10px] text-[#8A5A1F] font-semibold">
+                            {guidanceArea}
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {TAROT_AREAS_OF_GUIDANCE.map((area) => {
+                            const isAreaSelected = guidanceArea === area;
+                            return (
+                              <button
+                                key={area}
+                                type="button"
+                                onClick={() => setGuidanceArea(area)}
+                                className={`rounded-full px-3 py-1 font-sans text-[11px] font-medium transition-all ${
+                                  isAreaSelected
+                                    ? "border border-[#8B2F2B] bg-[#5A0E14] text-[#FFF8EC] shadow-xs"
+                                    : "border border-[#5A0E14]/15 bg-white text-[#6B3A2A] hover:border-[#E9A534] hover:bg-[#FDECC8]/30"
+                                }`}
+                              >
+                                {area}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Specific Questions / Situation Reading Textarea */}
+                      <div>
+                        <label className="mb-1 block font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-[#6B3A2A]/80">
+                          Specific Questions / Situation (Optional)
+                        </label>
+                        <textarea
+                          rows={2}
+                          placeholder="e.g., Guidance regarding career transition, clarity on relationship decisions, or specific questions you want the cards to address..."
+                          value={clientDetails.questions}
+                          onChange={(e) =>
+                            setClientDetails({ ...clientDetails, questions: e.target.value })
+                          }
+                          className="w-full resize-none rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
+                        />
+                      </div>
+
+                      {/* Date of Birth (Optional for Tarot) */}
+                      <div className="rounded-[8px] border border-[#E9A534]/25 bg-[#FDECC8]/20 p-3.5">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                          <div>
+                            <label className="block font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-[#8A5A1F]">
+                              Date of Birth <span className="font-normal text-[#6B3A2A]/60 lowercase">(optional for tarot)</span>
+                            </label>
+                            <p className="font-sans text-[11px] text-[#6B3A2A]/75">
+                              Optional birth date helps align intuitive energy with your astrological markers.
+                            </p>
+                          </div>
+                          <input
+                            type="date"
+                            value={clientDetails.dateOfBirth}
+                            onChange={(e) =>
+                              setClientDetails({ ...clientDetails, dateOfBirth: e.target.value })
+                            }
+                            className="w-full sm:w-auto rounded-[6px] border border-[#5A0E14]/15 bg-white px-3 py-1.5 font-sans text-[12px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </>
                 ) : (
                   <>
                     {/* 3. Client Information */}
@@ -1215,24 +1562,26 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
                   </>
                 )}
 
-                {/* 5. Questions / Notes */}
-                <div>
-                  <label className="mb-1.5 block font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#8A5A1F]">
-                    Specific Questions or Focus Area
-                  </label>
-                  <textarea
-                    rows={2}
-                    placeholder="e.g. Career changes in the coming year, relationship compatibility, health, or new business venture..."
-                    value={clientDetails.questions}
-                    onChange={(e) =>
-                      setClientDetails({ ...clientDetails, questions: e.target.value })
-                    }
-                    className="w-full resize-none rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
-                  />
-                </div>
+                {/* 5. Questions / Notes for non-tarot */}
+                {activeService.type !== "tarot" && (
+                  <div>
+                    <label className="mb-1.5 block font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#8A5A1F]">
+                      Specific Questions or Focus Area
+                    </label>
+                    <textarea
+                      rows={2}
+                      placeholder="e.g. Career changes in the coming year, relationship compatibility, health, or new business venture..."
+                      value={clientDetails.questions}
+                      onChange={(e) =>
+                        setClientDetails({ ...clientDetails, questions: e.target.value })
+                      }
+                      className="w-full resize-none rounded-[7px] border border-[#5A0E14]/15 bg-white px-3.5 py-2 font-sans text-[13px] text-[#2C1210] focus:border-[#E9A534] focus:outline-none"
+                    />
+                  </div>
+                )}
 
-                {/* Optional Architecture Map for Non-Vastu Consultations */}
-                {!activeService.type.startsWith("vastu") && (
+                {/* Optional Architecture Map for Non-Vastu and Non-Tarot Consultations */}
+                {!activeService.type.startsWith("vastu") && activeService.type !== "tarot" && (
                   <div>
                     {!architectureMap ? (
                       <div className="flex items-center justify-between">
@@ -1304,7 +1653,7 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
                       Advance Payment Option
                     </label>
                     <span className="font-display text-[13px] font-bold text-[#8B2F2B]">
-                      {activeService.priceDisplay || `₹${activeService.amount}`}
+                      {currentPriceDisplay}
                     </span>
                   </div>
 
@@ -1380,7 +1729,7 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
                         Secured 256-bit payment gateway · Instant slot reservation
                       </span>
                       <strong className="text-[#3C080D]">
-                        {activeService.priceDisplay || `₹${activeService.amount}`}
+                        {currentPriceDisplay}
                       </strong>
                     </div>
                   )}
@@ -1403,7 +1752,7 @@ export default function BookingModal({ isOpen, onClose, initialService }) {
                     {loading
                       ? (paymentMode === "advance_online" ? "Processing Advance Payment..." : "Scheduling Consultation...")
                       : (paymentMode === "advance_online"
-                          ? `Pay Advance (${activeService.priceDisplay || '₹' + activeService.amount}) & Book`
+                          ? `Pay Advance (${currentPriceDisplay}) & Book`
                           : "Confirm Consultation Booking (Pay Later)")}
                   </button>
                   <button

@@ -15,6 +15,8 @@ const bookingSchema = new mongoose.Schema({
       'vastu-visit',
       'vastu-gridding',
       'kundli-matching',
+      'tarot',
+      'tarot-reading',
       'career-guidance',
       'muhurat',
       'annual-guidance',
@@ -64,6 +66,9 @@ const bookingSchema = new mongoose.Schema({
     partnerPlaceOfBirth: String,
     questions: String,
     address: String,
+    consultationMode: String,
+    areaOfGuidance: String,
+    sessionOption: String,
     architectureMap: {
       name: String,
       size: Number,

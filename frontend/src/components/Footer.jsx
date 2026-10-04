@@ -6,6 +6,7 @@ function Footer() {
   const navigate = useNavigate();
 
   const services = [
+    { label: "Tarot Card Reading", href: "/services#tarot" },
     { label: "Numerology Consultation", href: "/services#numerology" },
     { label: "Birth Chart / Janam Kundli", href: "/services#birth-chart" },
     { label: "Applied Vastu Consultation", href: "/services#vastu" },

@@ -1146,6 +1146,44 @@ export default function BookingTab({ bookings = [], onRefreshBookings }) {
                 </div>
               )}
 
+              {/* Tarot Session Details if present */}
+              {(viewModalBooking.clientDetails?.consultationMode ||
+                viewModalBooking.clientDetails?.areaOfGuidance ||
+                viewModalBooking.clientDetails?.sessionOption) && (
+                <div className="rounded-lg border border-[#E9A534]/30 bg-[#FDECC8]/20 p-3 space-y-1.5">
+                  <h4 className="font-bold text-[#8A5A1F] uppercase text-[11px] flex items-center gap-1.5 border-b border-[#5A0E14]/10 pb-1">
+                    <Sparkles className="h-3.5 w-3.5 text-[#8A5A1F]" />
+                    Tarot Consultation Details
+                  </h4>
+                  <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-xs">
+                    {viewModalBooking.clientDetails.consultationMode && (
+                      <div>
+                        <span className="text-[#6B3A2A]/70">Mode:</span>{" "}
+                        <strong className="text-[#3C080D]">
+                          {viewModalBooking.clientDetails.consultationMode}
+                        </strong>
+                      </div>
+                    )}
+                    {viewModalBooking.clientDetails.sessionOption && (
+                      <div>
+                        <span className="text-[#6B3A2A]/70">Session:</span>{" "}
+                        <strong className="text-[#3C080D]">
+                          {viewModalBooking.clientDetails.sessionOption}
+                        </strong>
+                      </div>
+                    )}
+                    {viewModalBooking.clientDetails.areaOfGuidance && (
+                      <div className="col-span-2">
+                        <span className="text-[#6B3A2A]/70">Focus Area:</span>{" "}
+                        <strong className="text-[#8B2F2B]">
+                          {viewModalBooking.clientDetails.areaOfGuidance}
+                        </strong>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* Site Address if present */}
               {viewModalBooking.clientDetails?.address && (
                 <div className="rounded-lg border border-[#E9A534]/30 bg-[#FDECC8]/20 p-3 space-y-1">

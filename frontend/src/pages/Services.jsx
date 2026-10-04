@@ -12,6 +12,7 @@ import {
   CheckCircle,
   Compass,
   Gem,
+  Sparkles,
 } from "lucide-react";
 import Reveal from "../components/Reveal";
 import BookingModal from "../components/BookingModal";
@@ -24,6 +25,7 @@ import vastuConsultationImg from "../assets/vastu-consultation.webp";
 import birthChartImg from "../assets/birth-chart.jpg";
 import numerologyImg from "../assets/numerology-consultation.jpg";
 import kundliMatchingImg from "../assets/kundli-matching.jpg";
+import tarotReadingImg from "../assets/tarot-reading.jpg";
 
 /* ================================================================
    SERVICES DATA
@@ -123,6 +125,34 @@ const SERVICES = [
     ],
     whoItsFor:
       "Couples, engaged partners, and anyone seeking to understand relationship dynamics.",
+  },
+  {
+    id: "05",
+    slug: "tarot",
+    title: "Tarot Card Reading",
+    subtitle: "Find Clarity, Guidance & Support for Your Next Step",
+    desc: "A personalized Tarot reading helps clients explore their current situation, understand possible influences, and gain clarity about the choices available to them.\n\nWhether you are facing important life decisions, relationship questions, career changes, or simply seeking honest perspective, the cards serve as a sacred mirror reflecting what needs your awareness.",
+    image: tarotReadingImg,
+    accent: "#E9A534",
+    type: "Tarot & Intuitive",
+    deliverables: "Personalized card spread, intuitive consultation, audio/video call or in-person",
+    duration: "15–60 minutes",
+    fee: "From ₹1,200",
+    cta: "Book Tarot Reading",
+    icon: Sparkles,
+    whatTitle: "Areas of Guidance & Session Options",
+    whatToExpect: [
+      "Love & Relationships — Understanding connections, emotional crossroads, and harmony",
+      "Career & Business — Professional momentum, opportunities, and strategic decisions",
+      "Money & Financial Decisions — Clarity around financial direction and prosperity patterns",
+      "Family & Personal Matters — Navigating family dynamics and personal peace of mind",
+      "General Guidance & Situation Reading — Direct, focused insight into specific life questions",
+      "15 Minutes – Quick Guidance (1–2 specific questions) · ₹1,200",
+      "30 Minutes – Detailed Tarot Reading (deeper guidance) · ₹2,100",
+      "45/60 Minutes – In-Depth Consultation (multiple questions & discussion) · ₹3,200",
+    ],
+    whoItsFor:
+      "Anyone seeking clarity, facing important life transitions, or needing intuitive support and clear guidance for their next step.",
   },
 ];
 

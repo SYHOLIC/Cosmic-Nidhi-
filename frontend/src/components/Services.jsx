@@ -5,6 +5,7 @@ import vastuConsultationImg from '../assets/vastu-consultation.webp';
 import birthChartImg from '../assets/birth-chart.jpg';
 import numerologyImg from '../assets/numerology-consultation.jpg';
 import kundliMatchingImg from '../assets/kundli-matching.jpg';
+import tarotReadingImg from '../assets/tarot-reading.jpg';
 
 const SERVICES = [
   {
@@ -84,6 +85,20 @@ const SERVICES = [
     duration: '30 minutes',
     fee: '₹2,100',
     cta: 'Check Compatibility',
+  },
+  {
+    id: '05',
+    slug: 'tarot',
+    title: 'Tarot Card Reading',
+    subtitle: 'Find Clarity, Guidance & Support for Your Next Step',
+    desc: 'A personalized Tarot reading helps clients explore their current situation, understand possible influences, and gain clarity about the choices available to them.\n\nExplore Love & Relationships, Career & Business, Money & Financial Decisions, Family Matters, and Specific Situations with intuitive precision.',
+    image: tarotReadingImg,
+    accent: '#E9A534',
+    type: 'Tarot & Intuitive',
+    deliverables: 'Personalized card spread, intuitive consultation, audio/video call or in-person',
+    duration: '15–60 minutes',
+    fee: 'From ₹1,200',
+    cta: 'Book Tarot Reading',
   },
 ];
 

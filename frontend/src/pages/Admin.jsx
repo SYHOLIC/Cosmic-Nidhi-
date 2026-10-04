@@ -166,10 +166,10 @@ function StatCard({ label, value, icon: Icon, onClick, highlight }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       className={`
-        group relative overflow-hidden
+        group relative min-w-0 overflow-hidden
         rounded-[7px] border border-[#5A0E14]/12
-        bg-[#FFFDF9] p-4
-        shadow-[0_8px_22px_rgba(60,8,13,0.05)]
+        bg-[#FFFDF9] p-2.5 sm:p-4
+        shadow-[0_4px_16px_rgba(60,8,13,0.04)] sm:shadow-[0_8px_22px_rgba(60,8,13,0.05)]
         transition-all duration-300
         hover:-translate-y-0.5
         hover:border-[#E9A534]/45
@@ -180,15 +180,15 @@ function StatCard({ label, value, icon: Icon, onClick, highlight }) {
     >
       <span className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-[#E9A534]/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#E9A534]/45 bg-gradient-to-br from-[#E9A534]/[0.18] to-[#E9A534]/[0.02] text-[#A2691F]">
-          <Icon className="h-4 w-4" strokeWidth={1.7} />
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <div className="flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border border-[#E9A534]/45 bg-gradient-to-br from-[#E9A534]/[0.18] to-[#E9A534]/[0.02] text-[#A2691F]">
+          <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.7} />
         </div>
-        <div className="min-w-0">
-          <p className="font-display text-[22px] font-semibold leading-none text-[#3C080D]">
+        <div className="min-w-0 flex-1 overflow-hidden">
+          <p className="truncate font-display text-[15px] sm:text-[20px] md:text-[22px] font-semibold leading-tight text-[#3C080D]">
             {value}
           </p>
-          <p className="mt-1 truncate font-sans text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6B3A2A]/75">
+          <p className="mt-0.5 truncate font-sans text-[8.5px] sm:text-[10px] font-semibold uppercase tracking-[0.08em] sm:tracking-[0.14em] text-[#6B3A2A]/75">
             {label}
           </p>
         </div>
@@ -402,7 +402,7 @@ function TopBar({ activeTab, setActiveTab, onMenuClick, handleLogout, orders, bo
 
 function OverviewTab({ orders, bookings, recentMessages = [], onSelectTab }) {
   return (
-    <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid min-w-0 w-full max-w-full gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
       {/* 1. Recent Orders */}
       <section className="rounded-[9px] border border-[#5A0E14]/12 bg-[#FFFDF9] p-5 shadow-[0_4px_16px_rgba(60,8,13,0.03)]">
         <div className="mb-4 flex items-center justify-between">
@@ -1245,7 +1245,7 @@ export default function AdminPage() {
   ];
 
   return (
-    <div className="min-h-[calc(100svh-78px)] bg-[#FFF7E9]">
+    <div className="min-h-[calc(100svh-78px)] w-full max-w-full overflow-x-hidden bg-[#FFF7E9]">
       <SEOHead
         pageName="admin"
         fallbackTitle="Admin Portal | Cosmic Nidhi"
@@ -1261,7 +1261,7 @@ export default function AdminPage() {
         setMobileOpen={setMobileOpen}
       />
 
-      <div className="lg:pl-[240px]">
+      <div className="flex min-w-0 w-full max-w-full flex-col overflow-x-hidden lg:pl-[240px]">
 
         <TopBar
           activeTab={activeTab}
@@ -1272,8 +1272,8 @@ export default function AdminPage() {
           bookings={bookings}
         />
 
-        <main className="px-4 py-5 sm:px-6 sm:py-6">
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
+        <main className="min-w-0 w-full max-w-full flex-1 px-3 py-4 sm:px-6 sm:py-6">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 md:grid-cols-6">
             {statItems.map((stat) => (
               <StatCard
                 key={stat.label}
@@ -1283,7 +1283,7 @@ export default function AdminPage() {
             ))}
           </div>
 
-          <div className="mt-5">
+          <div className="mt-4 min-w-0 w-full max-w-full sm:mt-5">
             {activeTab === "overview" && (
               <OverviewTab
                 orders={orders}

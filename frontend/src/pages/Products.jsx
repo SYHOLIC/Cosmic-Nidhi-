@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import {
@@ -37,14 +37,34 @@ import { API_URL } from "../config/api";
    HELPERS
 ================================================================ */
 
-function SafeImage({ src, alt, className, iconFallback: Icon }) {
+function SafeImage({ src, alt, className = "", iconFallback: Icon }) {
+  const isDataUrl = typeof src === "string" && src.startsWith("data:");
   const [failed, setFailed] = useState(false);
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(isDataUrl);
+  const imgRef = useRef(null);
 
   useEffect(() => {
     setFailed(false);
-    setLoaded(false);
+    if (!src) {
+      setLoaded(false);
+      return;
+    }
+    if (typeof src === "string" && src.startsWith("data:")) {
+      setLoaded(true);
+    } else {
+      setLoaded(false);
+    }
   }, [src]);
+
+  useEffect(() => {
+    if (imgRef.current && imgRef.current.complete) {
+      if (imgRef.current.naturalWidth > 0) {
+        setLoaded(true);
+      } else if (imgRef.current.src && !isDataUrl) {
+        setFailed(true);
+      }
+    }
+  }, [src, isDataUrl]);
 
   if (!src || failed) {
     return (
@@ -56,16 +76,18 @@ function SafeImage({ src, alt, className, iconFallback: Icon }) {
 
   return (
     <>
-      {!loaded && (
-        <div className={`${className} absolute inset-0 animate-pulse bg-[#5A0E14]/10`} />
+      {!loaded && !isDataUrl && (
+        <div className="absolute inset-0 animate-pulse bg-[#5A0E14]/10 pointer-events-none" />
       )}
       <img
+        ref={imgRef}
         src={src}
         alt={alt}
-        loading="lazy"
+        loading={isDataUrl ? "eager" : "lazy"}
+        decoding="async"
         onError={() => setFailed(true)}
         onLoad={() => setLoaded(true)}
-        className={`${className} ${loaded ? "opacity-100" : "opacity-0"} transition-opacity duration-500`}
+        className={`${className} ${loaded || isDataUrl ? "opacity-100" : "opacity-0"} transition-opacity duration-300`}
       />
     </>
   );

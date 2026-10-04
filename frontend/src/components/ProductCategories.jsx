@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
@@ -331,13 +331,33 @@ function SafeImage({
   className = "",
   iconFallback: Icon = Gem,
 }) {
+  const isDataUrl = typeof src === "string" && src.startsWith("data:");
   const [failed, setFailed] = useState(false);
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(isDataUrl);
+  const imgRef = useRef(null);
 
   useEffect(() => {
     setFailed(false);
-    setLoaded(false);
+    if (!src) {
+      setLoaded(false);
+      return;
+    }
+    if (typeof src === "string" && src.startsWith("data:")) {
+      setLoaded(true);
+    } else {
+      setLoaded(false);
+    }
   }, [src]);
+
+  useEffect(() => {
+    if (imgRef.current && imgRef.current.complete) {
+      if (imgRef.current.naturalWidth > 0) {
+        setLoaded(true);
+      } else if (imgRef.current.src && !isDataUrl) {
+        setFailed(true);
+      }
+    }
+  }, [src, isDataUrl]);
 
   if (!src || failed) {
     return (
@@ -351,20 +371,22 @@ function SafeImage({
 
   return (
     <div className="relative h-full w-full overflow-hidden">
-      {!loaded && (
-        <div className="absolute inset-0 animate-pulse bg-[#5A0E14]/10" />
+      {!loaded && !isDataUrl && (
+        <div className="absolute inset-0 animate-pulse bg-[#5A0E14]/10 pointer-events-none" />
       )}
 
       <img
+        ref={imgRef}
         src={src}
         alt={alt}
-        loading="lazy"
+        loading={isDataUrl ? "eager" : "lazy"}
+        decoding="async"
         onLoad={() => setLoaded(true)}
         onError={() => setFailed(true)}
         className={`
           ${className}
-          ${loaded ? "opacity-100" : "opacity-0"}
-          transition-opacity duration-500
+          ${loaded || isDataUrl ? "opacity-100" : "opacity-0"}
+          transition-opacity duration-300
         `}
       />
     </div>

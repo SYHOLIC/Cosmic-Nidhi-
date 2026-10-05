@@ -19,7 +19,10 @@ import {
   Filter,
   Compass,
   Shield,
-  Search
+  Search,
+  ChevronDown,
+  Check,
+  X
 } from "lucide-react";
 import Reveal from "../components/Reveal";
 import BookingModal from "../components/BookingModal";
@@ -454,6 +457,22 @@ export default function ProductsPage() {
   const [maxPrice, setMaxPrice] = useState("");
   const [showMobileFilter, setShowMobileFilter] = useState(false);
   const [showAllProducts, setShowAllProducts] = useState(false);
+  const [catDropdownOpen, setCatDropdownOpen] = useState(false);
+  const catDropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (catDropdownRef.current && !catDropdownRef.current.contains(e.target)) {
+        setCatDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, []);
 
   const isCategorySelected = (cat) => {
     if (!cat || activeCategory === "all") return false;
@@ -904,225 +923,199 @@ export default function ProductsPage() {
                 </div>
               </div>
               
-              {/* Desktop filters */}
-              <div className="hidden flex-wrap items-center gap-2 md:flex">
-                <span className="mr-2 font-sans text-[10px] font-bold uppercase tracking-[0.20em] text-[#8A5A1F]">
-                  Filter
-                </span>
+              {/* Filters toolbar with Category Dropdown */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#5A0E14]/10">
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <span className="font-sans text-[10px] font-bold uppercase tracking-[0.20em] text-[#8A5A1F]">
+                    Filter
+                  </span>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveCategory("all");
-                    setShowAllProducts(false);
-                  }}
-                  className={`
-                    rounded-full border px-4 py-1.5
-                    font-sans text-[11px] font-bold uppercase tracking-[0.14em]
-                    transition-all duration-300
-                    ${
-                      activeCategory === "all"
-                        ? "border-[#5A0E14] bg-[#5A0E14] text-[#FFF8EC] shadow-[0_6px_16px_rgba(90,14,20,0.20)]"
-                        : "border-[#5A0E14]/15 bg-transparent text-[#5A0E14]/75 hover:border-[#E9A534]/50 hover:text-[#3C080D]"
-                    }
-                  `}
-                >
-                  All
-                </button>
-
-                {categories.map((cat) => (
-                  <div key={cat.id} className="relative group">
+                  {/* Category Dropdown Button */}
+                  <div className="relative" ref={catDropdownRef}>
                     <button
                       type="button"
-                      onClick={() => {
-                        setActiveCategory(cat.name);
-                        setShowAllProducts(false);
-                      }}
+                      onClick={() => setCatDropdownOpen(!catDropdownOpen)}
                       className={`
-                        rounded-full border px-4 py-1.5
+                        inline-flex items-center gap-2 rounded-full border px-4 py-1.5
                         font-sans text-[11px] font-bold uppercase tracking-[0.14em]
-                        transition-all duration-300
+                        transition-all duration-300 shadow-sm cursor-pointer
                         ${
-                          isCategorySelected(cat)
-                            ? "border-[#5A0E14] bg-[#5A0E14] text-[#FFF8EC] shadow-[0_6px_16px_rgba(90,14,20,0.20)]"
-                            : "border-[#5A0E14]/15 bg-transparent text-[#5A0E14]/75 hover:border-[#E9A534]/50 hover:text-[#3C080D]"
+                          activeCategory !== "all"
+                            ? "border-[#5A0E14] bg-[#5A0E14] text-[#FFF8EC] shadow-[0_4px_14px_rgba(90,14,20,0.20)]"
+                            : "border-[#5A0E14]/15 bg-[#FFFDF9] text-[#5A0E14]/80 hover:border-[#E9A534]/50 hover:text-[#3C080D]"
                         }
                       `}
                     >
-                      {cat.name}
+                      <Filter className="h-3.5 w-3.5 opacity-80" />
+                      <span>{activeCategory === "all" ? "All Categories" : activeCategory}</span>
+                      <ChevronDown
+                        className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                          catDropdownOpen ? "rotate-180" : ""
+                        }`}
+                      />
                     </button>
-                    {/* Subcategories Dropdown */}
-                    {cat.children && cat.children.length > 0 && (
-                      <div className="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                        <div className="flex flex-col gap-1 rounded-[9px] border border-[#5A0E14]/15 bg-[#FFFDF9] p-2 shadow-lg w-max min-w-[140px]">
-                          {cat.children.map(child => (
-                            <button
-                              key={child.id}
-                              type="button"
-                              onClick={() => {
-                                setActiveCategory(child.name);
-                                setShowAllProducts(false);
-                              }}
-                              className={`
-                                text-left px-3 py-2 rounded-[5px] font-sans text-[11px] font-bold uppercase tracking-[0.1em] transition-colors
-                                ${isCategorySelected(child) ? 'bg-[#5A0E14]/10 text-[#5A0E14]' : 'text-[#5A0E14]/70 hover:bg-[#FDECC8]/40 hover:text-[#3C080D]'}
-                              `}
-                            >
-                              {child.name}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+
+                    {/* Category Dropdown Menu */}
+                    <AnimatePresence>
+                      {catDropdownOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -6 }}
+                          transition={{ duration: 0.18 }}
+                          className="absolute left-0 top-full mt-2 w-72 max-h-80 overflow-y-auto rounded-xl border border-[#5A0E14]/15 bg-[#FFFDF9] p-2 shadow-2xl z-50 backdrop-blur-md"
+                          style={{ scrollbarWidth: "thin" }}
+                        >
+                          {/* All Categories Option */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setActiveCategory("all");
+                              setShowAllProducts(false);
+                              setCatDropdownOpen(false);
+                            }}
+                            className={`flex w-full items-center justify-between px-3 py-2 rounded-lg font-sans text-[11px] font-bold uppercase tracking-[0.1em] transition-colors cursor-pointer ${
+                              activeCategory === "all"
+                                ? "bg-[#5A0E14] text-[#FFF8EC]"
+                                : "text-[#3C080D] hover:bg-[#FDECC8]/50"
+                            }`}
+                          >
+                            <span>All Categories</span>
+                            {activeCategory === "all" && <Check className="h-4 w-4" />}
+                          </button>
+
+                          <div className="my-1.5 h-px bg-[#5A0E14]/10" />
+
+                          {/* List of Categories & Subcategories */}
+                          <div className="flex flex-col gap-0.5">
+                            {categories.map((cat) => {
+                              const isSelected = isCategorySelected(cat);
+                              return (
+                                <div key={cat.id || cat._id} className="flex flex-col">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setActiveCategory(cat.name);
+                                      setShowAllProducts(false);
+                                      setCatDropdownOpen(false);
+                                    }}
+                                    className={`flex w-full items-center justify-between px-3 py-2 rounded-lg text-left font-sans text-[11px] font-bold uppercase tracking-[0.08em] transition-colors cursor-pointer ${
+                                      isSelected
+                                        ? "bg-[#5A0E14] text-[#FFF8EC]"
+                                        : "text-[#3C080D] hover:bg-[#FDECC8]/50"
+                                    }`}
+                                  >
+                                    <span className="truncate pr-2">{cat.name}</span>
+                                    <span className="flex items-center gap-1.5 shrink-0">
+                                      {cat.productCount !== undefined && (
+                                        <span
+                                          className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                                            isSelected
+                                              ? "bg-white/20 text-[#FFF8EC]"
+                                              : "bg-[#5A0E14]/10 text-[#5A0E14]"
+                                          }`}
+                                        >
+                                          {cat.productCount}
+                                        </span>
+                                      )}
+                                      {isSelected && <Check className="h-3.5 w-3.5" />}
+                                    </span>
+                                  </button>
+
+                                  {/* Subcategories */}
+                                  {cat.children && cat.children.length > 0 && (
+                                    <div className="ml-3 my-0.5 flex flex-col border-l-2 border-[#5A0E14]/10 pl-2">
+                                      {cat.children.map((child) => {
+                                        const isChildSelected = isCategorySelected(child);
+                                        return (
+                                          <button
+                                            key={child.id || child._id}
+                                            type="button"
+                                            onClick={() => {
+                                              setActiveCategory(child.name);
+                                              setShowAllProducts(false);
+                                              setCatDropdownOpen(false);
+                                            }}
+                                            className={`flex w-full items-center justify-between px-2.5 py-1.5 rounded-md text-left font-sans text-[11px] tracking-wide transition-colors cursor-pointer ${
+                                              isChildSelected
+                                                ? "bg-[#5A0E14]/15 text-[#5A0E14] font-semibold"
+                                                : "text-[#5A0E14]/75 hover:bg-[#FDECC8]/40 hover:text-[#3C080D]"
+                                            }`}
+                                          >
+                                            <span className="truncate pr-2">↳ {child.name}</span>
+                                            {isChildSelected && (
+                                              <Check className="h-3 w-3 text-[#5A0E14] shrink-0" />
+                                            )}
+                                          </button>
+                                        );
+                                      })}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
-                ))}
-              </div>
 
-              {/* Mobile filter button */}
-              <div className="flex items-center justify-between md:hidden">
-                <button
-                  type="button"
-                  onClick={() => setShowMobileFilter(!showMobileFilter)}
-                  className="
-                    flex items-center gap-2 rounded-full border border-[#5A0E14]/15
-                    px-4 py-2 font-sans text-[11px] font-bold uppercase tracking-[0.14em]
-                    text-[#5A0E14]/75 transition-colors hover:border-[#E9A534]/50 hover:text-[#3C080D]
-                  "
-                >
-                  <Filter className="h-3.5 w-3.5" strokeWidth={1.7} />
-                  Filter
-                  {(activeCategory !== "all" || activeZodiac !== "all") && (
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#C1272D]" />
+                  {/* Selected Category Pill (with quick remove X) */}
+                  {activeCategory !== "all" && (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#5A0E14]/10 px-3 py-1 font-sans text-[11px] font-medium text-[#5A0E14]">
+                      <span>Category: <strong>{activeCategory}</strong></span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveCategory("all");
+                          setShowAllProducts(false);
+                        }}
+                        className="hover:text-[#C1272D] transition-colors cursor-pointer"
+                        title="Clear category filter"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
                   )}
-                </button>
 
-                {(activeCategory !== "all" || activeZodiac !== "all") && (
+                  {/* Selected Zodiac Pill (with quick remove X) */}
+                  {activeZodiac !== "all" && (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#E9A534]/20 px-3 py-1 font-sans text-[11px] font-medium text-[#7A4B00]">
+                      <span>Zodiac: <strong>{activeZodiac}</strong></span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveZodiac("all");
+                          setShowAllProducts(false);
+                        }}
+                        className="hover:text-[#C1272D] transition-colors cursor-pointer"
+                        title="Clear zodiac filter"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  )}
+                </div>
+
+                {/* Clear All Filters button when any filter is active */}
+                {(activeCategory !== "all" || activeZodiac !== "all" || searchQuery || minPrice || maxPrice) && (
                   <button
                     type="button"
                     onClick={() => {
                       setActiveCategory("all");
                       setActiveZodiac("all");
+                      setSearchQuery("");
+                      setMinPrice("");
+                      setMaxPrice("");
                       setShowAllProducts(false);
                     }}
-                    className="font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-[#C1272D] transition-colors hover:text-[#8B2F2B]"
+                    className="inline-flex items-center gap-1 font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-[#C1272D] hover:text-[#8B2F2B] transition-colors cursor-pointer"
                   >
-                    Clear
+                    <X className="h-3.5 w-3.5" />
+                    Clear All Filters
                   </button>
                 )}
               </div>
-
-              {/* Mobile filter dropdown */}
-              <AnimatePresence>
-                {showMobileFilter && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.25 }}
-                    className="overflow-hidden md:hidden"
-                  >
-                    <div className="mt-3 flex flex-col gap-3 border-t border-[#5A0E14]/10 pt-3">
-                      {/* Mobile Zodiac Selector */}
-                      <div>
-                        <label className="block mb-1 font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-[#8A5A1F]">
-                          Zodiac Sign
-                        </label>
-                        <select
-                          value={activeZodiac}
-                          onChange={(e) => {
-                            setActiveZodiac(e.target.value);
-                            setShowAllProducts(false);
-                            setShowMobileFilter(false);
-                          }}
-                          className="w-full rounded-full border border-[#5A0E14]/15 bg-[#FFFDF9] py-1.5 px-3 font-sans text-[12px] text-[#3C080D] focus:border-[#E9A534]/60 focus:outline-none"
-                        >
-                          <option value="all">✨ All Zodiac Signs</option>
-                          {ZODIAC_SIGNS.map(sign => (
-                            <option key={sign.name} value={sign.name}>
-                              {sign.symbol} {sign.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <div className="flex flex-wrap gap-2">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setActiveCategory("all");
-                            setShowAllProducts(false);
-                            setShowMobileFilter(false);
-                          }}
-                        className={`
-                          rounded-full border px-4 py-1.5
-                          font-sans text-[11px] font-bold uppercase tracking-[0.14em]
-                          transition-all duration-300
-                          ${
-                            activeCategory === "all"
-                              ? "border-[#5A0E14] bg-[#5A0E14] text-[#FFF8EC]"
-                              : "border-[#5A0E14]/15 text-[#5A0E14]/75"
-                          }
-                        `}
-                      >
-                        All
-                      </button>
-
-                      {categories.map((cat) => (
-                        <div key={cat.id} className="flex flex-col w-full gap-2 border-b border-[#5A0E14]/10 pb-2">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setActiveCategory(cat.name);
-                              setShowAllProducts(false);
-                              setShowMobileFilter(false);
-                            }}
-                            className={`
-                              rounded-full border px-4 py-1.5 w-max
-                              font-sans text-[11px] font-bold uppercase tracking-[0.14em]
-                              transition-all duration-300
-                              ${
-                                isCategorySelected(cat)
-                                  ? "border-[#5A0E14] bg-[#5A0E14] text-[#FFF8EC]"
-                                  : "border-[#5A0E14]/15 text-[#5A0E14]/75"
-                              }
-                            `}
-                          >
-                            {cat.name}
-                          </button>
-                          {cat.children && cat.children.length > 0 && (
-                            <div className="flex flex-wrap gap-2 pl-4">
-                              {cat.children.map(child => (
-                                <button
-                                  key={child.id}
-                                  type="button"
-                                  onClick={() => {
-                                    setActiveCategory(child.name);
-                                    setShowAllProducts(false);
-                                    setShowMobileFilter(false);
-                                  }}
-                                  className={`
-                                    rounded-full border px-3 py-1
-                                    font-sans text-[10px] font-bold uppercase tracking-[0.14em]
-                                    transition-all duration-300
-                                    ${
-                                      isCategorySelected(child)
-                                        ? "border-[#5A0E14] bg-[#5A0E14]/10 text-[#5A0E14]"
-                                        : "border-[#5A0E14]/10 text-[#5A0E14]/60 bg-transparent"
-                                    }
-                                  `}
-                                >
-                                  ↳ {child.name}
-                                </button>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-              </AnimatePresence>
             </div>
 
             {/* ============================================

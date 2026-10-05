@@ -805,7 +805,7 @@ export default function ProductsPage() {
           <Reveal delay={80}>
             <div className="mt-5 flex items-end justify-between gap-6">
               <h2 className="max-w-[520px] font-display text-[28px] font-medium leading-[1.1] tracking-[-0.015em] text-[#3C080D] sm:text-[32px] md:text-[36px]">
-                Browse six curated{" "}
+                Browse curated{" "}
                 <span className="text-[#8B2F2B]">collections</span>
               </h2>
             </div>

@@ -4,6 +4,7 @@ import { useScrollY } from "../hooks/useReveal";
 import Reveal from "../components/Reveal";
 import BookingModal from "../components/BookingModal";
 import SEOHead from "../components/SEOHead";
+import VideoMarqueeSection from "../components/VideoMarqueeSection";
 import nidhi1 from "../assets/image.webp";
 
 export default function About() {
@@ -293,6 +294,9 @@ export default function About() {
               </div>
             </div>
           </Reveal>
+
+          {/* Dynamic YouTube Videos Marquee - Moving Right to Left */}
+          <VideoMarqueeSection />
 
           {/* Stats */}
           <Reveal delay={320}>

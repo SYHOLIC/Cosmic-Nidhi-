@@ -7,7 +7,6 @@ import Voices from "../components/Voices";
 import CTA from "../components/CTA";
 import Pricing from "../components/Pricing";
 import ProductCategories from "../components/ProductCategories";
-import YouTubeVideoSection from "../components/YouTubeVideoSection";
 import SEOHead from "../components/SEOHead";
 
 function Home() {
@@ -26,7 +25,6 @@ function Home() {
       <Signs />
       <Services />
       <ProductCategories />
-      <YouTubeVideoSection sectionId="videos" />
       <Voices />
       <Pricing/>
       <CTA />

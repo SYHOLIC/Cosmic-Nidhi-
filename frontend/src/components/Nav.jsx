@@ -153,7 +153,6 @@ function Nav() {
     { label: "Services", href: "/services", dropdown: "services" },
     { label: "Zodiac", href: "/zodiac", dropdown: "zodiac" },
     { label: "Store", href: "/products" },
-    { label: "Videos", href: "/videos" },
     { label: "Certifications", href: "/certifications" },
     { label: "Pricing", href: "/services#pricing" },
     { label: "Contact", href: "/contact" },

@@ -12,7 +12,10 @@ import {
   Plus,
   QrCode,
   Smartphone,
-  Sparkles
+  Sparkles,
+  Pencil,
+  Trash2,
+  X
 } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import UPIPaymentModal from "../components/UPIPaymentModal";
@@ -48,6 +51,13 @@ export default function CheckoutPage() {
   const [addressForm, setAddressForm] = useState({
     name: "", phone: "", address: "", city: "", state: "", pincode: "", isDefault: false
   });
+
+  // Edit address state
+  const [editingAddressId, setEditingAddressId] = useState(null);
+  const [editAddressForm, setEditAddressForm] = useState({
+    name: "", phone: "", address: "", city: "", state: "", pincode: "", isDefault: false
+  });
+  const [savingEditAddress, setSavingEditAddress] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -146,6 +156,96 @@ export default function CheckoutPage() {
       alert(err.response?.data?.message || "Failed to add address.");
     } finally {
       setSavingAddress(false);
+    }
+  };
+
+  const handleStartEdit = (addr, e) => {
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+    setEditingAddressId(addr._id);
+    const rawPhone = String(addr.phone || "").replace(/\D/g, "");
+    const cleanPhone = rawPhone.length >= 10 ? rawPhone.slice(-10) : rawPhone;
+    const cleanPincode = String(addr.pincode || "").replace(/\D/g, "").slice(0, 6);
+    setEditAddressForm({
+      name: addr.name || "",
+      phone: cleanPhone || "",
+      address: addr.address || "",
+      city: addr.city || "",
+      state: addr.state || "",
+      pincode: cleanPincode || "",
+      isDefault: !!addr.isDefault,
+    });
+    setShowAddForm(false);
+  };
+
+  const handleUpdateAddress = async (e) => {
+    e.preventDefault();
+    if (!/^[a-zA-Z\s]{2,50}$/.test(editAddressForm.name.trim())) {
+      alert("Please enter a valid Full Name (letters and spaces only, at least 2 characters).");
+      return;
+    }
+    if (!/^\d{10}$/.test(editAddressForm.phone.trim())) {
+      alert("Please enter a valid 10-digit phone number.");
+      return;
+    }
+    if (!/^\d{6}$/.test(editAddressForm.pincode.trim())) {
+      alert("Please enter a valid 6-digit pincode.");
+      return;
+    }
+    setSavingEditAddress(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.put(
+        `${API_URL}/users/addresses/${editingAddressId}`,
+        editAddressForm,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setEditingAddressId(null);
+      const updatedAddresses = res.data.addresses;
+      if (Array.isArray(updatedAddresses)) {
+        setAddresses(updatedAddresses);
+        if (editAddressForm.isDefault) {
+          setSelectedAddressId(editingAddressId);
+        }
+      } else {
+        await fetchAddresses();
+      }
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Failed to update address.");
+    } finally {
+      setSavingEditAddress(false);
+    }
+  };
+
+  const handleDeleteAddress = async (id, e) => {
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+    if (!window.confirm("Are you sure you want to delete this address?")) return;
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.delete(`${API_URL}/users/addresses/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const updated = res.data.addresses || [];
+      setAddresses(updated);
+      if (selectedAddressId === id) {
+        if (updated.length > 0) {
+          setSelectedAddressId(updated[0]._id);
+        } else {
+          setSelectedAddressId("");
+        }
+      }
+      if (editingAddressId === id) {
+        setEditingAddressId(null);
+      }
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Failed to delete address.");
     }
   };
 
@@ -429,42 +529,260 @@ export default function CheckoutPage() {
 
               {addresses.length > 0 && !showAddForm && (
                 <div className="space-y-4">
-                  {addresses.map(addr => (
-                    <label
-                      key={addr._id}
-                      className={`
-                        relative flex cursor-pointer gap-4 rounded-[8px] border p-4 transition-all
-                        ${selectedAddressId === addr._id 
-                          ? "border-[#E9A534] bg-[#FDECC8]/20 shadow-[0_4px_12px_rgba(233,165,52,0.1)]" 
-                          : "border-[#5A0E14]/15 hover:border-[#E9A534]/50"
-                        }
-                      `}
-                    >
-                      <input
-                        type="radio"
-                        name="address"
-                        value={addr._id}
-                        checked={selectedAddressId === addr._id}
-                        onChange={() => setSelectedAddressId(addr._id)}
-                        className="mt-1 h-4 w-4 shrink-0 text-[#E9A534] focus:ring-[#E9A534]"
-                      />
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-sans text-[15px] font-semibold text-[#3C080D]">{addr.name}</span>
-                          {addr.isDefault && (
-                            <span className="rounded-full bg-[#5A0E14] px-2 py-0.5 text-[9px] font-bold uppercase text-white">Default</span>
-                          )}
+                  {addresses.map(addr => {
+                    const isEditing = editingAddressId === addr._id;
+
+                    if (isEditing) {
+                      return (
+                        <form
+                          key={addr._id}
+                          onSubmit={handleUpdateAddress}
+                          className="rounded-[8px] border-2 border-[#E9A534] bg-[#FFFDF9] p-5 shadow-md"
+                        >
+                          <div className="mb-4 flex items-center justify-between border-b border-[#5A0E14]/10 pb-3">
+                            <h3 className="font-display text-[17px] font-medium text-[#3C080D]">
+                              Edit Delivery Address
+                            </h3>
+                            <button
+                              type="button"
+                              onClick={() => setEditingAddressId(null)}
+                              className="text-[#5A0E14]/50 hover:text-[#C1272D] transition-colors cursor-pointer"
+                              title="Cancel editing"
+                            >
+                              <X size={18} />
+                            </button>
+                          </div>
+
+                          <div className="grid gap-4 sm:grid-cols-2">
+                            <div className="col-span-2 sm:col-span-1">
+                              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#5A0E14]/70">
+                                Full Name
+                              </label>
+                              <input
+                                type="text"
+                                required
+                                value={editAddressForm.name}
+                                onChange={e =>
+                                  setEditAddressForm({
+                                    ...editAddressForm,
+                                    name: e.target.value.replace(/[^a-zA-Z\s]/g, "")
+                                  })
+                                }
+                                className="w-full rounded-[6px] border border-[#5A0E14]/20 p-2.5 text-[13px] focus:border-[#E9A534] focus:outline-none"
+                              />
+                            </div>
+
+                            <div className="col-span-2 sm:col-span-1">
+                              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#5A0E14]/70">
+                                Phone (10 digits)
+                              </label>
+                              <input
+                                type="tel"
+                                required
+                                inputMode="numeric"
+                                pattern="[0-9]{10}"
+                                maxLength={10}
+                                placeholder="10-digit mobile number"
+                                value={editAddressForm.phone}
+                                onChange={e =>
+                                  setEditAddressForm({
+                                    ...editAddressForm,
+                                    phone: e.target.value.replace(/\D/g, '').slice(0, 10)
+                                  })
+                                }
+                                className="w-full rounded-[6px] border border-[#5A0E14]/20 p-2.5 text-[13px] focus:border-[#E9A534] focus:outline-none"
+                              />
+                            </div>
+
+                            <div className="col-span-2">
+                              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#5A0E14]/70">
+                                Address (House No, Street)
+                              </label>
+                              <input
+                                type="text"
+                                required
+                                value={editAddressForm.address}
+                                onChange={e =>
+                                  setEditAddressForm({ ...editAddressForm, address: e.target.value })
+                                }
+                                className="w-full rounded-[6px] border border-[#5A0E14]/20 p-2.5 text-[13px] focus:border-[#E9A534] focus:outline-none"
+                              />
+                            </div>
+
+                            <div className="col-span-2 sm:col-span-1">
+                              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#5A0E14]/70">
+                                City
+                              </label>
+                              <input
+                                type="text"
+                                required
+                                value={editAddressForm.city}
+                                onChange={e =>
+                                  setEditAddressForm({
+                                    ...editAddressForm,
+                                    city: e.target.value.replace(/[^a-zA-Z\s]/g, "")
+                                  })
+                                }
+                                className="w-full rounded-[6px] border border-[#5A0E14]/20 p-2.5 text-[13px] focus:border-[#E9A534] focus:outline-none"
+                              />
+                            </div>
+
+                            <div className="col-span-2 sm:col-span-1">
+                              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#5A0E14]/70">
+                                State
+                              </label>
+                              <input
+                                type="text"
+                                required
+                                value={editAddressForm.state}
+                                onChange={e =>
+                                  setEditAddressForm({
+                                    ...editAddressForm,
+                                    state: e.target.value.replace(/[^a-zA-Z\s]/g, "")
+                                  })
+                                }
+                                className="w-full rounded-[6px] border border-[#5A0E14]/20 p-2.5 text-[13px] focus:border-[#E9A534] focus:outline-none"
+                              />
+                            </div>
+
+                            <div className="col-span-2 sm:col-span-1">
+                              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#5A0E14]/70">
+                                Pincode (6 digits)
+                              </label>
+                              <input
+                                type="text"
+                                required
+                                inputMode="numeric"
+                                pattern="[0-9]{6}"
+                                maxLength={6}
+                                placeholder="6-digit pincode"
+                                value={editAddressForm.pincode}
+                                onChange={e =>
+                                  setEditAddressForm({
+                                    ...editAddressForm,
+                                    pincode: e.target.value.replace(/\D/g, '').slice(0, 6)
+                                  })
+                                }
+                                className="w-full rounded-[6px] border border-[#5A0E14]/20 p-2.5 text-[13px] focus:border-[#E9A534] focus:outline-none"
+                              />
+                            </div>
+
+                            <div className="col-span-2 mt-1 flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                id={`default-edit-${addr._id}`}
+                                checked={editAddressForm.isDefault}
+                                onChange={e =>
+                                  setEditAddressForm({
+                                    ...editAddressForm,
+                                    isDefault: e.target.checked
+                                  })
+                                }
+                                className="h-4 w-4 rounded border-[#5A0E14]/25 text-[#E9A534] focus:ring-[#E9A534]"
+                              />
+                              <label
+                                htmlFor={`default-edit-${addr._id}`}
+                                className="text-[13px] text-[#5A0E14]/80 cursor-pointer"
+                              >
+                                Set as default address
+                              </label>
+                            </div>
+                          </div>
+
+                          <div className="mt-5 flex gap-3">
+                            <button
+                              type="submit"
+                              disabled={savingEditAddress}
+                              className="rounded-full bg-[#5A0E14] px-5 py-2 font-sans text-[11px] font-bold uppercase tracking-wider text-white transition-colors hover:bg-[#3C080D] disabled:opacity-50 cursor-pointer"
+                            >
+                              {savingEditAddress ? "Updating..." : "Update Address"}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setEditingAddressId(null)}
+                              className="font-sans text-[13px] font-medium text-[#5A0E14]/70 transition-colors hover:text-[#3C080D] cursor-pointer"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </form>
+                      );
+                    }
+
+                    return (
+                      <div
+                        key={addr._id}
+                        className={`
+                          relative flex flex-col sm:flex-row sm:items-start justify-between gap-4 rounded-[8px] border p-4 transition-all
+                          ${selectedAddressId === addr._id 
+                            ? "border-[#E9A534] bg-[#FDECC8]/20 shadow-[0_4px_12px_rgba(233,165,52,0.1)]" 
+                            : "border-[#5A0E14]/15 hover:border-[#E9A534]/50"
+                          }
+                        `}
+                      >
+                        <div
+                          className="flex cursor-pointer gap-4 flex-1"
+                          onClick={() => setSelectedAddressId(addr._id)}
+                        >
+                          <input
+                            type="radio"
+                            name="address"
+                            value={addr._id}
+                            checked={selectedAddressId === addr._id}
+                            onChange={() => setSelectedAddressId(addr._id)}
+                            className="mt-1 h-4 w-4 shrink-0 text-[#E9A534] focus:ring-[#E9A534] cursor-pointer"
+                          />
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-sans text-[15px] font-semibold text-[#3C080D]">
+                                {addr.name}
+                              </span>
+                              {addr.isDefault && (
+                                <span className="rounded-full bg-[#5A0E14] px-2 py-0.5 text-[9px] font-bold uppercase text-white">
+                                  Default
+                                </span>
+                              )}
+                            </div>
+                            <p className="mt-1 font-sans text-[13px] text-[#5A0E14]/70">
+                              📞 {addr.phone}
+                            </p>
+                            <p className="mt-1 font-sans text-[13px] text-[#5A0E14]/70 leading-relaxed">
+                              {addr.address}, {addr.city}, {addr.state} - {addr.pincode}
+                            </p>
+                          </div>
                         </div>
-                        <p className="mt-1 font-sans text-[13px] text-[#5A0E14]/70">{addr.phone}</p>
-                        <p className="mt-1 font-sans text-[13px] text-[#5A0E14]/70 leading-relaxed">
-                          {addr.address}, {addr.city}, {addr.state} - {addr.pincode}
-                        </p>
+
+                        {/* Action buttons: Edit & Delete */}
+                        <div className="flex items-center gap-2 shrink-0 self-end sm:self-start pt-2 sm:pt-0">
+                          <button
+                            type="button"
+                            onClick={(e) => handleStartEdit(addr, e)}
+                            className="inline-flex items-center gap-1.5 rounded-md border border-[#5A0E14]/15 bg-white px-3 py-1 font-sans text-[11px] font-semibold text-[#8A5A1F] hover:border-[#E9A534] hover:text-[#5A0E14] transition-colors cursor-pointer shadow-xs"
+                            title="Edit Address"
+                          >
+                            <Pencil size={12} />
+                            <span>Edit</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={(e) => handleDeleteAddress(addr._id, e)}
+                            className="inline-flex items-center gap-1 rounded-md border border-[#5A0E14]/15 bg-white p-1 text-red-600/70 hover:border-red-400 hover:text-red-700 transition-colors cursor-pointer shadow-xs"
+                            title="Delete Address"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        </div>
                       </div>
-                    </label>
-                  ))}
+                    );
+                  })}
+
                   <button
-                    onClick={() => setShowAddForm(true)}
-                    className="mt-2 font-sans text-[13px] font-medium text-[#E9A534] transition-colors hover:text-[#C89846]"
+                    onClick={() => {
+                      setShowAddForm(true);
+                      setEditingAddressId(null);
+                    }}
+                    className="mt-2 font-sans text-[13px] font-medium text-[#E9A534] transition-colors hover:text-[#C89846] cursor-pointer"
                   >
                     + Add a new address
                   </button>

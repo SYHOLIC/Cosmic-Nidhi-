@@ -1211,7 +1211,7 @@ export default function AdminPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[calc(100svh-78px)] items-center justify-center bg-[#FFF7E9] pt-[78px]">
+      <div className="flex min-h-[calc(100svh-78px)] items-center justify-center bg-[#FFF7E9]">
         <div className="text-center">
           <div className="mx-auto mb-5 h-12 w-12 animate-spin rounded-full border-2 border-[#E9A534]/30 border-t-[#E9A534]" />
           <p className="font-sans text-[13px] font-semibold uppercase tracking-[0.20em] text-[#6B3A2A]/75">
@@ -1245,7 +1245,7 @@ export default function AdminPage() {
   ];
 
   return (
-    <div className="min-h-[calc(100svh-78px)] w-full max-w-full overflow-x-hidden bg-[#FFF7E9] pt-[74px] lg:pt-[78px]">
+    <div className="min-h-[calc(100svh-78px)] w-full max-w-full overflow-x-hidden bg-[#FFF7E9]">
       <SEOHead
         pageName="admin"
         fallbackTitle="Admin Portal | Cosmic Nidhi"

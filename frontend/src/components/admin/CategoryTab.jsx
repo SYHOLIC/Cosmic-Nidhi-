@@ -22,6 +22,21 @@ import {
 
 import { API_URL } from "../../config/api";
 
+export const ZODIAC_SIGNS = [
+  { name: "Aries", symbol: "♈" },
+  { name: "Taurus", symbol: "♉" },
+  { name: "Gemini", symbol: "♊" },
+  { name: "Cancer", symbol: "♋" },
+  { name: "Leo", symbol: "♌" },
+  { name: "Virgo", symbol: "♍" },
+  { name: "Libra", symbol: "♎" },
+  { name: "Scorpio", symbol: "♏" },
+  { name: "Sagittarius", symbol: "♐" },
+  { name: "Capricorn", symbol: "♑" },
+  { name: "Aquarius", symbol: "♒" },
+  { name: "Pisces", symbol: "♓" },
+];
+
 /* ================================================================
    STATUS BADGE
 ================================================================ */
@@ -203,6 +218,7 @@ function CategoryFormModal({
     icon: "",
     image: "",
     parentCategory: "",
+    zodiacSigns: [],
     isActive: true,
   });
   const [errors, setErrors] = useState({});
@@ -218,6 +234,9 @@ function CategoryFormModal({
           editingCategory.parentCategory?._id ||
           editingCategory.parentCategory ||
           "",
+        zodiacSigns: Array.isArray(editingCategory.zodiacSigns)
+          ? editingCategory.zodiacSigns
+          : [],
         isActive: editingCategory.isActive !== false,
       });
     } else {
@@ -227,6 +246,7 @@ function CategoryFormModal({
         icon: "",
         image: "",
         parentCategory: "",
+        zodiacSigns: [],
         isActive: true,
       });
     }
@@ -419,6 +439,63 @@ function CategoryFormModal({
                   focus:border-[#E9A534]/60 focus:outline-none focus:ring-2 focus:ring-[#E9A534]/20
                 "
               />
+            </div>
+          </div>
+
+          {/* Zodiac Alignment */}
+          <div className="rounded-[8px] border border-[#E9A534]/30 bg-[#FDECC8]/15 p-3.5">
+            <div className="flex items-center justify-between mb-2">
+              <label className="block font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/80">
+                Zodiac Alignment (Optional)
+              </label>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setFormData(prev => ({ ...prev, zodiacSigns: ZODIAC_SIGNS.map(z => z.name) }))}
+                  className="font-sans text-[10px] text-[#A2691F] hover:underline font-semibold"
+                >
+                  Select All
+                </button>
+                <span className="text-[#5A0E14]/20">|</span>
+                <button
+                  type="button"
+                  onClick={() => setFormData(prev => ({ ...prev, zodiacSigns: [] }))}
+                  className="font-sans text-[10px] text-[#5A0E14]/50 hover:underline"
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+            <p className="font-sans text-[11px] text-[#6B3A2A]/70 mb-3">
+              Tag this category to zodiac signs so products in this category appear on those zodiac profiles.
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {ZODIAC_SIGNS.map(z => {
+                const isSelected = formData.zodiacSigns?.includes(z.name);
+                return (
+                  <button
+                    key={z.name}
+                    type="button"
+                    onClick={() => {
+                      setFormData(prev => {
+                        const current = prev.zodiacSigns || [];
+                        const next = isSelected
+                          ? current.filter(item => item !== z.name)
+                          : [...current, z.name];
+                        return { ...prev, zodiacSigns: next };
+                      });
+                    }}
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded-full font-sans text-[11px] font-medium transition-all ${
+                      isSelected
+                        ? "bg-[#5A0E14] text-[#FFF8EC] shadow-[0_2px_8px_rgba(90,14,20,0.25)]"
+                        : "bg-[#FFFDF9] border border-[#5A0E14]/15 text-[#5A0E14]/70 hover:border-[#E9A534]/50"
+                    }`}
+                  >
+                    <span>{z.symbol}</span>
+                    <span>{z.name}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -620,6 +697,23 @@ function CategoryRow({ category, level = 0, onEdit, onDelete, onAddSub }) {
           <p className="line-clamp-2 font-sans text-[12px] text-[#6B3A2A]/75">
             {category.description || "—"}
           </p>
+        </td>
+
+        <td className="px-4 py-3">
+          {category.zodiacSigns && category.zodiacSigns.length > 0 ? (
+            <div className="flex flex-wrap gap-1 max-w-[140px]">
+              {category.zodiacSigns.map((z) => (
+                <span
+                  key={z}
+                  className="inline-block rounded-full bg-[#E9A534]/15 px-2 py-0.5 font-sans text-[9px] font-bold text-[#8A5A1F]"
+                >
+                  {z}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <span className="font-sans text-[11px] text-[#6B3A2A]/40">—</span>
+          )}
         </td>
 
         <td className="px-4 py-3">
@@ -968,6 +1062,9 @@ export default function CategoryTab() {
                   </th>
                   <th className="px-4 py-2.5 text-left font-sans text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/70">
                     Description
+                  </th>
+                  <th className="px-4 py-2.5 text-left font-sans text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/70">
+                    Zodiac Alignment
                   </th>
                   <th className="px-4 py-2.5 text-left font-sans text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/70">
                     Products

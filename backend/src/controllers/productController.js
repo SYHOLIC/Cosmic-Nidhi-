@@ -34,7 +34,42 @@ const getProducts = async (req, res) => {
 
     if (req.query.zodiac || req.query.zodiacSign) {
       const zTerm = String(req.query.zodiac || req.query.zodiacSign).trim();
-      filter.zodiacSigns = { $in: [new RegExp(`^${zTerm}$`, 'i')] };
+      const zRegex = new RegExp(`^${zTerm}$`, 'i');
+
+      // Find any categories that have this zodiac sign assigned
+      const zodiacCats = await Category.find({ zodiacSigns: { $in: [zRegex] } }, '_id parentCategory');
+      const childrenMap = {};
+      const allCategories = await Category.find({}, '_id parentCategory');
+      allCategories.forEach((c) => {
+        const parentId = c.parentCategory ? c.parentCategory.toString() : null;
+        if (parentId) {
+          if (!childrenMap[parentId]) childrenMap[parentId] = [];
+          childrenMap[parentId].push(c._id.toString());
+        }
+      });
+      const getDescendants = (catId) => {
+        const direct = childrenMap[catId] || [];
+        let list = [...direct];
+        for (const d of direct) {
+          list = list.concat(getDescendants(d));
+        }
+        return list;
+      };
+
+      let allZodiacCatIds = [];
+      zodiacCats.forEach(zc => {
+        allZodiacCatIds.push(zc._id.toString());
+        allZodiacCatIds = allZodiacCatIds.concat(getDescendants(zc._id.toString()));
+      });
+
+      if (allZodiacCatIds.length > 0) {
+        filter.$or = [
+          { zodiacSigns: { $in: [zRegex] } },
+          { category: { $in: allZodiacCatIds } }
+        ];
+      } else {
+        filter.zodiacSigns = { $in: [zRegex] };
+      }
     }
     
     if (req.query.category && req.query.category !== 'all') {

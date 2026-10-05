@@ -180,7 +180,7 @@ const getCategoryById = async (req, res) => {
 // @access  Private/Admin
 const createCategory = async (req, res) => {
   try {
-    const { name, description, icon, image, parentCategory, isActive } =
+    const { name, description, icon, image, parentCategory, isActive, zodiacSigns } =
       req.body;
 
     if (!name || !name.trim()) {
@@ -200,6 +200,7 @@ const createCategory = async (req, res) => {
       icon: icon || '',
       image: image || '', // base64 or URL
       parentCategory: parentCategory || null,
+      zodiacSigns: Array.isArray(zodiacSigns) ? zodiacSigns : [],
       isActive: isActive !== false,
     });
 

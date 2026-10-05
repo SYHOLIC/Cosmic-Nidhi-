@@ -33,6 +33,21 @@ import heroZodiac from "../assets/hero-zodiac3.webp";
 
 import { API_URL } from "../config/api";
 
+export const ZODIAC_SIGNS = [
+  { name: "Aries", symbol: "♈" },
+  { name: "Taurus", symbol: "♉" },
+  { name: "Gemini", symbol: "♊" },
+  { name: "Cancer", symbol: "♋" },
+  { name: "Leo", symbol: "♌" },
+  { name: "Virgo", symbol: "♍" },
+  { name: "Libra", symbol: "♎" },
+  { name: "Scorpio", symbol: "♏" },
+  { name: "Sagittarius", symbol: "♐" },
+  { name: "Capricorn", symbol: "♑" },
+  { name: "Aquarius", symbol: "♒" },
+  { name: "Pisces", symbol: "♓" },
+];
+
 /* ================================================================
    HELPERS
 ================================================================ */
@@ -353,6 +368,24 @@ function ProductCard({ product, index, onQuickView, isWishlisted }) {
           {product.shortDescription || product.description || "Discover the energy and benefits of this carefully curated spiritual item."}
         </p>
 
+        {product.zodiacSigns && product.zodiacSigns.length > 0 && (
+          <div className="mt-2 flex flex-wrap gap-1">
+            {product.zodiacSigns.slice(0, 3).map((z) => (
+              <span
+                key={z}
+                className="inline-flex items-center rounded-full bg-[#E9A534]/15 px-2 py-0.5 font-sans text-[9px] font-bold text-[#8A5A1F]"
+              >
+                {z}
+              </span>
+            ))}
+            {product.zodiacSigns.length > 3 && (
+              <span className="font-sans text-[9px] font-medium text-[#8A5A1F]/70">
+                +{product.zodiacSigns.length - 3}
+              </span>
+            )}
+          </div>
+        )}
+
         <div className="mt-2.5 flex flex-wrap items-baseline gap-2">
           <span className="font-display text-[19px] font-bold leading-none text-[#C1272D]">
             {formatPrice(product.price)}
@@ -415,6 +448,7 @@ export default function ProductsPage() {
 
   // Filters
   const [activeCategory, setActiveCategory] = useState("all");
+  const [activeZodiac, setActiveZodiac] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
@@ -436,6 +470,14 @@ export default function ProductsPage() {
     const cat = searchParams.get("category");
     if (cat) {
       setActiveCategory(cat);
+      setShowAllProducts(false);
+      setTimeout(() => {
+        document.getElementById("product-grid")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 200);
+    }
+    const z = searchParams.get("zodiac") || searchParams.get("zodiacSign");
+    if (z) {
+      setActiveZodiac(z);
       setShowAllProducts(false);
       setTimeout(() => {
         document.getElementById("product-grid")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -469,7 +511,7 @@ export default function ProductsPage() {
     if (categories.length > 0 || activeCategory === 'all') {
       fetchProducts();
     }
-  }, [activeCategory, searchQuery, minPrice, maxPrice, categories]);
+  }, [activeCategory, activeZodiac, searchQuery, minPrice, maxPrice, categories]);
 
   const fetchCategories = async () => {
     try {
@@ -540,6 +582,9 @@ export default function ProductsPage() {
         }
         url += `category=${encodeURIComponent(targetId || activeCategory)}&`;
       }
+      if (activeZodiac && activeZodiac !== "all") {
+        url += `zodiac=${encodeURIComponent(activeZodiac)}&`;
+      }
       if (searchQuery) url += `search=${searchQuery}&`;
       if (minPrice) url += `minPrice=${minPrice}&`;
       if (maxPrice) url += `maxPrice=${maxPrice}&`;
@@ -558,6 +603,7 @@ export default function ProductsPage() {
         image: (p.images && p.images.length > 0 ? p.images[0] : "") || p.image || "",
         images: Array.isArray(p.images) && p.images.length > 0 ? p.images : (p.image ? [p.image] : []),
         category: p.category ? (typeof p.category === 'object' ? p.category.name : p.category) : "",
+        zodiacSigns: p.zodiacSigns || [],
         rating: p.rating || 5,
         reviews: Array.isArray(p.reviews) ? p.reviews.length : (p.reviews || 0),
         inStock: p.stock !== undefined ? p.stock > 0 : true,
@@ -810,31 +856,51 @@ export default function ProductsPage() {
                   />
                 </div>
                 
-                {/* Price Filter */}
-                <div className="flex items-center gap-2">
-                  <input
-                    type="number"
-                    min="0"
-                    placeholder="Min ₹"
-                    value={minPrice}
+                {/* Zodiac and Price Filters */}
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  {/* Zodiac Selector */}
+                  <select
+                    value={activeZodiac}
                     onChange={(e) => {
-                      const v = e.target.value;
-                      setMinPrice(v === '' ? '' : Math.max(0, Number(v)).toString());
+                      setActiveZodiac(e.target.value);
+                      setShowAllProducts(false);
                     }}
-                    className="w-20 rounded-full border border-[#5A0E14]/15 bg-[#FFFDF9] px-3 py-1.5 font-sans text-[12px] text-[#3C080D] focus:border-[#E9A534]/60 focus:outline-none"
-                  />
-                  <span className="text-[#5A0E14]/40">-</span>
-                  <input
-                    type="number"
-                    min="0"
-                    placeholder="Max ₹"
-                    value={maxPrice}
-                    onChange={(e) => {
-                      const v = e.target.value;
-                      setMaxPrice(v === '' ? '' : Math.max(0, Number(v)).toString());
-                    }}
-                    className="w-20 rounded-full border border-[#5A0E14]/15 bg-[#FFFDF9] px-3 py-1.5 font-sans text-[12px] text-[#3C080D] focus:border-[#E9A534]/60 focus:outline-none"
-                  />
+                    className="rounded-full border border-[#5A0E14]/15 bg-[#FFFDF9] py-1.5 px-3 font-sans text-[12px] text-[#3C080D] focus:border-[#E9A534]/60 focus:outline-none cursor-pointer"
+                  >
+                    <option value="all">✨ All Zodiac Signs</option>
+                    {ZODIAC_SIGNS.map(sign => (
+                      <option key={sign.name} value={sign.name}>
+                        {sign.symbol} {sign.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* Price Filter */}
+                  <div className="flex items-center gap-1.5">
+                    <input
+                      type="number"
+                      min="0"
+                      placeholder="Min ₹"
+                      value={minPrice}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setMinPrice(v === '' ? '' : Math.max(0, Number(v)).toString());
+                      }}
+                      className="w-20 rounded-full border border-[#5A0E14]/15 bg-[#FFFDF9] px-3 py-1.5 font-sans text-[12px] text-[#3C080D] focus:border-[#E9A534]/60 focus:outline-none"
+                    />
+                    <span className="text-[#5A0E14]/40">-</span>
+                    <input
+                      type="number"
+                      min="0"
+                      placeholder="Max ₹"
+                      value={maxPrice}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setMaxPrice(v === '' ? '' : Math.max(0, Number(v)).toString());
+                      }}
+                      className="w-20 rounded-full border border-[#5A0E14]/15 bg-[#FFFDF9] px-3 py-1.5 font-sans text-[12px] text-[#3C080D] focus:border-[#E9A534]/60 focus:outline-none"
+                    />
+                  </div>
                 </div>
               </div>
               
@@ -925,16 +991,17 @@ export default function ProductsPage() {
                 >
                   <Filter className="h-3.5 w-3.5" strokeWidth={1.7} />
                   Filter
-                  {activeCategory !== "all" && (
+                  {(activeCategory !== "all" || activeZodiac !== "all") && (
                     <span className="h-1.5 w-1.5 rounded-full bg-[#C1272D]" />
                   )}
                 </button>
 
-                {activeCategory !== "all" && (
+                {(activeCategory !== "all" || activeZodiac !== "all") && (
                   <button
                     type="button"
                     onClick={() => {
                       setActiveCategory("all");
+                      setActiveZodiac("all");
                       setShowAllProducts(false);
                     }}
                     className="font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-[#C1272D] transition-colors hover:text-[#8B2F2B]"
@@ -954,14 +1021,38 @@ export default function ProductsPage() {
                     transition={{ duration: 0.25 }}
                     className="overflow-hidden md:hidden"
                   >
-                    <div className="mt-3 flex flex-wrap gap-2 border-t border-[#5A0E14]/10 pt-3">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setActiveCategory("all");
-                          setShowAllProducts(false);
-                          setShowMobileFilter(false);
-                        }}
+                    <div className="mt-3 flex flex-col gap-3 border-t border-[#5A0E14]/10 pt-3">
+                      {/* Mobile Zodiac Selector */}
+                      <div>
+                        <label className="block mb-1 font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-[#8A5A1F]">
+                          Zodiac Sign
+                        </label>
+                        <select
+                          value={activeZodiac}
+                          onChange={(e) => {
+                            setActiveZodiac(e.target.value);
+                            setShowAllProducts(false);
+                            setShowMobileFilter(false);
+                          }}
+                          className="w-full rounded-full border border-[#5A0E14]/15 bg-[#FFFDF9] py-1.5 px-3 font-sans text-[12px] text-[#3C080D] focus:border-[#E9A534]/60 focus:outline-none"
+                        >
+                          <option value="all">✨ All Zodiac Signs</option>
+                          {ZODIAC_SIGNS.map(sign => (
+                            <option key={sign.name} value={sign.name}>
+                              {sign.symbol} {sign.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setActiveCategory("all");
+                            setShowAllProducts(false);
+                            setShowMobileFilter(false);
+                          }}
                         className={`
                           rounded-full border px-4 py-1.5
                           font-sans text-[11px] font-bold uppercase tracking-[0.14em]
@@ -1028,8 +1119,9 @@ export default function ProductsPage() {
                         </div>
                       ))}
                     </div>
-                  </motion.div>
-                )}
+                  </div>
+                </motion.div>
+              )}
               </AnimatePresence>
             </div>
 

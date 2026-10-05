@@ -1245,7 +1245,7 @@ export default function AdminPage() {
   ];
 
   return (
-    <div className="min-h-[calc(100svh-78px)] w-full max-w-full overflow-x-hidden bg-[#FFF7E9]">
+    <div className="min-h-[calc(100svh-78px)] w-full max-w-full overflow-x-clip bg-[#FFF7E9]">
       <SEOHead
         pageName="admin"
         fallbackTitle="Admin Portal | Cosmic Nidhi"
@@ -1261,7 +1261,7 @@ export default function AdminPage() {
         setMobileOpen={setMobileOpen}
       />
 
-      <div className="flex min-w-0 w-full max-w-full flex-col overflow-x-hidden lg:pl-[240px]">
+      <div className="flex min-w-0 w-full max-w-full flex-col overflow-x-clip lg:pl-[240px]">
 
         <TopBar
           activeTab={activeTab}

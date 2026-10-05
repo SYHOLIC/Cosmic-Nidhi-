@@ -36,9 +36,11 @@ import {
   Save,
   AlertCircle,
   Image as ImageIcon,
+  Film,
 } from "lucide-react";
 import CategoryTab from "../components/admin/CategoryTab";
 import ProductTab from "../components/admin/ProductTab";
+import VideoTab from "../components/admin/VideoTab";
 import CouponTab from "../components/admin/CouponTab";
 import ReviewTab from "../components/admin/ReviewTab";
 import SeoTab from "../components/admin/SeoTab";
@@ -62,6 +64,7 @@ const NAV_ITEMS = [
   { id: "messages", label: "Messages", icon: Mail },
   { id: "categories", label: "Categories", icon: FolderTree },
   { id: "products", label: "Products", icon: Package },
+  { id: "videos", label: "YouTube Videos", icon: Film },
   { id: "coupons", label: "Coupons", icon: Tag },
   { id: "reviews", label: "Reviews", icon: Star },
   { id: "seo", label: "SEO Settings", icon: Search },
@@ -76,6 +79,7 @@ const TAB_LABELS = {
   messages: "Messages",
   categories: "Categories",
   products: "Products",
+  videos: "YouTube Video Management",
   coupons: "Coupons",
   reviews: "Reviews",
   seo: "SEO Settings",
@@ -1313,6 +1317,7 @@ export default function AdminPage() {
             {activeTab === "messages" && <MessageTab />}
             {activeTab === "categories" && <CategoryTab />}
             {activeTab === "products" && <ProductTab />}
+            {activeTab === "videos" && <VideoTab />}
             {activeTab === "coupons" && <CouponTab />}
             {activeTab === "reviews" && <ReviewTab />}
             {activeTab === "seo" && <SeoTab />}

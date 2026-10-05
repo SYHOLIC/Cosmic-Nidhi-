@@ -17,6 +17,7 @@ const seoRoutes = require('./routes/seoRoutes');
 const pageRoutes = require('./routes/pageRoutes');
 const sitemapRoutes = require('./routes/sitemapRoutes');
 const contactRoutes = require('./routes/contactRoutes');
+const videoRoutes = require('./routes/videoRoutes');
 
 const errorHandler = require('./middleware/error');
 
@@ -59,6 +60,7 @@ mountRoute('/reviews', reviewRoutes);
 mountRoute('/seo', seoRoutes);
 mountRoute('/pages', pageRoutes);
 mountRoute('/contact', contactRoutes);
+mountRoute('/videos', videoRoutes);
 
 // SEO: Sitemap, Robots, Ads
 app.use('/sitemap.xml', sitemapRoutes);

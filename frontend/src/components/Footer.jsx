@@ -11,6 +11,7 @@ function Footer() {
     { label: "Birth Chart / Janam Kundli", href: "/services#birth-chart" },
     { label: "Applied Vastu Consultation", href: "/services#vastu" },
     { label: "Kundli Matching / Guidance", href: "/services#kundli-matching" },
+    { label: "YouTube Video Insights", href: "/videos" },
   ];
 
   const handleNavClick = (e, item) => {

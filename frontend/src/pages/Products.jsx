@@ -421,6 +421,17 @@ export default function ProductsPage() {
   const [showMobileFilter, setShowMobileFilter] = useState(false);
   const [showAllProducts, setShowAllProducts] = useState(false);
 
+  const isCategorySelected = (cat) => {
+    if (!cat || activeCategory === "all") return false;
+    const norm = activeCategory.toLowerCase().trim();
+    return (
+      cat.name?.toLowerCase() === norm ||
+      cat.slug?.toLowerCase() === norm ||
+      cat._id === activeCategory ||
+      cat.id === activeCategory
+    );
+  };
+
   useEffect(() => {
     const cat = searchParams.get("category");
     if (cat) {
@@ -513,17 +524,21 @@ export default function ProductsPage() {
     try {
       let url = `${API_URL}/products?`;
       if (activeCategory !== "all") {
-        // Find flat category by name
         let targetId = null;
+        const norm = activeCategory.toLowerCase().trim();
         for (const cat of categories) {
-          if (cat.name === activeCategory) targetId = cat._id;
+          if (cat.name.toLowerCase() === norm || cat.slug?.toLowerCase() === norm || cat._id === activeCategory) {
+            targetId = cat._id;
+          }
           if (cat.children) {
             for (const child of cat.children) {
-              if (child.name === activeCategory) targetId = child._id;
+              if (child.name.toLowerCase() === norm || child.slug?.toLowerCase() === norm || child._id === activeCategory) {
+                targetId = child._id;
+              }
             }
           }
         }
-        if (targetId) url += `category=${targetId}&`;
+        url += `category=${encodeURIComponent(targetId || activeCategory)}&`;
       }
       if (searchQuery) url += `search=${searchQuery}&`;
       if (minPrice) url += `minPrice=${minPrice}&`;
@@ -862,7 +877,7 @@ export default function ProductsPage() {
                         font-sans text-[11px] font-bold uppercase tracking-[0.14em]
                         transition-all duration-300
                         ${
-                          activeCategory === cat.name
+                          isCategorySelected(cat)
                             ? "border-[#5A0E14] bg-[#5A0E14] text-[#FFF8EC] shadow-[0_6px_16px_rgba(90,14,20,0.20)]"
                             : "border-[#5A0E14]/15 bg-transparent text-[#5A0E14]/75 hover:border-[#E9A534]/50 hover:text-[#3C080D]"
                         }
@@ -884,7 +899,7 @@ export default function ProductsPage() {
                               }}
                               className={`
                                 text-left px-3 py-2 rounded-[5px] font-sans text-[11px] font-bold uppercase tracking-[0.1em] transition-colors
-                                ${activeCategory === child.name ? 'bg-[#5A0E14]/10 text-[#5A0E14]' : 'text-[#5A0E14]/70 hover:bg-[#FDECC8]/40 hover:text-[#3C080D]'}
+                                ${isCategorySelected(child) ? 'bg-[#5A0E14]/10 text-[#5A0E14]' : 'text-[#5A0E14]/70 hover:bg-[#FDECC8]/40 hover:text-[#3C080D]'}
                               `}
                             >
                               {child.name}
@@ -975,7 +990,7 @@ export default function ProductsPage() {
                               font-sans text-[11px] font-bold uppercase tracking-[0.14em]
                               transition-all duration-300
                               ${
-                                activeCategory === cat.name
+                                isCategorySelected(cat)
                                   ? "border-[#5A0E14] bg-[#5A0E14] text-[#FFF8EC]"
                                   : "border-[#5A0E14]/15 text-[#5A0E14]/75"
                               }
@@ -999,7 +1014,7 @@ export default function ProductsPage() {
                                     font-sans text-[10px] font-bold uppercase tracking-[0.14em]
                                     transition-all duration-300
                                     ${
-                                      activeCategory === child.name
+                                      isCategorySelected(child)
                                         ? "border-[#5A0E14] bg-[#5A0E14]/10 text-[#5A0E14]"
                                         : "border-[#5A0E14]/10 text-[#5A0E14]/60 bg-transparent"
                                     }

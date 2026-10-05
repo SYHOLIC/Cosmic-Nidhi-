@@ -37,8 +37,27 @@ const getProducts = async (req, res) => {
       filter.zodiacSigns = { $in: [new RegExp(`^${zTerm}$`, 'i')] };
     }
     
-    if (req.query.category) {
-      if (mongoose.Types.ObjectId.isValid(req.query.category)) {
+    if (req.query.category && req.query.category !== 'all') {
+      const catParam = String(req.query.category).trim();
+      let targetCatId = null;
+
+      if (mongoose.Types.ObjectId.isValid(catParam)) {
+        targetCatId = catParam;
+      } else {
+        const escaped = catParam.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const foundCat = await Category.findOne({
+          $or: [
+            { slug: catParam.toLowerCase() },
+            { name: new RegExp(`^${escaped}$`, 'i') },
+            { slug: new RegExp(`^${catParam.toLowerCase()}`, 'i') }
+          ]
+        });
+        if (foundCat) {
+          targetCatId = foundCat._id.toString();
+        }
+      }
+
+      if (targetCatId) {
         const allCategories = await Category.find({}, '_id parentCategory');
         const childrenMap = {};
         allCategories.forEach((c) => {
@@ -56,10 +75,10 @@ const getProducts = async (req, res) => {
           }
           return list;
         };
-        const allCatIds = [req.query.category, ...getDescendants(req.query.category)];
+        const allCatIds = [targetCatId, ...getDescendants(targetCatId)];
         filter.category = { $in: allCatIds };
       } else {
-        filter.category = req.query.category;
+        filter.category = new mongoose.Types.ObjectId();
       }
     }
     if (req.query.minPrice || req.query.maxPrice) {

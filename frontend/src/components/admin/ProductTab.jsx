@@ -485,7 +485,7 @@ function ProductFormModal({
                   <option value="" disabled>Select a category</option>
                   {categories.map((cat) => (
                     <option key={cat._id} value={cat._id}>
-                      {cat.name}
+                      {cat.displayName || cat.name}
                     </option>
                   ))}
                 </select>
@@ -931,6 +931,7 @@ export default function ProductTab() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showLowStockOnly, setShowLowStockOnly] = useState(false);
   const [selectedZodiac, setSelectedZodiac] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("all");
   
   // Pagination
   const [page, setPage] = useState(1);
@@ -967,12 +968,19 @@ export default function ProductTab() {
       setProducts(productsRes.data.products || []);
       setTotalPages(productsRes.data.pagination?.pages || 1);
       
-      // Flatten categories for dropdown
+      // Flatten categories for dropdown and display hierarchy
       const allCats = categoriesRes.data.categories || [];
+      const seen = new Set();
       const flatCats = [];
       allCats.forEach(c => {
-        flatCats.push(c);
-        if(c.children) c.children.forEach(child => flatCats.push(child));
+        if (!seen.has(c._id)) {
+          seen.add(c._id);
+          const parentName = c.parentCategory?.name;
+          flatCats.push({
+            ...c,
+            displayName: parentName ? `${parentName} › ${c.name}` : c.name
+          });
+        }
       });
       setCategories(flatCats);
       
@@ -1070,7 +1078,14 @@ export default function ProductTab() {
         : selectedZodiac === "zodiac-only"
         ? p.zodiacSigns && p.zodiacSigns.length > 0
         : p.zodiacSigns && p.zodiacSigns.some((z) => z.toLowerCase() === selectedZodiac.toLowerCase());
-    return matchesSearch && matchesStock && matchesZodiac;
+    const prodCatId = p.category?._id || p.category;
+    const prodCatName = p.category?.name || "";
+    const matchesCategory =
+      selectedCategory === "all"
+        ? true
+        : prodCatId === selectedCategory ||
+          prodCatName.toLowerCase() === selectedCategory.toLowerCase();
+    return matchesSearch && matchesStock && matchesZodiac && matchesCategory;
   });
 
   return (
@@ -1087,7 +1102,7 @@ export default function ProductTab() {
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center flex-wrap">
-          <div className="relative w-full sm:w-[220px]">
+          <div className="relative w-full sm:w-[200px]">
             <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#5A0E14]/40" strokeWidth={1.7} />
             <input
               type="text"
@@ -1096,6 +1111,21 @@ export default function ProductTab() {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full rounded-full border border-[#5A0E14]/15 bg-[#FFFDF9] py-2 pl-9 pr-4 font-sans text-[12px] text-[#2C1210] placeholder:text-[#5A0E14]/40 focus:border-[#E9A534]/60 focus:outline-none focus:ring-2 focus:ring-[#E9A534]/15"
             />
+          </div>
+
+          <div className="relative">
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="rounded-full border border-[#5A0E14]/15 bg-[#FFFDF9] py-2 px-3 font-sans text-[11px] font-semibold text-[#3C080D] focus:border-[#E9A534]/60 focus:outline-none focus:ring-2 focus:ring-[#E9A534]/15 cursor-pointer max-w-[170px] truncate"
+            >
+              <option value="all">All Categories</option>
+              {categories.map((c) => (
+                <option key={c._id} value={c._id}>
+                  {c.displayName || c.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="relative">

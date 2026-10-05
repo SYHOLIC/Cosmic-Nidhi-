@@ -14,7 +14,14 @@ const getProducts = async (req, res) => {
     const sort = req.query.sort || '-createdAt';
     
     // Build filter
-    const filter = { isActive: true };
+    const filter = {};
+    if (req.query.admin === 'true' || req.query.includeInactive === 'true') {
+      if (req.query.isActive !== undefined) {
+        filter.isActive = req.query.isActive === 'true';
+      }
+    } else {
+      filter.isActive = true;
+    }
     
     if (req.query.search) {
       const searchRegex = new RegExp(req.query.search, 'i');
@@ -23,6 +30,11 @@ const getProducts = async (req, res) => {
         { description: searchRegex },
         { shortDescription: searchRegex }
       ];
+    }
+
+    if (req.query.zodiac || req.query.zodiacSign) {
+      const zTerm = String(req.query.zodiac || req.query.zodiacSign).trim();
+      filter.zodiacSigns = { $in: [new RegExp(`^${zTerm}$`, 'i')] };
     }
     
     if (req.query.category) {
@@ -207,6 +219,12 @@ const createProduct = async (req, res) => {
     const uniqueSuffix = `${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
     const generatedSku = req.body.sku || req.body.SKU || `CN-${uniqueSuffix}`;
 
+    const zodiacSigns = Array.isArray(req.body.zodiacSigns)
+      ? req.body.zodiacSigns.map(s => String(s).trim()).filter(Boolean)
+      : (typeof req.body.zodiacSigns === 'string' && req.body.zodiacSigns.trim()
+          ? req.body.zodiacSigns.split(',').map(s => s.trim()).filter(Boolean)
+          : []);
+
     let product;
     try {
       product = await Product.create({
@@ -224,6 +242,12 @@ const createProduct = async (req, res) => {
         badge: badge || '',
         sku: generatedSku,
         SKU: generatedSku,
+        zodiacSigns,
+        association: req.body.association || '',
+        bestFor: req.body.bestFor || '',
+        howToUse: req.body.howToUse || '',
+        care: req.body.care || '',
+        zodiacNote: req.body.zodiacNote || '',
       });
     } catch (createErr) {
       // If legacy unique constraint triggers duplicate key on SKU, retry with collision-proof fallback
@@ -244,6 +268,12 @@ const createProduct = async (req, res) => {
           badge: badge || '',
           sku: fallbackSku,
           SKU: fallbackSku,
+          zodiacSigns,
+          association: req.body.association || '',
+          bestFor: req.body.bestFor || '',
+          howToUse: req.body.howToUse || '',
+          care: req.body.care || '',
+          zodiacNote: req.body.zodiacNote || '',
         });
       } else {
         throw createErr;
@@ -332,6 +362,14 @@ const updateProduct = async (req, res) => {
       req.body.SKU = genSku;
     } else if (req.body.sku && !req.body.SKU) {
       req.body.SKU = req.body.sku;
+    }
+
+    if (req.body.zodiacSigns !== undefined) {
+      req.body.zodiacSigns = Array.isArray(req.body.zodiacSigns)
+        ? req.body.zodiacSigns.map(s => String(s).trim()).filter(Boolean)
+        : (typeof req.body.zodiacSigns === 'string' && req.body.zodiacSigns.trim()
+            ? req.body.zodiacSigns.split(',').map(s => s.trim()).filter(Boolean)
+            : []);
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(

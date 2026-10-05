@@ -423,7 +423,7 @@ function ProductDetailModal({ product, onClose }) {
               {/* LEFT — Image */}
               <div className="relative aspect-square overflow-hidden bg-[#210307] md:aspect-auto md:min-h-[560px]">
                 <img
-                  src={product.image}
+                  src={product.images?.[0] || product.image || ""}
                   alt={product.name}
                   className="h-full w-full object-cover"
                 />
@@ -472,11 +472,11 @@ function ProductDetailModal({ product, onClose }) {
 
                 <div className="mt-5 flex flex-wrap items-baseline gap-3">
                   <span className="font-display text-[36px] font-bold leading-none text-[#E9C76D]">
-                    {product.price}
+                    {formatPrice(product.price)}
                   </span>
                   {product.originalPrice && (
                     <span className="font-sans text-[15px] text-[#D8C8A8]/45 line-through">
-                      {product.originalPrice}
+                      {formatPrice(product.originalPrice)}
                     </span>
                   )}
                   {off && (
@@ -513,10 +513,13 @@ function ProductDetailModal({ product, onClose }) {
                     onClick={() => {
                       if (product) {
                         addToCart({
-                          id: product.name,
+                          id: product._id || product.id || product.name,
+                          product: product._id,
                           name: product.name,
-                          price: product.price,
-                          image: product.image,
+                          price: typeof product.price === 'number' ? product.price : (parseFloat(String(product.price).replace(/[^0-9.]/g, '')) || 0),
+                          image: product.images?.[0] || product.image || "",
+                          badge: product.badge,
+                          stock: product.stock ?? (product.inStock !== false ? 99 : 0),
                         });
                         setAdded(true);
                         setTimeout(() => setAdded(false), 2000);
@@ -581,9 +584,52 @@ export default function ZodiacProfilePage() {
   const profile = signName ? ZODIAC_PROFILES[signName] : null;
   const icon = signName ? ZODIAC_ICONS[signName] : null;
 
+  const [crystals, setCrystals] = useState(profile?.crystals || []);
+  const [loadingCrystals, setLoadingCrystals] = useState(true);
+
   useEffect(() => {
     if (!profile) navigate("/", { replace: true });
   }, [profile, navigate]);
+
+  useEffect(() => {
+    let isMounted = true;
+    if (!signName) return;
+
+    const fetchZodiacProducts = async () => {
+      try {
+        setLoadingCrystals(true);
+        const res = await axios.get(`${API_URL}/products?zodiac=${signName}&limit=50`);
+        if (isMounted) {
+          if (res.data?.products && res.data.products.length > 0) {
+            const mapped = res.data.products.map((p) => ({
+              ...p,
+              id: p._id,
+              image: p.images?.[0] || p.image || "",
+              inStock: p.stock > 0,
+              rating: p.rating ?? 4.8,
+              reviews: p.reviews ?? 98,
+            }));
+            setCrystals(mapped);
+          } else {
+            setCrystals(profile?.crystals || []);
+          }
+        }
+      } catch (err) {
+        console.warn("Failed to fetch zodiac products from backend, falling back to static:", err);
+        if (isMounted) {
+          setCrystals(profile?.crystals || []);
+        }
+      } finally {
+        if (isMounted) setLoadingCrystals(false);
+      }
+    };
+
+    fetchZodiacProducts();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [signName, profile]);
 
   if (!profile || !icon) return null;
 
@@ -772,22 +818,43 @@ export default function ZodiacProfilePage() {
             </Reveal>
 
             <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {profile.crystals.map((crystal, i) => (
-                <Reveal key={crystal.name} delay={i * 100}>
-                  <ProductCard
-                    crystal={crystal}
-                    onViewDetails={() => setActiveProduct(crystal)}
-                    onAddToCart={() => {
-                      addToCart({
-                        id: crystal.name,
-                        name: crystal.name,
-                        price: crystal.price,
-                        image: crystal.image,
-                      });
-                    }}
-                  />
-                </Reveal>
-              ))}
+              {loadingCrystals ? (
+                <div className="col-span-full py-16 flex flex-col items-center justify-center gap-3">
+                  <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#8B2F2B] border-t-transparent" />
+                  <p className="font-sans text-[12px] uppercase tracking-[0.14em] text-[#8B612F]">
+                    Loading sacred stones for {signName}...
+                  </p>
+                </div>
+              ) : crystals.length === 0 ? (
+                <div className="col-span-full py-12 text-center">
+                  <p className="font-sans text-[14px] text-[#5A0E14]/60">
+                    No crystals currently available for {signName}.
+                  </p>
+                </div>
+              ) : (
+                crystals.map((crystal, i) => (
+                  <Reveal key={crystal._id || crystal.id || crystal.name} delay={i * 100}>
+                    <ProductCard
+                      crystal={crystal}
+                      onViewDetails={() => setActiveProduct(crystal)}
+                      onAddToCart={() => {
+                        addToCart({
+                          id: crystal._id || crystal.id || crystal.name,
+                          product: crystal._id,
+                          name: crystal.name,
+                          price:
+                            typeof crystal.price === "number"
+                              ? crystal.price
+                              : parseFloat(String(crystal.price).replace(/[^0-9.]/g, "")) || 0,
+                          image: crystal.images?.[0] || crystal.image || "",
+                          badge: crystal.badge,
+                          stock: crystal.stock ?? (crystal.inStock !== false ? 99 : 0),
+                        });
+                      }}
+                    />
+                  </Reveal>
+                ))
+              )}
             </div>
           </section>
         </div>

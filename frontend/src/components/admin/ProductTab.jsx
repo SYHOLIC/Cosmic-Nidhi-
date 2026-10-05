@@ -20,6 +20,21 @@ import {
 
 import { API_URL } from "../../config/api";
 
+export const ZODIAC_SIGNS = [
+  { name: "Aries", symbol: "♈" },
+  { name: "Taurus", symbol: "♉" },
+  { name: "Gemini", symbol: "♊" },
+  { name: "Cancer", symbol: "♋" },
+  { name: "Leo", symbol: "♌" },
+  { name: "Virgo", symbol: "♍" },
+  { name: "Libra", symbol: "♎" },
+  { name: "Scorpio", symbol: "♏" },
+  { name: "Sagittarius", symbol: "♐" },
+  { name: "Capricorn", symbol: "♑" },
+  { name: "Aquarius", symbol: "♒" },
+  { name: "Pisces", symbol: "♓" },
+];
+
 /* ================================================================
    STATUS BADGE
 ================================================================ */
@@ -203,6 +218,12 @@ function ProductFormModal({
     features: "",
     isActive: true,
     isFeatured: false,
+    zodiacSigns: [],
+    association: "",
+    bestFor: "",
+    howToUse: "",
+    care: "",
+    zodiacNote: "",
   });
   const [errors, setErrors] = useState({});
 
@@ -215,6 +236,12 @@ function ProductFormModal({
       const featuresStr = Array.isArray(editingProduct.features)
         ? editingProduct.features.map(f => (typeof f === "string" ? f : f?.title || f?.name || "")).filter(Boolean).join("\n")
         : (editingProduct.features || "");
+
+      const zSigns = Array.isArray(editingProduct.zodiacSigns)
+        ? editingProduct.zodiacSigns
+        : (typeof editingProduct.zodiacSigns === "string" && editingProduct.zodiacSigns.trim()
+            ? editingProduct.zodiacSigns.split(",").map(s => s.trim()).filter(Boolean)
+            : []);
 
       setFormData({
         name: editingProduct.name || "",
@@ -229,6 +256,12 @@ function ProductFormModal({
         features: featuresStr,
         isActive: editingProduct.isActive !== false,
         isFeatured: editingProduct.isFeatured || false,
+        zodiacSigns: zSigns,
+        association: editingProduct.association || "",
+        bestFor: editingProduct.bestFor || "",
+        howToUse: editingProduct.howToUse || "",
+        care: editingProduct.care || "",
+        zodiacNote: editingProduct.zodiacNote || "",
       });
     } else {
       setFormData({
@@ -244,6 +277,12 @@ function ProductFormModal({
         features: "",
         isActive: true,
         isFeatured: false,
+        zodiacSigns: [],
+        association: "",
+        bestFor: "",
+        howToUse: "",
+        care: "",
+        zodiacNote: "",
       });
     }
     setErrors({});
@@ -638,6 +677,130 @@ function ProductFormModal({
                 />
               </div>
 
+              {/* Zodiac Alignment */}
+              <div className="rounded-[9px] border border-[#E9A534]/25 bg-[#FDECC8]/20 p-3.5">
+                <div className="mb-2 flex items-center justify-between">
+                  <div>
+                    <label className="block font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#5A0E14]">
+                      Zodiac Alignment & Recommendations
+                    </label>
+                    <p className="mt-0.5 font-sans text-[11px] text-[#6B3A2A]/75">
+                      Assign this product to zodiac sign profile pages for visitors to discover and buy.
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setFormData((prev) => ({ ...prev, zodiacSigns: ZODIAC_SIGNS.map((z) => z.name) }))}
+                      className="font-sans text-[10px] font-bold text-[#8A5A1F] hover:underline"
+                    >
+                      All Signs
+                    </button>
+                    <span className="text-[#5A0E14]/25">|</span>
+                    <button
+                      type="button"
+                      onClick={() => setFormData((prev) => ({ ...prev, zodiacSigns: [] }))}
+                      className="font-sans text-[10px] font-bold text-[#8A5A1F] hover:underline"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-4">
+                  {ZODIAC_SIGNS.map((z) => {
+                    const isSelected = (formData.zodiacSigns || []).includes(z.name);
+                    return (
+                      <button
+                        key={z.name}
+                        type="button"
+                        onClick={() => {
+                          setFormData((prev) => {
+                            const current = prev.zodiacSigns || [];
+                            const exists = current.includes(z.name);
+                            return {
+                              ...prev,
+                              zodiacSigns: exists
+                                ? current.filter((s) => s !== z.name)
+                                : [...current, z.name],
+                            };
+                          });
+                        }}
+                        className={`flex items-center justify-center gap-1.5 rounded-[6px] border py-1.5 px-2 font-sans text-[11px] font-semibold transition-all ${
+                          isSelected
+                            ? "border-[#E9A534] bg-gradient-to-r from-[#5A0E14] to-[#3C080D] text-[#FFF8EC] shadow-sm"
+                            : "border-[#5A0E14]/15 bg-[#FFFDF9] text-[#6B3A2A]/80 hover:border-[#E9A534]/50 hover:bg-[#FDECC8]/40"
+                        }`}
+                      >
+                        <span className="text-sm">{z.symbol}</span>
+                        <span>{z.name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Optional Astrological metadata fields for Zodiac detail modal */}
+                <div className="mt-3.5 space-y-2.5 border-t border-[#5A0E14]/10 pt-3">
+                  <p className="font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-[#8A5A1F]">
+                    Astrological Properties (Shown on Zodiac Profile)
+                  </p>
+                  <div className="grid gap-2.5 sm:grid-cols-2">
+                    <div>
+                      <label className="mb-1 block font-sans text-[10px] font-semibold uppercase tracking-[0.1em] text-[#6B3A2A]/80">
+                        Best For
+                      </label>
+                      <input
+                        type="text"
+                        name="bestFor"
+                        value={formData.bestFor}
+                        onChange={handleChange}
+                        placeholder="e.g. Confidence, courage, clarity"
+                        className="w-full rounded-[6px] border border-[#5A0E14]/15 bg-[#FFFDF9] px-3 py-1.5 font-sans text-[12px] text-[#2C1210] placeholder:text-[#5A0E14]/30 focus:border-[#E9A534]/60 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block font-sans text-[10px] font-semibold uppercase tracking-[0.1em] text-[#6B3A2A]/80">
+                        Astrological Note
+                      </label>
+                      <input
+                        type="text"
+                        name="zodiacNote"
+                        value={formData.zodiacNote}
+                        onChange={handleChange}
+                        placeholder="e.g. A Mars-ruled stone — aligns with Aries fire"
+                        className="w-full rounded-[6px] border border-[#5A0E14]/15 bg-[#FFFDF9] px-3 py-1.5 font-sans text-[12px] text-[#2C1210] placeholder:text-[#5A0E14]/30 focus:border-[#E9A534]/60 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block font-sans text-[10px] font-semibold uppercase tracking-[0.1em] text-[#6B3A2A]/80">
+                        How to Use
+                      </label>
+                      <input
+                        type="text"
+                        name="howToUse"
+                        value={formData.howToUse}
+                        onChange={handleChange}
+                        placeholder="e.g. Wear as a bracelet or keep in workspace"
+                        className="w-full rounded-[6px] border border-[#5A0E14]/15 bg-[#FFFDF9] px-3 py-1.5 font-sans text-[12px] text-[#2C1210] placeholder:text-[#5A0E14]/30 focus:border-[#E9A534]/60 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block font-sans text-[10px] font-semibold uppercase tracking-[0.1em] text-[#6B3A2A]/80">
+                        Care Instructions
+                      </label>
+                      <input
+                        type="text"
+                        name="care"
+                        value={formData.care}
+                        onChange={handleChange}
+                        placeholder="e.g. Rinse under cool water monthly"
+                        className="w-full rounded-[6px] border border-[#5A0E14]/15 bg-[#FFFDF9] px-3 py-1.5 font-sans text-[12px] text-[#2C1210] placeholder:text-[#5A0E14]/30 focus:border-[#E9A534]/60 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div className="flex gap-4">
                 <div className="flex flex-1 items-center gap-3 rounded-[7px] border border-[#5A0E14]/12 bg-[#FDECC8]/25 p-3">
                   <input
@@ -767,11 +930,12 @@ export default function ProductTab() {
   const [success, setSuccess] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [showLowStockOnly, setShowLowStockOnly] = useState(false);
+  const [selectedZodiac, setSelectedZodiac] = useState("all");
   
   // Pagination
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const limit = 10;
+  const limit = 50;
 
   const [formOpen, setFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -790,9 +954,9 @@ export default function ProductTab() {
       setError("");
       const token = localStorage.getItem("token");
       
-      // Fetch products and categories concurrently
+      // Fetch products and categories concurrently (pass admin=true to include all items)
       const [productsRes, categoriesRes] = await Promise.all([
-        axios.get(`${API_URL}/products?page=${targetPage}&limit=${limit}`, {
+        axios.get(`${API_URL}/products?page=${targetPage}&limit=${limit}&admin=true`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
         axios.get(`${API_URL}/admin/categories`, {
@@ -900,7 +1064,13 @@ export default function ProductTab() {
   const filteredProducts = products.filter((p) => {
     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStock = showLowStockOnly ? p.stock < 5 : true;
-    return matchesSearch && matchesStock;
+    const matchesZodiac =
+      selectedZodiac === "all"
+        ? true
+        : selectedZodiac === "zodiac-only"
+        ? p.zodiacSigns && p.zodiacSigns.length > 0
+        : p.zodiacSigns && p.zodiacSigns.some((z) => z.toLowerCase() === selectedZodiac.toLowerCase());
+    return matchesSearch && matchesStock && matchesZodiac;
   });
 
   return (
@@ -916,8 +1086,8 @@ export default function ProductTab() {
           </p>
         </div>
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <div className="relative w-full sm:w-[240px]">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center flex-wrap">
+          <div className="relative w-full sm:w-[220px]">
             <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#5A0E14]/40" strokeWidth={1.7} />
             <input
               type="text"
@@ -926,6 +1096,22 @@ export default function ProductTab() {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full rounded-full border border-[#5A0E14]/15 bg-[#FFFDF9] py-2 pl-9 pr-4 font-sans text-[12px] text-[#2C1210] placeholder:text-[#5A0E14]/40 focus:border-[#E9A534]/60 focus:outline-none focus:ring-2 focus:ring-[#E9A534]/15"
             />
+          </div>
+
+          <div className="relative">
+            <select
+              value={selectedZodiac}
+              onChange={(e) => setSelectedZodiac(e.target.value)}
+              className="rounded-full border border-[#5A0E14]/15 bg-[#FFFDF9] py-2 px-3 font-sans text-[11px] font-semibold text-[#3C080D] focus:border-[#E9A534]/60 focus:outline-none focus:ring-2 focus:ring-[#E9A534]/15 cursor-pointer"
+            >
+              <option value="all">All Products</option>
+              <option value="zodiac-only">✨ All Zodiac Items</option>
+              {ZODIAC_SIGNS.map((sign) => (
+                <option key={sign.name} value={sign.name}>
+                  {sign.symbol} {sign.name}
+                </option>
+              ))}
+            </select>
           </div>
           
           <div className="flex items-center gap-2 pr-2">
@@ -991,6 +1177,7 @@ export default function ProductTab() {
             <tr className="border-b border-[#5A0E14]/12 bg-[#FDECC8]/30">
               <th className="px-4 py-2.5 text-left font-sans text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/70">Product Name</th>
               <th className="px-4 py-2.5 text-left font-sans text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/70">Category</th>
+              <th className="px-4 py-2.5 text-left font-sans text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/70">Zodiac Alignment</th>
               <th className="px-4 py-2.5 text-left font-sans text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/70">Price</th>
               <th className="px-4 py-2.5 text-left font-sans text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/70">Stock</th>
               <th className="px-4 py-2.5 text-left font-sans text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B3A2A]/70">Status</th>
@@ -1000,13 +1187,13 @@ export default function ProductTab() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={6} className="px-4 py-10 text-center">
+                <td colSpan={7} className="px-4 py-10 text-center">
                   <Loader2 className="mx-auto h-6 w-6 animate-spin text-[#A2691F]" />
                 </td>
               </tr>
             ) : filteredProducts.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-10 text-center font-sans text-[12px] text-[#5A0E14]/50">
+                <td colSpan={7} className="px-4 py-10 text-center font-sans text-[12px] text-[#5A0E14]/50">
                   No products found.
                 </td>
               </tr>
@@ -1039,6 +1226,22 @@ export default function ProductTab() {
                   </td>
                   <td className="px-4 py-3 font-sans text-[12px] text-[#6B3A2A]/75">
                     {product.category?.name || "—"}
+                  </td>
+                  <td className="px-4 py-3">
+                    {product.zodiacSigns && product.zodiacSigns.length > 0 ? (
+                      <div className="flex flex-wrap gap-1 max-w-[170px]">
+                        {product.zodiacSigns.map((z) => (
+                          <span
+                            key={z}
+                            className="inline-block rounded-full bg-[#E9A534]/15 px-2 py-0.5 font-sans text-[9px] font-bold text-[#8A5A1F]"
+                          >
+                            {z}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="font-sans text-[11px] text-[#6B3A2A]/40">—</span>
+                    )}
                   </td>
                   <td className="px-4 py-3">
                     <p className="font-display text-[13px] font-semibold text-[#C1272D]">

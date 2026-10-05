@@ -94,6 +94,30 @@ const productSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  zodiacSigns: [{
+    type: String,
+    trim: true,
+  }],
+  association: {
+    type: String,
+    trim: true,
+  },
+  bestFor: {
+    type: String,
+    trim: true,
+  },
+  howToUse: {
+    type: String,
+    trim: true,
+  },
+  care: {
+    type: String,
+    trim: true,
+  },
+  zodiacNote: {
+    type: String,
+    trim: true,
+  },
 }, {
   timestamps: true,
 });
